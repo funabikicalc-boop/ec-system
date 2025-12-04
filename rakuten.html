@@ -155,6 +155,8 @@
     .toggle-btn.active { background: #fff5f5; border-color: #e53e3e; color: #e53e3e; }
     .btn-secondary { background: #ed8936; color: #fff; }
     .btn-secondary:hover { background: #dd6b20; }
+    .btn-discord { background: #5865F2; color: #fff; }
+    .btn-discord:hover { background: #4752c4; }
     .modal-overlay {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;
@@ -461,14 +463,30 @@
   <!-- テンプレートモーダル -->
   <div class="modal-overlay" id="templateModal" onclick="closeModal(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
-      <div class="modal-header">
-        <span>📋 Discord配信テンプレート</span>
-        <button class="modal-close" onclick="closeTemplateModal()">×</button>
+      <!-- 確認画面 -->
+      <div id="templatePreviewMode">
+        <div class="modal-header">
+          <span>📋 Discord配信テンプレート</span>
+          <button class="modal-close" onclick="closeTemplateModal()">×</button>
+        </div>
+        <textarea class="modal-textarea" id="templateText" readonly></textarea>
+        <div class="modal-buttons">
+          <button class="btn btn-primary" onclick="copyTemplate()">📋 コピー</button>
+          <button class="btn btn-discord" onclick="switchToEditMode()">🚀 Discord投稿</button>
+          <button class="btn btn-secondary" onclick="closeTemplateModal()">閉じる</button>
+        </div>
       </div>
-      <textarea class="modal-textarea" id="templateText" readonly></textarea>
-      <div class="modal-buttons">
-        <button class="btn btn-primary" onclick="copyTemplate()">📋 コピー</button>
-        <button class="btn btn-secondary" onclick="closeTemplateModal()">閉じる</button>
+      <!-- 編集・投稿画面 -->
+      <div id="templateEditMode" style="display: none;">
+        <div class="modal-header">
+          <span>✏️ 投稿内容を編集</span>
+          <button class="modal-close" onclick="closeTemplateModal()">×</button>
+        </div>
+        <textarea class="modal-textarea" id="templateEditText"></textarea>
+        <div class="modal-buttons">
+          <button class="btn btn-secondary" onclick="switchToPreviewMode()">← 戻る</button>
+          <button class="btn btn-discord" onclick="postToDiscord()">🚀 投稿する</button>
+        </div>
       </div>
     </div>
   </div>
@@ -973,12 +991,32 @@
     
     function closeTemplateModal() {
       document.getElementById('templateModal').classList.remove('show');
+      // 閉じるときにプレビューモードに戻す
+      document.getElementById('templatePreviewMode').style.display = 'block';
+      document.getElementById('templateEditMode').style.display = 'none';
     }
     
     function closeModal(event) {
       if (event.target === document.getElementById('templateModal')) {
         closeTemplateModal();
       }
+    }
+    
+    function switchToEditMode() {
+      var templateText = document.getElementById('templateText').value;
+      document.getElementById('templateEditText').value = templateText;
+      document.getElementById('templatePreviewMode').style.display = 'none';
+      document.getElementById('templateEditMode').style.display = 'block';
+    }
+    
+    function switchToPreviewMode() {
+      document.getElementById('templatePreviewMode').style.display = 'block';
+      document.getElementById('templateEditMode').style.display = 'none';
+    }
+    
+    function postToDiscord() {
+      // TODO: Webhook URL設定後に実装
+      showToast('Webhook URLが未設定です', 'error');
     }
     
     function copyTemplate() {
