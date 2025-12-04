@@ -639,7 +639,6 @@
     function validateForm() {
       var data = getFormData();
       if (!data.date) { showToast('配信日を入力してください', 'error'); return false; }
-      if (!data.campaignName) { showToast('キャンペーン名を選択してください', 'error'); return false; }
       if (!data.type) { showToast('配信内容を選択してください', 'error'); return false; }
       if (!data.productName) { showToast('商品名を入力してください', 'error'); return false; }
       if (!data.listPrice) { showToast('定価を入力してください', 'error'); return false; }
