@@ -457,7 +457,6 @@
         <div class="sidebar-buttons">
           <button class="btn btn-primary" id="saveBtn" onclick="saveToSheet()">📝 記録する</button>
           <button class="btn btn-secondary" onclick="generateTemplate()">📋 テンプレ生成</button>
-          <button class="btn btn-discord" onclick="postToDiscord()" disabled>💬 Discord配信</button>
         </div>
       </div>
     </div><!-- sidebar -->
@@ -865,10 +864,6 @@
       setAltplan(data.altplan || 'なし');
       
       calculatePreview();
-    }
-    
-    function postToDiscord() {
-      showToast('Discord配信機能は後ほど実装予定', 'error');
     }
     
     function generateTemplate() {
