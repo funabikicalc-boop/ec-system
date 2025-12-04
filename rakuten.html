@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>楽天配信 - EC配信システム</title>
@@ -34,12 +35,11 @@
     }
     .menu-dropdown a:last-child { border-bottom: none; }
     .menu-dropdown a:hover { background: #f7fafc; }
-    .menu-dropdown a.disabled { opacity: 0.5; pointer-events: none; }
     .header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 8px 0; }
     .back-btn {
       width: 40px; height: 40px; border-radius: 10px; background: #fff;
       border: 1px solid #e2e8f0; color: #4a5568; font-size: 20px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; text-decoration: none;
+      display: flex; align-items: center; justify-content: center;
     }
     .back-btn:hover { background: #f7fafc; }
     .header-title { display: flex; align-items: center; gap: 8px; }
@@ -162,16 +162,6 @@
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
     .toast.success { border-color: #9ae6b4; background: #f0fff4; color: #276749; }
     .toast.error { border-color: #feb2b2; background: #fff5f5; color: #c53030; }
-    
-    /* レスポンシブ対応 */
-    @media (max-width: 900px) {
-      .page-wrapper { flex-direction: column; }
-      .sidebar { width: 100%; order: -1; }
-      .sidebar-sticky { position: static; }
-      .campaign-grid { grid-template-columns: repeat(2, 1fr); }
-      .form-row-4 { grid-template-columns: 1fr 1fr; }
-      .fixed-grid { grid-template-columns: repeat(2, 1fr); }
-    }
   </style>
 </head>
 <body>
@@ -180,23 +170,23 @@
       <div class="hamburger-menu">
         <button class="hamburger-btn" onclick="toggleMenu()">≡</button>
         <div class="menu-dropdown" id="menuDropdown">
-          <a href="rakuten.html">🛒 楽天</a>
-          <a href="#" class="disabled">🛍️ Yahoo（準備中）</a>
-          <a href="#" class="disabled">📱 dショッピング（準備中）</a>
-          <a href="#" class="disabled">📦 Amazon（準備中）</a>
-          <a href="#" class="disabled">🎀 Qoo10（準備中）</a>
-          <a href="#" class="disabled">🏪 その他EC（準備中）</a>
-          <a href="#" class="disabled">💰 ポイ活（準備中）</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('rakuten')">🛒 楽天</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('yahoo')">🛍️ Yahoo</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('dshopping')">📱 dショッピング</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('amazon')">📦 Amazon</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('qoo10')">🎀 Qoo10</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('other')">🏪 その他EC</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('poikatsu')">💰 ポイ活</a>
         </div>
       </div>
       
       <div class="header">
-        <a class="back-btn" href="top.html">←</a>
+        <button class="back-btn" onclick="goBack()">←</button>
         <div class="header-title">
           <div class="header-icon">🛒</div>
-          <h1>楽天配信</h1>
-        </div>
+        <h1>楽天配信</h1>
       </div>
+    </div>
     
     <div class="section">
       <div class="section-title">基本情報</div>
@@ -439,155 +429,15 @@
   <div class="toast" id="toast"></div>
   
   <script>
-    // ★★★ ここにGASのデプロイURLを貼り付けてください ★★★
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbyXdgehZGBhfWNCRA5uwC1Jr6Kp8lzNy-6mCieFu4HaZBiC2jfPB5BXa7TlhHt_FHHF/exec';
+    // GAS API URL
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyXdgehZGBhfWNCRA5uwC1Jr6Kp8lzNy-6mCieFu4HaZBiC2jfPB5BXa7TlhHt_FHHF/exec';
     
-    // 初期化
     document.getElementById('deliveryDate').valueAsDate = new Date();
     
     document.addEventListener('DOMContentLoaded', function() {
       loadHistory();
       setupRealtimeCalc();
     });
-    
-    // ============================================
-    // GAS API通信関数
-    // ============================================
-    
-    async function callGasGet(action, params = {}) {
-      const url = new URL(GAS_URL);
-      url.searchParams.append('action', action);
-      for (const key in params) {
-        url.searchParams.append(key, params[key]);
-      }
-      
-      try {
-        const response = await fetch(url.toString());
-        return await response.json();
-      } catch (error) {
-        console.error('API Error:', error);
-        throw error;
-      }
-    }
-    
-    async function callGasPost(action, data, rowNumber = null) {
-      const body = { action, data };
-      if (rowNumber !== null) {
-        body.rowNumber = rowNumber;
-      }
-      
-      try {
-        const response = await fetch(GAS_URL, {
-          method: 'POST',
-          body: JSON.stringify(body),
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8'
-          }
-        });
-        const text = await response.text();
-        return JSON.parse(text);
-      } catch (error) {
-        console.error('API Error:', error);
-        throw error;
-      }
-    }
-    
-    // ============================================
-    // 履歴の読み込み・表示
-    // ============================================
-    
-    async function loadHistory() {
-      try {
-        const history = await callGasGet('getRakutenHistory');
-        renderHistory(history);
-      } catch (error) {
-        document.getElementById('historyList').innerHTML = '<div class="history-empty">読み込みに失敗しました</div>';
-      }
-    }
-    
-    function renderHistory(history) {
-      var container = document.getElementById('historyList');
-      if (!history || history.length === 0) {
-        container.innerHTML = '<div class="history-empty">配信履歴がありません</div>';
-        return;
-      }
-      
-      var html = '';
-      history.forEach(function(item) {
-        var profitClass = item.expectedProfit < 0 ? 'negative' : '';
-        html += '<div class="history-item" onclick="loadHistoryItem(' + item.rowNumber + ')" data-row="' + item.rowNumber + '">' +
-          '<div class="history-header">' +
-          '<span class="history-date">' + formatDisplayDate(item.date) + '</span>' +
-          '<span class="history-type">' + (item.type || '') + '</span>' +
-          '</div>' +
-          '<div class="history-product">' + (item.productName || '') + '</div>' +
-          '<div class="history-stats">' +
-          '<div class="history-stat"><span class="history-stat-label">獲得: </span><span class="history-stat-value">' + formatNumber(item.totalPoints) + 'pt</span></div>' +
-          '<div class="history-stat"><span class="history-stat-label">利益: </span><span class="history-stat-value ' + profitClass + '">' + formatNumber(item.expectedProfit) + '円</span></div>' +
-          '</div></div>';
-      });
-      container.innerHTML = html;
-    }
-    
-    async function loadHistoryItem(rowNumber) {
-      document.querySelectorAll('.history-item').forEach(function(item) { item.classList.remove('selected'); });
-      var el = document.querySelector('.history-item[data-row="' + rowNumber + '"]');
-      if (el) el.classList.add('selected');
-      
-      try {
-        const data = await callGasGet('getRakutenDataByRow', { rowNumber });
-        if (data) {
-          fillForm(data);
-          showToast('履歴データを読み込みました', 'success');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-      } catch (error) {
-        showToast('データの読み込みに失敗しました', 'error');
-      }
-    }
-    
-    // ============================================
-    // データ保存
-    // ============================================
-    
-    async function saveToSheet() {
-      if (!validateForm()) return;
-      
-      var btn = document.getElementById('saveBtn');
-      btn.disabled = true;
-      btn.innerHTML = '⏳ 保存中...';
-      
-      var data = getFormData();
-      var editingRow = document.getElementById('editingRowNumber').value;
-      
-      try {
-        let result;
-        if (editingRow) {
-          result = await callGasPost('updateRakutenData', data, parseInt(editingRow));
-        } else {
-          result = await callGasPost('saveRakutenData', data);
-        }
-        
-        btn.disabled = false;
-        btn.innerHTML = '📝 記録する';
-        
-        if (result.success) {
-          showToast(result.message, 'success');
-          clearForm();
-          loadHistory();
-        } else {
-          showToast(result.message || 'エラーが発生しました', 'error');
-        }
-      } catch (error) {
-        btn.disabled = false;
-        btn.innerHTML = '📝 記録する';
-        showToast('保存に失敗しました', 'error');
-      }
-    }
-    
-    // ============================================
-    // キャンペーン・計算関連
-    // ============================================
     
     function toggleCampaign(el) {
       el.classList.toggle('active');
@@ -639,24 +489,45 @@
       // キャンペーンポイント（上限付き）
       var campaigns = getActiveCampaigns();
       
+      // 0と5の日: 税抜1% 上限500pt
       totalPoints += calcCampaignWithCap('0and5', campaigns, priceWithoutTax, 0.01, 500);
+      
+      // ブックス: 税抜0.5% 上限500pt
       totalPoints += calcCampaignWithCap('books', campaigns, priceWithoutTax, 0.005, 500);
+      
+      // 楽天モバイル: 4% 上限2,000pt
       totalPoints += calcCampaignWithCap('mobile4', campaigns, priceWithoutTax, 0.04, 2000);
+      
+      // 勝利: 税抜1% 上限1,000pt
       totalPoints += calcCampaignWithCap('victory', campaigns, priceWithoutTax, 0.01, 1000);
+      
+      // 39ショップ: 税抜1% 上限3,000pt
       totalPoints += calcCampaignWithCap('39shop', campaigns, priceWithoutTax, 0.01, 3000);
+      
+      // 火曜木曜: 税抜1% 上限なし
       totalPoints += calcCampaignWithCap('tuethurs', campaigns, priceWithoutTax, 0.01, null);
+      
+      // ワンダブルDAY: 税抜2% 上限1,000pt
       totalPoints += calcCampaignWithCap('wdouble', campaigns, priceWithoutTax, 0.02, 1000);
+      
+      // ゲリラ: 税抜1% 上限1,000pt
       totalPoints += calcCampaignWithCap('guerrilla', campaigns, priceWithoutTax, 0.01, 1000);
       
+      // マラソン: 税抜 上限7,000pt
       var marathonPercent = Number(document.getElementById('marathonPercent').value) || 3;
       totalPoints += calcCampaignWithCap('marathon', campaigns, priceWithoutTax, marathonPercent / 100, 7000);
       
+      // DEAL: 税抜9% or 14% 上限なし
       var dealPercent = Number(document.getElementById('dealPercent').value) || 9;
       totalPoints += calcCampaignWithCap('deal', campaigns, priceWithoutTax, dealPercent / 100, null);
       
+      // 4時間限定DEAL: +9% 上限1,000pt
       totalPoints += calcCampaignWithCap('deal4h', campaigns, priceWithoutTax, 0.09, 1000);
+      
+      // モバイル契約者: +9% 上限1,000pt
       totalPoints += calcCampaignWithCap('mobileplus', campaigns, priceWithoutTax, 0.09, 1000);
       
+      // その他キャンペーン: 税抜 上限なし
       var otherPercent = Number(document.getElementById('otherPercent').value) || 3;
       totalPoints += calcCampaignWithCap('other', campaigns, priceWithoutTax, otherPercent / 100, null);
       
@@ -699,6 +570,11 @@
       return Array.from(items).map(function(item) { return item.dataset.campaign; });
     }
     
+    function updateCampaignPoints(campaign, pts) {
+      var el = document.getElementById('points-' + campaign);
+      if (el) el.textContent = pts > 0 ? '+' + formatNumber(pts) + 'pt' : '';
+    }
+    
     function updateFixedPoints(id, pts) {
       var el = document.getElementById('points-' + id);
       if (el) el.textContent = pts > 0 ? '+' + formatNumber(pts) + 'pt' : '-';
@@ -719,10 +595,6 @@
         if (el) el.textContent = '-';
       });
     }
-    
-    // ============================================
-    // フォーム関連
-    // ============================================
     
     function setAltplan(value) {
       var btns = document.querySelectorAll('#altplanToggle .toggle-btn');
@@ -774,6 +646,126 @@
       return true;
     }
     
+    function saveToSheet() {
+      if (!validateForm()) return;
+      
+      var btn = document.getElementById('saveBtn');
+      btn.disabled = true;
+      btn.innerHTML = '⏳ 保存中...';
+      
+      var data = getFormData();
+      var editingRow = document.getElementById('editingRowNumber').value;
+      
+      var requestBody = editingRow 
+        ? { action: 'updateRakutenData', rowNumber: parseInt(editingRow), data: data }
+        : { action: 'saveRakutenData', data: data };
+      
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(requestBody)
+      })
+      .then(function(response) { return response.json(); })
+      .then(function(result) { onSaveSuccess(result); })
+      .catch(function(error) { onSaveError(error); });
+    }
+    
+    function onSaveSuccess(result) {
+      var btn = document.getElementById('saveBtn');
+      btn.disabled = false;
+      btn.innerHTML = '📝 記録する';
+      
+      if (result.success) {
+        showToast(result.message, 'success');
+        clearForm();
+        loadHistory();
+      } else {
+        showToast(result.message, 'error');
+      }
+    }
+    
+    function onSaveError(error) {
+      var btn = document.getElementById('saveBtn');
+      btn.disabled = false;
+      btn.innerHTML = '📝 記録する';
+      showToast('保存に失敗しました', 'error');
+    }
+    
+    function clearForm() {
+      document.getElementById('deliveryDate').valueAsDate = new Date();
+      document.getElementById('campaignName').value = '';
+      document.getElementById('deliveryType').value = '';
+      document.getElementById('productName').value = '';
+      document.getElementById('productUrl').value = '';
+      document.getElementById('couponUrl').value = '';
+      document.getElementById('requiredCondition').value = '';
+      document.getElementById('listPrice').value = '';
+      document.getElementById('couponDiscount').value = '';
+      document.getElementById('consignmentPrice').value = '';
+      document.getElementById('remarks').value = '';
+      document.getElementById('editingRowNumber').value = '';
+      document.getElementById('priceWithTaxDisplay').textContent = '0';
+      document.querySelectorAll('.campaign-item.active').forEach(function(item) { item.classList.remove('active'); });
+      document.querySelectorAll('.history-item.selected').forEach(function(item) { item.classList.remove('selected'); });
+      setAltplan('なし');
+      clearFixedPoints();
+      clearCampaignPoints();
+      document.getElementById('totalPoints').innerHTML = '0<span class="preview-unit">pt</span>';
+      document.getElementById('expectedProfit').innerHTML = '0<span class="preview-unit">円</span>';
+    }
+    
+    function loadHistory() {
+      fetch(API_URL + '?action=getRakutenHistory')
+        .then(function(response) { return response.json(); })
+        .then(function(history) { renderHistory(history); })
+        .catch(function(error) {
+          document.getElementById('historyList').innerHTML = '<div class="history-empty">読み込みに失敗しました</div>';
+        });
+    }
+    
+    function renderHistory(history) {
+      var container = document.getElementById('historyList');
+      if (!history || history.length === 0) {
+        container.innerHTML = '<div class="history-empty">配信履歴がありません</div>';
+        return;
+      }
+      
+      var html = '';
+      history.forEach(function(item) {
+        var profitClass = item.expectedProfit < 0 ? 'negative' : '';
+        html += '<div class="history-item" onclick="loadHistoryItem(' + item.rowNumber + ')" data-row="' + item.rowNumber + '">' +
+          '<div class="history-header">' +
+          '<span class="history-date">' + formatDisplayDate(item.date) + '</span>' +
+          '<span class="history-type">' + (item.type || '') + '</span>' +
+          '</div>' +
+          '<div class="history-product">' + (item.productName || '') + '</div>' +
+          '<div class="history-stats">' +
+          '<div class="history-stat"><span class="history-stat-label">獲得: </span><span class="history-stat-value">' + formatNumber(item.totalPoints) + 'pt</span></div>' +
+          '<div class="history-stat"><span class="history-stat-label">利益: </span><span class="history-stat-value ' + profitClass + '">' + formatNumber(item.expectedProfit) + '円</span></div>' +
+          '</div></div>';
+      });
+      container.innerHTML = html;
+    }
+    
+    function loadHistoryItem(rowNumber) {
+      document.querySelectorAll('.history-item').forEach(function(item) { item.classList.remove('selected'); });
+      var el = document.querySelector('.history-item[data-row="' + rowNumber + '"]');
+      if (el) el.classList.add('selected');
+      
+      fetch(API_URL + '?action=getRakutenDataByRow&rowNumber=' + rowNumber)
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+          if (data) {
+            fillForm(data);
+            showToast('履歴データを読み込みました', 'success');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        })
+        .catch(function(error) {
+          showToast('データの読み込みに失敗しました', 'error');
+        });
+    }
+    
     function fillForm(data) {
       document.getElementById('deliveryDate').value = data.date;
       document.getElementById('campaignName').value = data.campaignName || '';
@@ -805,39 +797,20 @@
       calculatePreview();
     }
     
-    function clearForm() {
-      document.getElementById('deliveryDate').valueAsDate = new Date();
-      document.getElementById('campaignName').value = '';
-      document.getElementById('deliveryType').value = '';
-      document.getElementById('productName').value = '';
-      document.getElementById('productUrl').value = '';
-      document.getElementById('couponUrl').value = '';
-      document.getElementById('requiredCondition').value = '';
-      document.getElementById('listPrice').value = '';
-      document.getElementById('couponDiscount').value = '';
-      document.getElementById('consignmentPrice').value = '';
-      document.getElementById('remarks').value = '';
-      document.getElementById('editingRowNumber').value = '';
-      document.getElementById('priceWithTaxDisplay').textContent = '0';
-      document.querySelectorAll('.campaign-item.active').forEach(function(item) { item.classList.remove('active'); });
-      document.querySelectorAll('.history-item.selected').forEach(function(item) { item.classList.remove('selected'); });
-      setAltplan('なし');
-      clearFixedPoints();
-      clearCampaignPoints();
-      document.getElementById('totalPoints').innerHTML = '0<span class="preview-unit">pt</span>';
-      document.getElementById('expectedProfit').innerHTML = '0<span class="preview-unit">円</span>';
-    }
-    
-    // ============================================
-    // UI関連
-    // ============================================
-    
     function postToDiscord() {
       showToast('Discord配信機能は後ほど実装予定', 'error');
     }
     
+    function goBack() {
+      window.location.href = 'index.html';
+    }
+    
     function toggleMenu() {
       document.getElementById('menuDropdown').classList.toggle('show');
+    }
+    
+    function navigateTo(page) {
+      window.location.href = page + '.html';
     }
     
     document.addEventListener('click', function(e) {
