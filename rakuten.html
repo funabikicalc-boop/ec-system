@@ -153,6 +153,33 @@
     }
     .toggle-btn:hover { background: #edf2f7; }
     .toggle-btn.active { background: #fff5f5; border-color: #e53e3e; color: #e53e3e; }
+    .btn-secondary { background: #718096; }
+    .btn-secondary:hover { background: #4a5568; }
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-content {
+      background: #fff; border-radius: 16px; width: 90%; max-width: 700px; max-height: 80vh;
+      display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 20px; border-bottom: 1px solid #e2e8f0; font-weight: 600; font-size: 16px;
+    }
+    .modal-close {
+      background: none; border: none; font-size: 24px; cursor: pointer; color: #718096;
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    }
+    .modal-close:hover { color: #e53e3e; }
+    .modal-textarea {
+      flex: 1; margin: 16px; padding: 16px; border: 1px solid #e2e8f0; border-radius: 10px;
+      font-family: monospace; font-size: 13px; line-height: 1.6; resize: none;
+      background: #f7fafc; min-height: 400px;
+    }
+    .modal-buttons { display: flex; gap: 12px; padding: 16px 20px; border-top: 1px solid #e2e8f0; }
+    .modal-buttons .btn { flex: 1; }
     .toast {
       position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
       padding: 14px 24px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
@@ -241,6 +268,10 @@
           <label class="form-label">クーポンリンク</label>
           <input type="url" class="form-input" id="couponUrl" placeholder="https://coupon.rakuten.co.jp/...">
         </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">キャンペーンエントリーリンク</label>
+        <input type="url" class="form-input" id="campaignEntryUrl" placeholder="https://event.rakuten.co.jp/...">
       </div>
       <div class="form-row-4">
         <div class="form-group">
@@ -420,11 +451,27 @@
         </div>
         <div class="sidebar-buttons">
           <button class="btn btn-primary" id="saveBtn" onclick="saveToSheet()">📝 記録する</button>
+          <button class="btn btn-secondary" onclick="generateTemplate()">📋 テンプレ生成</button>
           <button class="btn btn-discord" onclick="postToDiscord()" disabled>💬 Discord配信</button>
         </div>
       </div>
     </div><!-- sidebar -->
   </div><!-- page-wrapper -->
+  
+  <!-- テンプレートモーダル -->
+  <div class="modal-overlay" id="templateModal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span>📋 Discord配信テンプレート</span>
+        <button class="modal-close" onclick="closeTemplateModal()">×</button>
+      </div>
+      <textarea class="modal-textarea" id="templateText" readonly></textarea>
+      <div class="modal-buttons">
+        <button class="btn btn-primary" onclick="copyTemplate()">📋 コピー</button>
+        <button class="btn btn-secondary" onclick="closeTemplateModal()">閉じる</button>
+      </div>
+    </div>
+  </div>
   
   <div class="toast" id="toast"></div>
   
@@ -622,6 +669,7 @@
         productName: document.getElementById('productName').value,
         productUrl: document.getElementById('productUrl').value,
         couponUrl: document.getElementById('couponUrl').value,
+        campaignEntryUrl: document.getElementById('campaignEntryUrl').value,
         requiredCondition: document.getElementById('requiredCondition').value,
         listPrice: listPrice,
         couponDiscount: couponDiscount,
@@ -697,6 +745,7 @@
       document.getElementById('productName').value = '';
       document.getElementById('productUrl').value = '';
       document.getElementById('couponUrl').value = '';
+      document.getElementById('campaignEntryUrl').value = '';
       document.getElementById('requiredCondition').value = '';
       document.getElementById('listPrice').value = '';
       document.getElementById('couponDiscount').value = '';
@@ -772,6 +821,7 @@
       document.getElementById('productName').value = data.productName;
       document.getElementById('productUrl').value = data.productUrl;
       document.getElementById('couponUrl').value = data.couponUrl || '';
+      document.getElementById('campaignEntryUrl').value = data.campaignEntryUrl || '';
       document.getElementById('requiredCondition').value = data.requiredCondition || '';
       document.getElementById('listPrice').value = data.listPrice;
       document.getElementById('couponDiscount').value = data.couponDiscount || 0;
@@ -798,6 +848,145 @@
     
     function postToDiscord() {
       showToast('Discord配信機能は後ほど実装予定', 'error');
+    }
+    
+    function generateTemplate() {
+      var data = getFormData();
+      var listPrice = Number(data.listPrice) || 0;
+      var couponDiscount = Number(data.couponDiscount) || 0;
+      var priceWithTax = listPrice - couponDiscount;
+      var priceWithoutTax = Math.floor(priceWithTax / 1.1);
+      var consignmentPrice = Number(data.consignmentPrice) || 0;
+      
+      // ポイント計算
+      var fixedPts = {
+        base: Math.floor(priceWithoutTax * 0.01),
+        card: Math.floor(priceWithTax * 0.01),
+        cardBonus: Math.floor(priceWithoutTax * 0.01),
+        hapitas: Math.floor(priceWithoutTax * 0.01)
+      };
+      
+      var campaignPts = calculateCampaignPointsForTemplate(data, priceWithoutTax);
+      var totalPoints = fixedPts.base + fixedPts.card + fixedPts.cardBonus + fixedPts.hapitas + campaignPts.total;
+      var expectedProfit = consignmentPrice - priceWithTax + totalPoints;
+      
+      // 日付フォーマット
+      var dateFormatted = data.date ? data.date.replace(/-/g, '/') : '';
+      
+      // テンプレート生成
+      var lines = [];
+      lines.push('@everyone');
+      lines.push('【楽天 見込み利益' + formatNumber(expectedProfit) + '円】🔥 🔥 🔥');
+      lines.push('');
+      lines.push('✅ 配信日：' + dateFormatted);
+      if (data.campaignName) lines.push('✅ キャンペーン名：' + data.campaignName);
+      lines.push('✅ 配信内容：' + data.type);
+      lines.push('');
+      lines.push('📌購入期間：本日中');
+      lines.push('🔹決済方法：楽天プレミアムカード決済');
+      lines.push('🔹会員条件：楽天会員');
+      if (data.requiredCondition) lines.push('🔹必須条件：' + data.requiredCondition);
+      lines.push('🔹経由するポイントサイト：ハピタス');
+      lines.push('');
+      if (couponDiscount > 0) {
+        lines.push('✅クーポン利用：【' + formatNumber(couponDiscount) + '円】引クーポンを利用必須！');
+        lines.push('');
+      }
+      if (data.campaignEntryUrl) {
+        lines.push('📢キャンペーンエントリー＆クーポン取得リンク');
+        if (data.campaignName) lines.push(data.campaignName);
+        lines.push('__' + data.campaignEntryUrl + '__');
+        lines.push('');
+      }
+      if (data.couponUrl) {
+        lines.push('📢クーポン取得');
+        lines.push('__' + data.couponUrl + '__');
+        lines.push('');
+      }
+      lines.push('🎯経由するポイントサイト');
+      lines.push('🔗ハピタス__https://m.hapitas.jp/item/detail/itemid/33008?i=20939249&route=pcText&apn=itemsharelink__');
+      lines.push('');
+      lines.push('🎯購入対象商品🛒');
+      lines.push('商品名：' + data.productName);
+      lines.push('🛒購入リンク：');
+      lines.push('__' + (data.productUrl || '') + '__');
+      lines.push('');
+      lines.push('📊利益計算');
+      var priceText = '💰購入金額（税込）：' + formatNumber(priceWithTax) + '円';
+      if (couponDiscount > 0) priceText += '（' + formatNumber(couponDiscount) + '円引きクーポン利用）';
+      lines.push(priceText);
+      lines.push('📦見込委託販売額：' + formatNumber(consignmentPrice) + '円');
+      lines.push('💎獲得ポイント：' + formatNumber(totalPoints) + 'P');
+      lines.push('💰見込利益：' + formatNumber(expectedProfit) + '円');
+      lines.push('');
+      lines.push('📌ポイント内訳：');
+      lines.push('基本税抜1% ' + fixedPts.base + 'pt');
+      lines.push('クレカ税込1% ' + fixedPts.card + 'pt');
+      lines.push('楽天カード特典税抜1% ' + fixedPts.cardBonus + 'pt');
+      lines.push('ハピタス税抜1% ' + fixedPts.hapitas + 'pt');
+      
+      // 選択されたキャンペーンのポイント
+      campaignPts.lines.forEach(function(line) {
+        lines.push(line);
+      });
+      
+      lines.push('');
+      if (data.remarks) lines.push('※備考：' + data.remarks);
+      lines.push('※代替商品配信予定：' + data.altplan);
+      
+      document.getElementById('templateText').value = lines.join('\n');
+      document.getElementById('templateModal').classList.add('show');
+    }
+    
+    function calculateCampaignPointsForTemplate(data, priceWithoutTax) {
+      var campaigns = data.campaigns || [];
+      var total = 0;
+      var lines = [];
+      
+      var campaignConfig = {
+        '0and5': { name: '0と5の日税抜1%(上限500pt)', rate: 0.01, cap: 500 },
+        'books': { name: 'ブックス税抜0.5%(上限500pt)', rate: 0.005, cap: 500 },
+        'mobile4': { name: '楽天モバイル4%(上限2,000pt)', rate: 0.04, cap: 2000 },
+        'victory': { name: '勝利税抜1%(上限1,000pt)', rate: 0.01, cap: 1000 },
+        '39shop': { name: '39ショップ税抜1%(上限3,000pt)', rate: 0.01, cap: 3000 },
+        'tuethurs': { name: '火曜木曜税抜1%(楽天プレミアムカード)', rate: 0.01, cap: null },
+        'wdouble': { name: 'ワンダブルDAY税抜2%(上限1,000pt)', rate: 0.02, cap: 1000 },
+        'guerrilla': { name: 'ゲリラ税抜1%(上限1,000pt)', rate: 0.01, cap: 1000 },
+        'marathon': { name: 'マラソン税抜(上限7,000pt)', rate: (Number(data.marathonPercent) || 3) / 100, cap: 7000 },
+        'deal': { name: 'DEAL税抜', rate: (Number(data.dealPercent) || 9) / 100, cap: null },
+        'deal4h': { name: '4時間限定DEAL+9%税抜(上限1,000pt)', rate: 0.09, cap: 1000 },
+        'mobileplus': { name: 'モバイル契約者+9%税抜(上限1,000pt)', rate: 0.09, cap: 1000 },
+        'other': { name: 'その他キャンペーン税抜', rate: (Number(data.otherPercent) || 3) / 100, cap: null }
+      };
+      
+      campaigns.forEach(function(c) {
+        var config = campaignConfig[c];
+        if (config) {
+          var pts = Math.floor(priceWithoutTax * config.rate);
+          if (config.cap && pts > config.cap) pts = config.cap;
+          total += pts;
+          lines.push(config.name + ' ' + pts + 'pt');
+        }
+      });
+      
+      return { total: total, lines: lines };
+    }
+    
+    function closeTemplateModal() {
+      document.getElementById('templateModal').classList.remove('show');
+    }
+    
+    function closeModal(event) {
+      if (event.target === document.getElementById('templateModal')) {
+        closeTemplateModal();
+      }
+    }
+    
+    function copyTemplate() {
+      var textarea = document.getElementById('templateText');
+      textarea.select();
+      document.execCommand('copy');
+      showToast('テンプレートをコピーしました', 'success');
     }
     
     function goBack() {
