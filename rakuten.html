@@ -895,21 +895,20 @@
       if (data.campaignEntryUrl) {
         lines.push('📢キャンペーンエントリー＆クーポン取得リンク');
         if (data.campaignName) lines.push(data.campaignName);
-        lines.push('__' + data.campaignEntryUrl + '__');
+        lines.push(data.campaignEntryUrl);
         lines.push('');
       }
       if (data.couponUrl) {
         lines.push('📢クーポン取得');
-        lines.push('__' + data.couponUrl + '__');
+        lines.push(data.couponUrl);
         lines.push('');
       }
       lines.push('🎯経由するポイントサイト');
-      lines.push('🔗ハピタス__https://m.hapitas.jp/item/detail/itemid/33008?i=20939249&route=pcText&apn=itemsharelink__');
+      lines.push('🔗ハピタス https://m.hapitas.jp/item/detail/itemid/33008?i=20939249&route=pcText&apn=itemsharelink');
       lines.push('');
       lines.push('🎯購入対象商品🛒');
       lines.push('商品名：' + data.productName);
-      lines.push('🛒購入リンク：');
-      lines.push('__' + (data.productUrl || '') + '__');
+      lines.push('🛒購入リンク：' + (data.productUrl || ''));
       lines.push('');
       lines.push('📊利益計算');
       var priceText = '💰購入金額（税込）：' + formatNumber(priceWithTax) + '円';
