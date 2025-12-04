@@ -182,6 +182,9 @@
     }
     .modal-buttons { display: flex; gap: 12px; padding: 16px 20px; border-top: 1px solid #e2e8f0; }
     .modal-buttons .btn { flex: 1; }
+    #templatePreviewMode, #templateEditMode {
+      display: flex; flex-direction: column; flex: 1; min-height: 0;
+    }
     .toast {
       position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
       padding: 14px 24px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
@@ -992,7 +995,7 @@
     function closeTemplateModal() {
       document.getElementById('templateModal').classList.remove('show');
       // 閉じるときにプレビューモードに戻す
-      document.getElementById('templatePreviewMode').style.display = 'block';
+      document.getElementById('templatePreviewMode').style.display = 'flex';
       document.getElementById('templateEditMode').style.display = 'none';
     }
     
@@ -1006,11 +1009,11 @@
       var templateText = document.getElementById('templateText').value;
       document.getElementById('templateEditText').value = templateText;
       document.getElementById('templatePreviewMode').style.display = 'none';
-      document.getElementById('templateEditMode').style.display = 'block';
+      document.getElementById('templateEditMode').style.display = 'flex';
     }
     
     function switchToPreviewMode() {
-      document.getElementById('templatePreviewMode').style.display = 'block';
+      document.getElementById('templatePreviewMode').style.display = 'flex';
       document.getElementById('templateEditMode').style.display = 'none';
     }
     
