@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ポイ活配信 - EC配信システム</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      min-height: 100vh; padding: 16px; padding-bottom: 100px;
+    }
+    .container { max-width: 600px; margin: 0 auto; }
+    .hamburger-menu { position: relative; margin-bottom: 8px; }
+    .hamburger-btn {
+      width: 44px; height: 44px; border-radius: 10px; background: #fff;
+      border: 1px solid #e2e8f0; color: #4a5568; font-size: 24px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hamburger-btn:hover { background: #f7fafc; }
+    .menu-dropdown {
+      display: none; position: absolute; top: 50px; left: 0; background: #fff;
+      border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      min-width: 200px; z-index: 1000; overflow: hidden;
+    }
+    .menu-dropdown.show { display: block; }
+    .menu-dropdown a {
+      display: block; padding: 12px 16px; color: #2d3748; text-decoration: none;
+      font-size: 14px; border-bottom: 1px solid #f0f0f0;
+    }
+    .menu-dropdown a:last-child { border-bottom: none; }
+    .menu-dropdown a:hover { background: #f7fafc; }
+    .menu-dropdown a.disabled { opacity: 0.5; pointer-events: none; }
+    .header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 8px 0; }
+    .back-btn {
+      width: 40px; height: 40px; border-radius: 10px; background: #fff;
+      border: 1px solid #e2e8f0; color: #4a5568; font-size: 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; text-decoration: none;
+    }
+    .header-title { display: flex; align-items: center; gap: 8px; }
+    .header-icon {
+      width: 36px; height: 36px; background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;
+    }
+    .header h1 { color: #2d3748; font-size: 20px; font-weight: 600; }
+    .section {
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 16px;
+      padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .section-title {
+      color: #2d3748; font-size: 14px; font-weight: 600; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title::before { content: ''; width: 4px; height: 16px; background: #10b981; border-radius: 2px; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; color: #718096; font-size: 13px; margin-bottom: 6px; }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; padding: 12px 14px; background: #f7fafc;
+      border: 1px solid #e2e8f0; border-radius: 10px; color: #2d3748; font-size: 15px;
+    }
+    .form-textarea { min-height: 100px; resize: vertical; font-family: inherit; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: #10b981; background: #fff; }
+    .form-input::placeholder, .form-textarea::placeholder { color: #a0aec0; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .preview-section { background: #f0fff4; border-color: #9ae6b4; }
+    .preview-item { text-align: center; padding: 20px; background: #fff; border-radius: 12px; border: 1px solid #c6f6d5; }
+    .preview-label { color: #718096; font-size: 12px; margin-bottom: 6px; }
+    .preview-value { color: #38a169; font-size: 28px; font-weight: 700; }
+    .preview-value.negative { color: #e53e3e; }
+    .preview-unit { font-size: 16px; font-weight: 400; }
+    .button-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .btn {
+      padding: 16px 24px; border-radius: 12px; font-size: 15px; font-weight: 600;
+      border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-primary { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
+    .btn-discord { background: linear-gradient(135deg, #5865F2 0%, #4752c4 100%); color: #fff; }
+    .btn-discord:disabled { opacity: 0.5; cursor: not-allowed; }
+    .history-list { display: flex; flex-direction: column; gap: 8px; }
+    .history-item {
+      padding: 14px 16px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 10px; cursor: pointer;
+    }
+    .history-item:hover { background: #edf2f7; }
+    .history-item.selected { border-color: #10b981; background: #f0fff4; }
+    .history-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .history-date { color: #718096; font-size: 12px; }
+    .history-type { color: #059669; font-size: 11px; padding: 2px 8px; background: #f0fff4; border-radius: 4px; }
+    .history-product { color: #2d3748; font-size: 14px; font-weight: 500; margin-bottom: 8px; }
+    .history-stats { display: flex; gap: 16px; }
+    .history-stat { font-size: 12px; }
+    .history-stat-label { color: #718096; }
+    .history-stat-value { color: #38a169; font-weight: 600; }
+    .toast {
+      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
+      padding: 14px 24px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+      color: #2d3748; font-size: 14px; opacity: 0; transition: all 0.3s ease; z-index: 1000;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.success { border-color: #9ae6b4; background: #f0fff4; color: #276749; }
+    .toast.error { border-color: #feb2b2; background: #fff5f5; color: #c53030; }
+    .wip-banner {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      border: 2px dashed #10b981;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .wip-banner h3 { color: #047857; font-size: 16px; margin-bottom: 4px; }
+    .wip-banner p { color: #059669; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hamburger-menu">
+      <button class="hamburger-btn" onclick="toggleMenu()">≡</button>
+      <div class="menu-dropdown" id="menuDropdown">
+        <a href="rakuten.html">🛒 楽天</a>
+        <a href="yahoo.html">🛍️ Yahoo</a>
+        <a href="dshopping.html">📱 dショッピング</a>
+        <a href="amazon.html">📦 Amazon</a>
+        <a href="qoo10.html">🎀 Qoo10</a>
+        <a href="other.html">🏪 その他EC</a>
+        <a href="poikatsu.html">💰 ポイ活</a>
+      </div>
+    </div>
+    
+    <div class="header">
+      <a class="back-btn" href="top.html">←</a>
+      <div class="header-title">
+        <div class="header-icon">💰</div>
+        <h1>ポイ活配信</h1>
+      </div>
+    </div>
+    
+    <div class="wip-banner">
+      <h3>🚧 開発中</h3>
+      <p>この機能は現在準備中です。スプレッドシート連携は後日実装予定です。</p>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">案件情報</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">配信日</label>
+          <input type="date" class="form-input" id="deliveryDate">
+        </div>
+        <div class="form-group">
+          <label class="form-label">配信サイト</label>
+          <select class="form-select" id="deliverySite">
+            <option value="">選択してください</option>
+            <option value="ハピタス">ハピタス</option>
+            <option value="モッピー">モッピー</option>
+            <option value="ポイントインカム">ポイントインカム</option>
+            <option value="ECナビ">ECナビ</option>
+            <option value="その他">その他</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">案件リンク</label>
+        <input type="url" class="form-input" id="productUrl" placeholder="https://hapitas.jp/...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">見込み利益</label>
+        <input type="number" class="form-input" id="expectedProfit" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">注意点</label>
+        <textarea class="form-textarea" id="notes" placeholder="案件の注意事項があれば記入..."></textarea>
+      </div>
+    </div>
+    
+    <div class="section preview-section">
+      <div class="section-title" style="color:#38a169;">見込み利益</div>
+      <div class="preview-item">
+        <div class="preview-label">利益</div>
+        <div class="preview-value" id="profitDisplay">0<span class="preview-unit">円</span></div>
+      </div>
+    </div>
+    
+    <div class="button-group">
+      <button class="btn btn-primary" onclick="saveToSheet()">📝 記録する</button>
+      <button class="btn btn-discord" onclick="postToDiscord()" disabled>💬 Discord配信</button>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">📋 配信履歴（最新20件）</div>
+      <div class="history-list" id="historyList">
+        <div class="history-item" onclick="loadHistoryItem(this)">
+          <div class="history-header">
+            <span class="history-date">2024/03/25</span>
+            <span class="history-type">ハピタス</span>
+          </div>
+          <div class="history-product">クレジットカード発行案件</div>
+          <div class="history-stats">
+            <div class="history-stat"><span class="history-stat-label">利益: </span><span class="history-stat-value">5,000円</span></div>
+          </div>
+        </div>
+        <div class="history-item" onclick="loadHistoryItem(this)">
+          <div class="history-header">
+            <span class="history-date">2024/03/24</span>
+            <span class="history-type">モッピー</span>
+          </div>
+          <div class="history-product">FX口座開設案件</div>
+          <div class="history-stats">
+            <div class="history-stat"><span class="history-stat-label">利益: </span><span class="history-stat-value">10,000円</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="toast" id="toast"></div>
+  
+  <script>
+    document.getElementById('deliveryDate').valueAsDate = new Date();
+    
+    function toggleMenu() {
+      document.getElementById('menuDropdown').classList.toggle('show');
+    }
+    
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.hamburger-menu')) {
+        document.getElementById('menuDropdown').classList.remove('show');
+      }
+    });
+    
+    // 見込み利益の入力に応じてプレビュー更新
+    document.getElementById('expectedProfit').addEventListener('input', function() {
+      const profit = parseInt(this.value) || 0;
+      document.getElementById('profitDisplay').innerHTML = profit.toLocaleString() + '<span class="preview-unit">円</span>';
+    });
+    
+    function saveToSheet() { showToast('⚠️ この機能は開発中です', 'error'); }
+    function postToDiscord() { showToast('Discord配信機能は後ほど実装予定', 'error'); }
+    function loadHistoryItem(el) {
+      document.querySelectorAll('.history-item').forEach(i => i.classList.remove('selected'));
+      el.classList.add('selected');
+      showToast('履歴データを読み込みました（デモ）', 'success');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function showToast(msg, type) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.className = 'toast ' + type + ' show';
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+  </script>
+</body>
+</html>

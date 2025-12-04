@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EC配信システム</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 600px; margin: 0 auto; }
+    .header { text-align: center; margin-bottom: 30px; padding: 20px; }
+    .header h1 { color: #2d3748; font-size: 24px; margin-bottom: 8px; }
+    .header p { color: #718096; font-size: 14px; }
+    .ec-grid { display: flex; flex-direction: column; gap: 12px; }
+    .ec-card {
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 12px;
+      padding: 20px; display: flex; align-items: center; gap: 16px;
+      cursor: pointer; transition: all 0.2s ease; text-decoration: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .ec-card:hover {
+      border-color: #cbd5e0; transform: translateX(4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .ec-icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; flex-shrink: 0;
+    }
+    .ec-card.rakuten .ec-icon { background: linear-gradient(135deg, #bf0000 0%, #e60012 100%); }
+    .ec-card.yahoo .ec-icon { background: linear-gradient(135deg, #ff0033 0%, #ff4466 100%); }
+    .ec-card.dshopping .ec-icon { background: linear-gradient(135deg, #c00 0%, #ff3366 100%); }
+    .ec-card.amazon .ec-icon { background: linear-gradient(135deg, #ff9900 0%, #ffad33 100%); }
+    .ec-card.qoo10 .ec-icon { background: linear-gradient(135deg, #e31c5f 0%, #ff5a7d 100%); }
+    .ec-card.other .ec-icon { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); }
+    .ec-card.poikatsu .ec-icon { background: linear-gradient(135deg, #10b981 0%, #34d399 100%); }
+    .ec-info { flex: 1; }
+    .ec-name { color: #2d3748; font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+    .ec-description { color: #718096; font-size: 13px; }
+    .ec-arrow { color: #a0aec0; font-size: 20px; }
+    .ec-card:hover .ec-arrow { color: #4a5568; }
+    .footer { text-align: center; margin-top: 40px; padding: 20px; color: #a0aec0; font-size: 12px; }
+    
+    .ec-card.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .ec-card.disabled:hover {
+      transform: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📦 EC配信システム</h1>
+      <p>配信するECサイトを選択してください</p>
+    </div>
+    
+    <div class="ec-grid">
+      <a class="ec-card rakuten" href="rakuten.html">
+        <div class="ec-icon">🏪</div>
+        <div class="ec-info">
+          <div class="ec-name">楽天配信</div>
+          <div class="ec-description">楽天市場の商品を配信</div>
+        </div>
+        <div class="ec-arrow">→</div>
+      </a>
+      
+      <a class="ec-card yahoo" href="yahoo.html">
+        <div class="ec-icon">🛍️</div>
+        <div class="ec-info">
+          <div class="ec-name">Yahooショッピング配信</div>
+          <div class="ec-description">Yahoo!ショッピングの商品を配信</div>
+        </div>
+        <div class="ec-arrow">→</div>
+      </a>
+      
+      <a class="ec-card dshopping" href="dshopping.html">
+        <div class="ec-icon">📱</div>
+        <div class="ec-info">
+          <div class="ec-name">dショッピング配信</div>
+          <div class="ec-description">dショッピングの商品を配信</div>
+        </div>
+        <div class="ec-arrow">→</div>
+      </a>
+      
+      <a class="ec-card amazon disabled" href="#">
+        <div class="ec-icon">📦</div>
+        <div class="ec-info">
+          <div class="ec-name">Amazon配信</div>
+          <div class="ec-description">準備中...</div>
+        </div>
+        <div class="ec-arrow">→</div>
+      </a>
+      
+      <a class="ec-card qoo10 disabled" href="#">
+        <div class="ec-icon">🎁</div>
+        <div class="ec-info">
+          <div class="ec-name">Qoo10配信</div>
+          <div class="ec-description">準備中...</div>
+        </div>
+        <div class="ec-arrow">→</div>
+      </a>
+      
+      <a class="ec-card other disabled" href="#">
+        <div class="ec-icon">🌐</div>
+        <div class="ec-info">
+          <div class="ec-name">その他EC</div>
+          <div class="ec-description">準備中...</div>
+        </div>
+        <div class="ec-arrow">→</div>
+      </a>
+      
+      <a class="ec-card poikatsu disabled" href="#">
+        <div class="ec-icon">💰</div>
+        <div class="ec-info">
+          <div class="ec-name">ポイ活配信</div>
+          <div class="ec-description">準備中...</div>
+        </div>
+        <div class="ec-arrow">→</div>
+      </a>
+    </div>
+    
+    <div class="footer">
+      EC Distribution System v2.0 (Cloudflare Edition)
+    </div>
+  </div>
+</body>
+</html>

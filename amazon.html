@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amazon配信 - EC配信システム</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      min-height: 100vh; padding: 16px; padding-bottom: 100px;
+    }
+    .container { max-width: 600px; margin: 0 auto; }
+    .hamburger-menu { position: relative; margin-bottom: 8px; }
+    .hamburger-btn {
+      width: 44px; height: 44px; border-radius: 10px; background: #fff;
+      border: 1px solid #e2e8f0; color: #4a5568; font-size: 24px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hamburger-btn:hover { background: #f7fafc; }
+    .menu-dropdown {
+      display: none; position: absolute; top: 50px; left: 0; background: #fff;
+      border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      min-width: 200px; z-index: 1000; overflow: hidden;
+    }
+    .menu-dropdown.show { display: block; }
+    .menu-dropdown a {
+      display: block; padding: 12px 16px; color: #2d3748; text-decoration: none;
+      font-size: 14px; border-bottom: 1px solid #f0f0f0;
+    }
+    .menu-dropdown a:last-child { border-bottom: none; }
+    .menu-dropdown a:hover { background: #f7fafc; }
+    .menu-dropdown a.disabled { opacity: 0.5; pointer-events: none; }
+    .header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 8px 0; }
+    .back-btn {
+      width: 40px; height: 40px; border-radius: 10px; background: #fff;
+      border: 1px solid #e2e8f0; color: #4a5568; font-size: 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; text-decoration: none;
+    }
+    .header-title { display: flex; align-items: center; gap: 8px; }
+    .header-icon {
+      width: 36px; height: 36px; background: linear-gradient(135deg, #ff9900 0%, #ffad33 100%);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;
+    }
+    .header h1 { color: #2d3748; font-size: 20px; font-weight: 600; }
+    .section {
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 16px;
+      padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .section-title {
+      color: #2d3748; font-size: 14px; font-weight: 600; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title::before { content: ''; width: 4px; height: 16px; background: #ff9900; border-radius: 2px; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; color: #718096; font-size: 13px; margin-bottom: 6px; }
+    .form-input, .form-select {
+      width: 100%; padding: 12px 14px; background: #f7fafc;
+      border: 1px solid #e2e8f0; border-radius: 10px; color: #2d3748; font-size: 15px;
+    }
+    .form-input:focus, .form-select:focus { outline: none; border-color: #ff9900; background: #fff; }
+    .form-input::placeholder { color: #a0aec0; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .campaign-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .campaign-item {
+      display: flex; align-items: center; gap: 10px; padding: 12px;
+      background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 10px; cursor: pointer;
+    }
+    .campaign-item:hover { background: #edf2f7; }
+    .campaign-item.active { background: #fffbeb; border-color: #ff9900; }
+    .campaign-checkbox {
+      width: 20px; height: 20px; border-radius: 5px; border: 2px solid #cbd5e0;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .campaign-item.active .campaign-checkbox { background: #ff9900; border-color: #ff9900; }
+    .campaign-checkbox::after { content: '✓'; color: #fff; font-size: 12px; opacity: 0; }
+    .campaign-item.active .campaign-checkbox::after { opacity: 1; }
+    .campaign-label { color: #4a5568; font-size: 13px; line-height: 1.3; }
+    .preview-section { background: #f0fff4; border-color: #9ae6b4; }
+    .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .preview-item { text-align: center; padding: 16px; background: #fff; border-radius: 12px; border: 1px solid #c6f6d5; }
+    .preview-label { color: #718096; font-size: 12px; margin-bottom: 6px; }
+    .preview-value { color: #38a169; font-size: 24px; font-weight: 700; }
+    .preview-value.negative { color: #e53e3e; }
+    .preview-unit { font-size: 14px; font-weight: 400; }
+    .button-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .btn {
+      padding: 16px 24px; border-radius: 12px; font-size: 15px; font-weight: 600;
+      border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-primary { background: linear-gradient(135deg, #ff9900 0%, #e88a00 100%); color: #fff; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,153,0,0.3); }
+    .btn-discord { background: linear-gradient(135deg, #5865F2 0%, #4752c4 100%); color: #fff; }
+    .btn-discord:disabled { opacity: 0.5; cursor: not-allowed; }
+    .history-list { display: flex; flex-direction: column; gap: 8px; }
+    .history-item {
+      padding: 14px 16px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 10px; cursor: pointer;
+    }
+    .history-item:hover { background: #edf2f7; }
+    .history-item.selected { border-color: #ff9900; background: #fffbeb; }
+    .history-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .history-date { color: #718096; font-size: 12px; }
+    .history-type { color: #e88a00; font-size: 11px; padding: 2px 8px; background: #fffbeb; border-radius: 4px; }
+    .history-product { color: #2d3748; font-size: 14px; font-weight: 500; margin-bottom: 8px; }
+    .history-stats { display: flex; gap: 16px; }
+    .history-stat { font-size: 12px; }
+    .history-stat-label { color: #718096; }
+    .history-stat-value { color: #38a169; font-weight: 600; }
+    .toast {
+      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
+      padding: 14px 24px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+      color: #2d3748; font-size: 14px; opacity: 0; transition: all 0.3s ease; z-index: 1000;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.success { border-color: #9ae6b4; background: #f0fff4; color: #276749; }
+    .toast.error { border-color: #feb2b2; background: #fff5f5; color: #c53030; }
+    .wip-banner {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border: 2px dashed #f59e0b;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .wip-banner h3 { color: #92400e; font-size: 16px; margin-bottom: 4px; }
+    .wip-banner p { color: #a16207; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hamburger-menu">
+      <button class="hamburger-btn" onclick="toggleMenu()">≡</button>
+      <div class="menu-dropdown" id="menuDropdown">
+        <a href="rakuten.html">🛒 楽天</a>
+        <a href="yahoo.html">🛍️ Yahoo</a>
+        <a href="dshopping.html">📱 dショッピング</a>
+        <a href="amazon.html">📦 Amazon</a>
+        <a href="qoo10.html">🎀 Qoo10</a>
+        <a href="other.html">🏪 その他EC</a>
+        <a href="poikatsu.html">💰 ポイ活</a>
+      </div>
+    </div>
+    
+    <div class="header">
+      <a class="back-btn" href="top.html">←</a>
+      <div class="header-title">
+        <div class="header-icon">📦</div>
+        <h1>Amazon配信</h1>
+      </div>
+    </div>
+    
+    <div class="wip-banner">
+      <h3>🚧 開発中</h3>
+      <p>この機能は現在準備中です。スプレッドシート連携は後日実装予定です。</p>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">基本情報</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">配信日</label>
+          <input type="date" class="form-input" id="deliveryDate">
+        </div>
+        <div class="form-group">
+          <label class="form-label">配信商品</label>
+          <select class="form-select" id="deliveryType">
+            <option value="">選択してください</option>
+            <option value="通常配信">通常配信</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">商品名</label>
+        <input type="text" class="form-input" id="productName" placeholder="例: PlayStation5">
+      </div>
+      <div class="form-group">
+        <label class="form-label">購入リンク</label>
+        <input type="url" class="form-input" id="productUrl" placeholder="https://www.amazon.co.jp/...">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">購入金額（税込）</label>
+          <input type="number" class="form-input" id="priceWithTax" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">委託販売額</label>
+          <input type="number" class="form-input" id="consignmentPrice" placeholder="0">
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">ポイント還元（自動計算）</div>
+      <div class="campaign-grid">
+        <div class="campaign-item active" style="pointer-events:none;">
+          <div class="campaign-checkbox"></div>
+          <div class="campaign-label">基本ポイント<br><small style="color:#718096">税込1%</small></div>
+        </div>
+        <div class="campaign-item active" style="pointer-events:none;">
+          <div class="campaign-checkbox"></div>
+          <div class="campaign-label">Amazonカード<br><small style="color:#718096">税込2%</small></div>
+        </div>
+        <div class="campaign-item active" style="pointer-events:none;">
+          <div class="campaign-checkbox"></div>
+          <div class="campaign-label">プライム会員<br><small style="color:#718096">税込1.5%</small></div>
+        </div>
+        <div class="campaign-item active" style="pointer-events:none;">
+          <div class="campaign-checkbox"></div>
+          <div class="campaign-label">Amazonカード特典<br><small style="color:#718096">税込1%</small></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section preview-section">
+      <div class="section-title" style="color:#38a169;">計算結果プレビュー</div>
+      <div class="preview-grid">
+        <div class="preview-item">
+          <div class="preview-label">獲得ポイント</div>
+          <div class="preview-value" id="totalPoints">0<span class="preview-unit">pt</span></div>
+        </div>
+        <div class="preview-item">
+          <div class="preview-label">見込利益</div>
+          <div class="preview-value" id="expectedProfit">0<span class="preview-unit">円</span></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="button-group">
+      <button class="btn btn-primary" onclick="saveToSheet()">📝 記録する</button>
+      <button class="btn btn-discord" onclick="postToDiscord()" disabled>💬 Discord配信</button>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">📋 配信履歴（最新20件）</div>
+      <div class="history-list" id="historyList">
+        <div class="history-item" onclick="loadHistoryItem(this)">
+          <div class="history-header">
+            <span class="history-date">2024/03/25</span>
+            <span class="history-type">通常配信</span>
+          </div>
+          <div class="history-product">PlayStation5 デジタル・エディション</div>
+          <div class="history-stats">
+            <div class="history-stat"><span class="history-stat-label">獲得: </span><span class="history-stat-value">3,299pt</span></div>
+            <div class="history-stat"><span class="history-stat-label">利益: </span><span class="history-stat-value">1,020円</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="toast" id="toast"></div>
+  
+  <script>
+    document.getElementById('deliveryDate').valueAsDate = new Date();
+    
+    function toggleMenu() {
+      document.getElementById('menuDropdown').classList.toggle('show');
+    }
+    
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.hamburger-menu')) {
+        document.getElementById('menuDropdown').classList.remove('show');
+      }
+    });
+    
+    function saveToSheet() { showToast('⚠️ この機能は開発中です', 'error'); }
+    function postToDiscord() { showToast('Discord配信機能は後ほど実装予定', 'error'); }
+    function loadHistoryItem(el) {
+      document.querySelectorAll('.history-item').forEach(i => i.classList.remove('selected'));
+      el.classList.add('selected');
+      showToast('履歴データを読み込みました（デモ）', 'success');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function showToast(msg, type) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.className = 'toast ' + type + ' show';
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+  </script>
+</body>
+</html>
