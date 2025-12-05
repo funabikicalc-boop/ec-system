@@ -185,6 +185,21 @@
     #templatePreviewMode, #templateEditMode {
       display: flex; flex-direction: column; flex: 1; min-height: 0;
     }
+    .schedule-options {
+      display: flex; align-items: center; gap: 20px; padding: 12px 16px;
+      background: #f7fafc; border-top: 1px solid #e2e8f0;
+    }
+    .schedule-label {
+      display: flex; align-items: center; gap: 6px; font-size: 14px; color: #4a5568; cursor: pointer;
+    }
+    .schedule-label input[type="radio"] { cursor: pointer; }
+    .schedule-datetime {
+      display: flex; gap: 8px; margin-left: auto;
+    }
+    .schedule-input {
+      padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
+      font-size: 14px; background: #fff;
+    }
     .tab-container {
       display: flex; gap: 8px; margin-bottom: 16px;
     }
@@ -716,9 +731,21 @@
           <button class="modal-close" onclick="closeTemplateModal()">×</button>
         </div>
         <textarea class="modal-textarea" id="templateEditText"></textarea>
+        <div class="schedule-options">
+          <label class="schedule-label">
+            <input type="radio" name="postType" value="now" checked onchange="toggleSchedule()"> 今すぐ投稿
+          </label>
+          <label class="schedule-label">
+            <input type="radio" name="postType" value="schedule" onchange="toggleSchedule()"> 予約投稿
+          </label>
+          <div class="schedule-datetime" id="scheduleDatetime" style="display: none;">
+            <input type="date" class="schedule-input" id="scheduleDate">
+            <input type="time" class="schedule-input" id="scheduleTime">
+          </div>
+        </div>
         <div class="modal-buttons">
           <button class="btn btn-secondary" onclick="switchToPreviewMode()">← 戻る</button>
-          <button class="btn btn-discord" onclick="postToDiscord()">🚀 投稿する</button>
+          <button class="btn btn-discord" id="postBtn" onclick="postToDiscord()">🚀 投稿する</button>
         </div>
       </div>
     </div>
@@ -1522,9 +1549,86 @@
       document.getElementById('templateEditMode').style.display = 'none';
     }
     
+    function toggleSchedule() {
+      var isSchedule = document.querySelector('input[name="postType"]:checked').value === 'schedule';
+      document.getElementById('scheduleDatetime').style.display = isSchedule ? 'flex' : 'none';
+      document.getElementById('postBtn').textContent = isSchedule ? '📅 予約する' : '🚀 投稿する';
+      
+      // 予約投稿選択時、デフォルトで現在日時+1時間をセット
+      if (isSchedule && !document.getElementById('scheduleDate').value) {
+        var now = new Date();
+        now.setHours(now.getHours() + 1);
+        document.getElementById('scheduleDate').value = now.toISOString().split('T')[0];
+        document.getElementById('scheduleTime').value = now.toTimeString().slice(0,5);
+      }
+    }
+    
     function postToDiscord() {
-      // TODO: Webhook URL設定後に実装
-      showToast('Webhook URLが未設定です', 'error');
+      var postType = document.querySelector('input[name="postType"]:checked').value;
+      var message = document.getElementById('templateEditText').value;
+      
+      if (!message.trim()) {
+        showToast('投稿内容が空です', 'error');
+        return;
+      }
+      
+      if (postType === 'schedule') {
+        // 予約投稿
+        var scheduleDate = document.getElementById('scheduleDate').value;
+        var scheduleTime = document.getElementById('scheduleTime').value;
+        
+        if (!scheduleDate || !scheduleTime) {
+          showToast('予約日時を設定してください', 'error');
+          return;
+        }
+        
+        var scheduledAt = scheduleDate + 'T' + scheduleTime + ':00';
+        var scheduledDateTime = new Date(scheduledAt);
+        
+        if (scheduledDateTime <= new Date()) {
+          showToast('予約日時は現在より後に設定してください', 'error');
+          return;
+        }
+        
+        // 予約データを保存
+        var btn = document.getElementById('postBtn');
+        btn.disabled = true;
+        btn.textContent = '⏳ 保存中...';
+        
+        fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({
+            action: 'saveDiscordSchedule',
+            data: {
+              message: message,
+              scheduledAt: scheduledAt,
+              tabType: currentTab,
+              status: '予約中'
+            }
+          })
+        })
+        .then(function(response) { return response.json(); })
+        .then(function(result) {
+          btn.disabled = false;
+          btn.textContent = '📅 予約する';
+          if (result.success) {
+            showToast('予約しました: ' + scheduleDate + ' ' + scheduleTime, 'success');
+            closeTemplateModal();
+          } else {
+            showToast(result.message || '予約に失敗しました', 'error');
+          }
+        })
+        .catch(function(error) {
+          btn.disabled = false;
+          btn.textContent = '📅 予約する';
+          showToast('予約に失敗しました', 'error');
+        });
+        
+      } else {
+        // 今すぐ投稿（Webhook未設定）
+        showToast('Webhook URLが未設定です', 'error');
+      }
     }
     
     function copyTemplate() {
