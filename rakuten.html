@@ -367,7 +367,7 @@
       <div class="campaign-grid">
         <div class="campaign-item" onclick="toggleCampaign(this)" data-campaign="0and5">
           <div class="campaign-checkbox"></div>
-          <div class="campaign-label">0と5の日<br><small style="color:#718096">税抜1% 上限500pt</small></div>
+          <div class="campaign-label">0と5の日<br><small style="color:#718096">税抜1% 上限1,000pt</small></div>
           <div class="campaign-points" id="points-0and5"></div>
         </div>
         <div class="campaign-item" onclick="toggleCampaign(this)" data-campaign="books">
@@ -584,7 +584,7 @@
       <div class="campaign-grid" id="appleCampaignGrid">
         <div class="campaign-item" onclick="toggleAppleCampaign(this)" data-campaign="0and5">
           <div class="campaign-checkbox"></div>
-          <div class="campaign-label">0と5の日<br><small style="color:#718096">税込1% 上限500pt</small></div>
+          <div class="campaign-label">0と5の日<br><small style="color:#718096">税込1% 上限1,000pt</small></div>
           <div class="campaign-points" id="apple-points-0and5"></div>
         </div>
         <div class="campaign-item" onclick="toggleAppleCampaign(this)" data-campaign="books">
@@ -836,7 +836,7 @@
       
       // キャンペーンポイント（税込ベース）
       var campaigns = getAppleActiveCampaigns();
-      totalPoints += calcAppleCampaignWithCap('0and5', campaigns, priceWithTax, 0.01, 500);
+      totalPoints += calcAppleCampaignWithCap('0and5', campaigns, priceWithTax, 0.01, 1000);
       totalPoints += calcAppleCampaignWithCap('books', campaigns, priceWithTax, 0.005, 500);
       totalPoints += calcAppleCampaignWithCap('mobile4', campaigns, priceWithTax, 0.04, 2000);
       totalPoints += calcAppleCampaignWithCap('victory', campaigns, priceWithTax, 0.01, 1000);
@@ -945,8 +945,8 @@
       // キャンペーンポイント（上限付き）
       var campaigns = getActiveCampaigns();
       
-      // 0と5の日: 税抜1% 上限500pt
-      totalPoints += calcCampaignWithCap('0and5', campaigns, priceWithoutTax, 0.01, 500);
+      // 0と5の日: 税抜1% 上限1,000pt
+      totalPoints += calcCampaignWithCap('0and5', campaigns, priceWithoutTax, 0.01, 1000);
       
       // ブックス: 税抜0.5% 上限500pt
       totalPoints += calcCampaignWithCap('books', campaigns, priceWithoutTax, 0.005, 500);
@@ -1094,7 +1094,7 @@
     }
     
     function validateForm() {
-      var data = getFormData();
+      var data = currentTab === 'apple' ? getAppleFormData() : getFormData();
       if (!data.date) { showToast('配信日を入力してください', 'error'); return false; }
       if (!data.type) { showToast('配信内容を選択してください', 'error'); return false; }
       if (!data.productName) { showToast('商品名を入力してください', 'error'); return false; }
@@ -1109,12 +1109,22 @@
       btn.disabled = true;
       btn.innerHTML = '⏳ 保存中...';
       
-      var data = getFormData();
-      var editingRow = document.getElementById('editingRowNumber').value;
+      var data, editingRow, requestBody;
       
-      var requestBody = editingRow 
-        ? { action: 'updateRakutenData', rowNumber: parseInt(editingRow), data: data }
-        : { action: 'saveRakutenData', data: data };
+      if (currentTab === 'apple') {
+        data = getAppleFormData();
+        data.isApple = true; // アップルギフトフラグ
+        editingRow = document.getElementById('appleEditingRowNumber').value;
+        requestBody = editingRow 
+          ? { action: 'updateRakutenData', rowNumber: parseInt(editingRow), data: data }
+          : { action: 'saveRakutenData', data: data };
+      } else {
+        data = getFormData();
+        editingRow = document.getElementById('editingRowNumber').value;
+        requestBody = editingRow 
+          ? { action: 'updateRakutenData', rowNumber: parseInt(editingRow), data: data }
+          : { action: 'saveRakutenData', data: data };
+      }
       
       fetch(API_URL, {
         method: 'POST',
@@ -1462,7 +1472,7 @@
       var lines = [];
       
       var campaignConfig = {
-        '0and5': { name: '0と5の日税込1%(上限500pt)', rate: 0.01, cap: 500 },
+        '0and5': { name: '0と5の日税込1%(上限1,000pt)', rate: 0.01, cap: 1000 },
         'books': { name: 'ブックス税込0.5%(上限500pt)', rate: 0.005, cap: 500 },
         'mobile4': { name: '楽天モバイル税込4%(上限2,000pt)', rate: 0.04, cap: 2000 },
         'victory': { name: '勝利税込1%(上限1,000pt)', rate: 0.01, cap: 1000 },
@@ -1496,7 +1506,7 @@
       var lines = [];
       
       var campaignConfig = {
-        '0and5': { name: '0と5の日税抜1%(上限500pt)', rate: 0.01, cap: 500 },
+        '0and5': { name: '0と5の日税抜1%(上限1,000pt)', rate: 0.01, cap: 1000 },
         'books': { name: 'ブックス税抜0.5%(上限500pt)', rate: 0.005, cap: 500 },
         'mobile4': { name: '楽天モバイル4%(上限2,000pt)', rate: 0.04, cap: 2000 },
         'victory': { name: '勝利税抜1%(上限1,000pt)', rate: 0.01, cap: 1000 },
