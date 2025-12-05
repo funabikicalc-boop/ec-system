@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EC配信システム</title>
@@ -8,129 +9,169 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
       min-height: 100vh;
-      padding: 20px;
+      padding: 40px 20px;
     }
-    .container { max-width: 600px; margin: 0 auto; }
-    .header { text-align: center; margin-bottom: 30px; padding: 20px; }
-    .header h1 { color: #2d3748; font-size: 24px; margin-bottom: 8px; }
-    .header p { color: #718096; font-size: 14px; }
-    .ec-grid { display: flex; flex-direction: column; gap: 12px; }
+    .container { max-width: 800px; margin: 0 auto; }
+    .header { text-align: center; margin-bottom: 40px; }
+    .header h1 { 
+      color: #fff; font-size: 32px; font-weight: 700; margin-bottom: 8px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .header p { color: rgba(255,255,255,0.6); font-size: 15px; }
+    
+    .ec-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    @media (max-width: 600px) {
+      .ec-grid { grid-template-columns: 1fr; }
+    }
+    
     .ec-card {
-      background: #fff; border: 1px solid #e2e8f0; border-radius: 12px;
-      padding: 20px; display: flex; align-items: center; gap: 16px;
-      cursor: pointer; transition: all 0.2s ease; text-decoration: none;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      background: #fff;
+      border-radius: 20px;
+      padding: 28px 24px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .ec-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 4px;
     }
     .ec-card:hover {
-      border-color: #cbd5e0; transform: translateX(4px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
     }
-    .ec-icon {
-      width: 48px; height: 48px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px; flex-shrink: 0;
-    }
-    .ec-card.rakuten .ec-icon { background: linear-gradient(135deg, #bf0000 0%, #e60012 100%); }
-    .ec-card.yahoo .ec-icon { background: linear-gradient(135deg, #ff0033 0%, #ff4466 100%); }
-    .ec-card.dshopping .ec-icon { background: linear-gradient(135deg, #c00 0%, #ff3366 100%); }
-    .ec-card.amazon .ec-icon { background: linear-gradient(135deg, #ff9900 0%, #ffad33 100%); }
-    .ec-card.qoo10 .ec-icon { background: linear-gradient(135deg, #e31c5f 0%, #ff5a7d 100%); }
-    .ec-card.other .ec-icon { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); }
-    .ec-card.poikatsu .ec-icon { background: linear-gradient(135deg, #10b981 0%, #34d399 100%); }
-    .ec-info { flex: 1; }
-    .ec-name { color: #2d3748; font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-    .ec-description { color: #718096; font-size: 13px; }
-    .ec-arrow { color: #a0aec0; font-size: 20px; }
-    .ec-card:hover .ec-arrow { color: #4a5568; }
-    .footer { text-align: center; margin-top: 40px; padding: 20px; color: #a0aec0; font-size: 12px; }
     
-    .ec-card.disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+    .ec-card.rakuten::before { background: linear-gradient(90deg, #bf0000, #e60012); }
+    .ec-card.yahoo::before { background: linear-gradient(90deg, #ff0033, #ff6666); }
+    .ec-card.dshopping::before { background: linear-gradient(90deg, #c00, #ff3366); }
+    .ec-card.amazon::before { background: linear-gradient(90deg, #ff9900, #ffb84d); }
+    .ec-card.qoo10::before { background: linear-gradient(90deg, #e31c5f, #ff6b8a); }
+    .ec-card.other::before { background: linear-gradient(90deg, #6366f1, #a78bfa); }
+    .ec-card.poikatsu::before { background: linear-gradient(90deg, #10b981, #6ee7b7); }
+    
+    .ec-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; font-weight: 800; margin-bottom: 16px;
+      color: #fff;
+      letter-spacing: -1px;
     }
-    .ec-card.disabled:hover {
-      transform: none;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    .ec-card.rakuten .ec-icon { background: linear-gradient(135deg, #bf0000, #e60012); }
+    .ec-card.yahoo .ec-icon { background: linear-gradient(135deg, #ff0033, #ff4466); }
+    .ec-card.dshopping .ec-icon { background: linear-gradient(135deg, #c00, #ff3366); }
+    .ec-card.amazon .ec-icon { background: linear-gradient(135deg, #ff9900, #ffb84d); }
+    .ec-card.qoo10 .ec-icon { background: linear-gradient(135deg, #e31c5f, #ff6b8a); }
+    .ec-card.other .ec-icon { background: linear-gradient(135deg, #6366f1, #a78bfa); }
+    .ec-card.poikatsu .ec-icon { background: linear-gradient(135deg, #10b981, #34d399); }
+    
+    .ec-name { 
+      color: #1a202c; font-size: 18px; font-weight: 700; margin-bottom: 6px;
+    }
+    .ec-description { 
+      color: #718096; font-size: 13px; line-height: 1.5;
+    }
+    
+    .ec-arrow {
+      position: absolute;
+      right: 20px; top: 50%;
+      transform: translateY(-50%);
+      width: 36px; height: 36px;
+      background: #f7fafc;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #a0aec0; font-size: 18px;
+      transition: all 0.3s;
+    }
+    .ec-card:hover .ec-arrow {
+      background: #edf2f7;
+      color: #4a5568;
+      transform: translateY(-50%) translateX(4px);
+    }
+    
+    .footer { 
+      text-align: center; margin-top: 50px; 
+      color: rgba(255,255,255,0.4); font-size: 12px; 
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>📦 EC配信システム</h1>
+      <h1>EC配信システム</h1>
       <p>配信するECサイトを選択してください</p>
     </div>
     
     <div class="ec-grid">
-      <a class="ec-card rakuten" href="rakuten.html">
-        <div class="ec-icon">🏪</div>
-        <div class="ec-info">
-          <div class="ec-name">楽天配信</div>
-          <div class="ec-description">楽天市場の商品を配信</div>
-        </div>
+      <a class="ec-card rakuten" onclick="navigateTo('rakuten')">
+        <div class="ec-icon">R</div>
+        <div class="ec-name">楽天配信</div>
+        <div class="ec-description">楽天市場の商品を配信</div>
         <div class="ec-arrow">→</div>
       </a>
       
-      <a class="ec-card yahoo" href="yahoo.html">
-        <div class="ec-icon">🛍️</div>
-        <div class="ec-info">
-          <div class="ec-name">Yahooショッピング配信</div>
-          <div class="ec-description">Yahoo!ショッピングの商品を配信</div>
-        </div>
+      <a class="ec-card yahoo" onclick="navigateTo('yahoo')">
+        <div class="ec-icon">Y!</div>
+        <div class="ec-name">Yahooショッピング</div>
+        <div class="ec-description">Yahoo!ショッピングの商品を配信</div>
         <div class="ec-arrow">→</div>
       </a>
       
-      <a class="ec-card dshopping" href="dshopping.html">
-        <div class="ec-icon">📱</div>
-        <div class="ec-info">
-          <div class="ec-name">dショッピング配信</div>
-          <div class="ec-description">dショッピングの商品を配信</div>
-        </div>
+      <a class="ec-card dshopping" onclick="navigateTo('dshopping')">
+        <div class="ec-icon">d</div>
+        <div class="ec-name">dショッピング</div>
+        <div class="ec-description">dショッピングの商品を配信</div>
         <div class="ec-arrow">→</div>
       </a>
       
-      <a class="ec-card amazon disabled" href="#">
-        <div class="ec-icon">📦</div>
-        <div class="ec-info">
-          <div class="ec-name">Amazon配信</div>
-          <div class="ec-description">準備中...</div>
-        </div>
+      <a class="ec-card amazon" onclick="navigateTo('amazon')">
+        <div class="ec-icon">a</div>
+        <div class="ec-name">Amazon配信</div>
+        <div class="ec-description">Amazonの商品を配信</div>
         <div class="ec-arrow">→</div>
       </a>
       
-      <a class="ec-card qoo10 disabled" href="#">
-        <div class="ec-icon">🎁</div>
-        <div class="ec-info">
-          <div class="ec-name">Qoo10配信</div>
-          <div class="ec-description">準備中...</div>
-        </div>
+      <a class="ec-card qoo10" onclick="navigateTo('qoo10')">
+        <div class="ec-icon">Q</div>
+        <div class="ec-name">Qoo10配信</div>
+        <div class="ec-description">Qoo10の商品を配信</div>
         <div class="ec-arrow">→</div>
       </a>
       
-      <a class="ec-card other disabled" href="#">
-        <div class="ec-icon">🌐</div>
-        <div class="ec-info">
-          <div class="ec-name">その他EC</div>
-          <div class="ec-description">準備中...</div>
-        </div>
+      <a class="ec-card other" onclick="navigateTo('other')">
+        <div class="ec-icon">+</div>
+        <div class="ec-name">その他EC</div>
+        <div class="ec-description">その他ECサイトの商品を配信</div>
         <div class="ec-arrow">→</div>
       </a>
       
-      <a class="ec-card poikatsu disabled" href="#">
-        <div class="ec-icon">💰</div>
-        <div class="ec-info">
-          <div class="ec-name">ポイ活配信</div>
-          <div class="ec-description">準備中...</div>
-        </div>
+      <a class="ec-card poikatsu" onclick="navigateTo('poikatsu')">
+        <div class="ec-icon">¥</div>
+        <div class="ec-name">ポイ活配信</div>
+        <div class="ec-description">ポイントサイト案件を配信</div>
         <div class="ec-arrow">→</div>
       </a>
     </div>
     
     <div class="footer">
-      EC Distribution System v2.0 (Cloudflare Edition)
+      EC Distribution System v1.0
     </div>
   </div>
+  
+  <script>
+    function navigateTo(page) {
+      window.location.href = page + '.html';
+    }
+  </script>
 </body>
 </html>
