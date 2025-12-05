@@ -185,6 +185,16 @@
     #templatePreviewMode, #templateEditMode {
       display: flex; flex-direction: column; flex: 1; min-height: 0;
     }
+    .tab-container {
+      display: flex; gap: 8px; margin-bottom: 16px;
+    }
+    .tab-btn {
+      flex: 1; padding: 14px 20px; border: 2px solid #e2e8f0; border-radius: 12px;
+      background: #fff; color: #718096; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tab-btn:hover { background: #f7fafc; }
+    .tab-btn.active { background: #e53e3e; border-color: #e53e3e; color: #fff; }
     .toast {
       position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
       padding: 14px 24px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
@@ -221,6 +231,14 @@
       </div>
     </div>
     
+    <!-- タブ切り替え -->
+    <div class="tab-container">
+      <button class="tab-btn active" onclick="switchTab('normal')" id="tabNormal">通常配信</button>
+      <button class="tab-btn" onclick="switchTab('apple')" id="tabApple">🍎 アップルギフト</button>
+    </div>
+    
+    <!-- 通常配信フォーム -->
+    <div id="normalForm">
     <div class="section">
       <div class="section-title">基本情報</div>
       <div class="form-row-3">
@@ -438,6 +456,187 @@
       </div>
     </div>
     
+    </div><!-- normalForm -->
+    
+    <!-- アップルギフトフォーム -->
+    <div id="appleForm" style="display: none;">
+    <div class="section">
+      <div class="section-title">基本情報</div>
+      <div class="form-row-3">
+        <div class="form-group">
+          <label class="form-label">配信日</label>
+          <input type="date" class="form-input" id="appleDeliveryDate">
+        </div>
+        <div class="form-group">
+          <label class="form-label">キャンペーン名</label>
+          <select class="form-select" id="appleCampaignName">
+            <option value="">選択してください</option>
+            <option value="ワンダブルDAY">ワンダブルDAY</option>
+            <option value="買い物マラソン">買い物マラソン</option>
+            <option value="スーパーセール">スーパーセール</option>
+            <option value="市場の日">市場の日</option>
+            <option value="感謝祭り">感謝祭り</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">配信内容</label>
+          <select class="form-select" id="appleDeliveryType">
+            <option value="">選択してください</option>
+            <option value="1店舗目">1店舗目</option>
+            <option value="2店舗目">2店舗目</option>
+            <option value="3店舗目">3店舗目</option>
+            <option value="4店舗目">4店舗目</option>
+            <option value="1店舗目代替商品">1店舗目代替商品</option>
+            <option value="2店舗目代替商品">2店舗目代替商品</option>
+            <option value="3店舗目代替商品">3店舗目代替商品</option>
+            <option value="4店舗目代替商品">4店舗目代替商品</option>
+            <option value="1店舗のみ">1店舗のみ</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">商品名</label>
+          <input type="text" class="form-input" id="appleProductName" value="アップルギフト券">
+        </div>
+        <div class="form-group">
+          <label class="form-label">必須条件</label>
+          <input type="text" class="form-input" id="appleRequiredCondition" placeholder="例: エントリー必須、先着100名">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">購入リンク</label>
+          <input type="url" class="form-input" id="appleProductUrl" placeholder="https://item.rakuten.co.jp/...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">クーポンリンク</label>
+          <input type="url" class="form-input" id="appleCouponUrl" placeholder="https://coupon.rakuten.co.jp/...">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">キャンペーンエントリーリンク</label>
+        <input type="url" class="form-input" id="appleCampaignEntryUrl" placeholder="https://event.rakuten.co.jp/...">
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">💰 金額入力</div>
+      <div class="form-row-3">
+        <div class="form-group">
+          <label class="form-label">定価（税込）</label>
+          <input type="number" class="form-input" id="appleListPrice" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">クーポン割引</label>
+          <input type="number" class="form-input" id="appleCouponDiscount" placeholder="0" value="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">購入金額（税込）</label>
+          <div class="calc-display" id="applePriceWithTaxDisplay">0</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">備考</label>
+        <input type="text" class="form-input" id="appleRemarks" placeholder="メモがあれば入力">
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">🎯 固定獲得ポイント（税込ベース）</div>
+      <div class="points-grid">
+        <div class="point-item"><span class="point-label">基本税込1%</span><span class="point-value" id="appleBase">0pt</span></div>
+        <div class="point-item"><span class="point-label">クレカ税込1%</span><span class="point-value" id="appleCard">0pt</span></div>
+        <div class="point-item"><span class="point-label">楽天カード特典税込1%</span><span class="point-value" id="appleCardbonus">0pt</span></div>
+        <div class="point-item"><span class="point-label">ハピタス税込1%<span class="point-cap">(上限909pt)</span></span><span class="point-value" id="appleHapitas">0pt</span></div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">🎁 キャンペーンポイント（税込ベース）</div>
+      <div class="campaign-grid" id="appleCampaignGrid">
+        <div class="campaign-item" data-campaign="0and5" onclick="toggleAppleCampaign(this)">
+          <span class="campaign-name">0と5の日</span><span class="campaign-rate">税込1%</span>
+          <span class="campaign-cap">上限500pt</span><span class="campaign-points" id="appleCamp0and5">0pt</span>
+        </div>
+        <div class="campaign-item" data-campaign="books" onclick="toggleAppleCampaign(this)">
+          <span class="campaign-name">ブックス</span><span class="campaign-rate">税込0.5%</span>
+          <span class="campaign-cap">上限500pt</span><span class="campaign-points" id="appleCampBooks">0pt</span>
+        </div>
+        <div class="campaign-item" data-campaign="mobile4" onclick="toggleAppleCampaign(this)">
+          <span class="campaign-name">楽天モバイル</span><span class="campaign-rate">税込4%</span>
+          <span class="campaign-cap">上限2,000pt</span><span class="campaign-points" id="appleCampMobile4">0pt</span>
+        </div>
+        <div class="campaign-item" data-campaign="victory" onclick="toggleAppleCampaign(this)">
+          <span class="campaign-name">勝利</span><span class="campaign-rate">税込1%</span>
+          <span class="campaign-cap">上限1,000pt</span><span class="campaign-points" id="appleCampVictory">0pt</span>
+        </div>
+        <div class="campaign-item" data-campaign="39shop" onclick="toggleAppleCampaign(this)">
+          <span class="campaign-name">39ショップ</span><span class="campaign-rate">税込1%</span>
+          <span class="campaign-cap">上限3,000pt</span><span class="campaign-points" id="appleCamp39shop">0pt</span>
+        </div>
+        <div class="campaign-item" data-campaign="tuethurs" onclick="toggleAppleCampaign(this)">
+          <span class="campaign-name">火曜木曜</span><span class="campaign-rate">税込1%</span>
+          <span class="campaign-cap">楽天プレミアムカード</span><span class="campaign-points" id="appleCampTuethurs">0pt</span>
+        </div>
+        <div class="campaign-item" data-campaign="wdouble" onclick="toggleAppleCampaign(this)">
+          <span class="campaign-name">ワンダブルDAY</span><span class="campaign-rate">税込2%</span>
+          <span class="campaign-cap">上限1,000pt</span><span class="campaign-points" id="appleCampWdouble">0pt</span>
+        </div>
+        <div class="campaign-item" data-campaign="guerrilla" onclick="toggleAppleCampaign(this)">
+          <span class="campaign-name">ゲリラ</span><span class="campaign-rate">税込1%</span>
+          <span class="campaign-cap">上限1,000pt</span><span class="campaign-points" id="appleCampGuerrilla">0pt</span>
+        </div>
+        <div class="campaign-item with-select" data-campaign="marathon" onclick="toggleAppleCampaign(this)">
+          <span class="campaign-name">マラソン</span>
+          <select class="campaign-select" id="appleMarathonPercent" onclick="event.stopPropagation()">
+            <option value="3">3%</option><option value="4">4%</option><option value="5">5%</option>
+            <option value="6">6%</option><option value="7">7%</option><option value="8">8%</option>
+            <option value="9">9%</option><option value="10">10%</option>
+          </select>
+          <span class="campaign-cap">上限7,000pt</span><span class="campaign-points" id="appleCampMarathon">0pt</span>
+        </div>
+        <div class="campaign-item with-select" data-campaign="deal" onclick="toggleAppleCampaign(this)">
+          <span class="campaign-name">DEAL</span>
+          <select class="campaign-select" id="appleDealPercent" onclick="event.stopPropagation()">
+            <option value="9">9%</option><option value="10">10%</option><option value="15">15%</option>
+            <option value="20">20%</option><option value="30">30%</option><option value="40">40%</option>
+            <option value="50">50%</option>
+          </select>
+          <span class="campaign-cap">上限なし</span><span class="campaign-points" id="appleCampDeal">0pt</span>
+        </div>
+        <div class="campaign-item" data-campaign="deal4h" onclick="toggleAppleCampaign(this)">
+          <span class="campaign-name">4時間限定DEAL</span><span class="campaign-rate">税込9%</span>
+          <span class="campaign-cap">上限1,000pt</span><span class="campaign-points" id="appleCampDeal4h">0pt</span>
+        </div>
+        <div class="campaign-item" data-campaign="mobileplus" onclick="toggleAppleCampaign(this)">
+          <span class="campaign-name">モバイル契約者</span><span class="campaign-rate">税込9%</span>
+          <span class="campaign-cap">上限1,000pt</span><span class="campaign-points" id="appleCampMobileplus">0pt</span>
+        </div>
+        <div class="campaign-item with-select" data-campaign="other" onclick="toggleAppleCampaign(this)">
+          <span class="campaign-name">その他</span>
+          <select class="campaign-select" id="appleOtherPercent" onclick="event.stopPropagation()">
+            <option value="3">3%</option><option value="4">4%</option><option value="5">5%</option>
+            <option value="6">6%</option><option value="7">7%</option><option value="8">8%</option>
+          </select>
+          <span class="campaign-cap">上限なし</span><span class="campaign-points" id="appleCampOther">0pt</span>
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:16px;">
+        <div class="form-group">
+          <label class="form-label">代替商品配信予定</label>
+          <div class="toggle-group" id="appleAltplanToggle">
+            <button type="button" class="toggle-btn" data-value="あり" onclick="setAppleAltplan('あり')">あり</button>
+            <button type="button" class="toggle-btn active" data-value="なし" onclick="setAppleAltplan('なし')">なし</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <input type="hidden" id="appleEditingRowNumber" value="">
+    
+    </div><!-- appleForm -->
+    
     </div><!-- main-content -->
     
     <div class="sidebar">
@@ -500,16 +699,33 @@
     // GAS API URL
     const API_URL = 'https://script.google.com/macros/s/AKfycbyXdgehZGBhfWNCRA5uwC1Jr6Kp8lzNy-6mCieFu4HaZBiC2jfPB5BXa7TlhHt_FHHF/exec';
     
+    var currentTab = 'normal';
+    
     document.getElementById('deliveryDate').valueAsDate = new Date();
+    document.getElementById('appleDeliveryDate').valueAsDate = new Date();
     
     document.addEventListener('DOMContentLoaded', function() {
       loadHistory();
       setupRealtimeCalc();
+      setupAppleRealtimeCalc();
     });
+    
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('tabNormal').classList.toggle('active', tab === 'normal');
+      document.getElementById('tabApple').classList.toggle('active', tab === 'apple');
+      document.getElementById('normalForm').style.display = tab === 'normal' ? 'block' : 'none';
+      document.getElementById('appleForm').style.display = tab === 'apple' ? 'block' : 'none';
+    }
     
     function toggleCampaign(el) {
       el.classList.toggle('active');
       calculatePreview();
+    }
+    
+    function toggleAppleCampaign(el) {
+      el.classList.toggle('active');
+      calculateApplePreview();
     }
     
     function setupRealtimeCalc() {
@@ -519,6 +735,120 @@
       document.getElementById('marathonPercent').addEventListener('change', calculatePreview);
       document.getElementById('dealPercent').addEventListener('change', calculatePreview);
       document.getElementById('otherPercent').addEventListener('change', calculatePreview);
+    }
+    
+    function setupAppleRealtimeCalc() {
+      document.getElementById('appleListPrice').addEventListener('input', calculateApplePreview);
+      document.getElementById('appleCouponDiscount').addEventListener('input', calculateApplePreview);
+      document.getElementById('appleMarathonPercent').addEventListener('change', calculateApplePreview);
+      document.getElementById('appleDealPercent').addEventListener('change', calculateApplePreview);
+      document.getElementById('appleOtherPercent').addEventListener('change', calculateApplePreview);
+    }
+    
+    function calculateApplePreview() {
+      var listPrice = Number(document.getElementById('appleListPrice').value) || 0;
+      var couponDiscount = Number(document.getElementById('appleCouponDiscount').value) || 0;
+      var priceWithTax = listPrice - couponDiscount;
+      
+      document.getElementById('applePriceWithTaxDisplay').textContent = formatNumber(priceWithTax);
+      
+      if (priceWithTax <= 0) {
+        document.getElementById('totalPoints').innerHTML = '0<span class="preview-unit">pt</span>';
+        document.getElementById('expectedProfit').innerHTML = '0<span class="preview-unit">円</span>';
+        document.getElementById('expectedProfit').className = 'preview-value';
+        clearAppleFixedPoints();
+        clearAppleCampaignPoints();
+        return;
+      }
+      
+      var totalPoints = 0;
+      
+      // 固定ポイント（税込ベース）
+      var basePoints = Math.floor(priceWithTax * 0.01);
+      var cardPoints = Math.floor(priceWithTax * 0.01);
+      var cardBonusPoints = Math.floor(priceWithTax * 0.01);
+      var hapitasPoints = Math.min(Math.floor(priceWithTax * 0.01), 909); // 上限909pt
+      
+      totalPoints += basePoints + cardPoints + cardBonusPoints + hapitasPoints;
+      
+      document.getElementById('appleBase').textContent = basePoints + 'pt';
+      document.getElementById('appleCard').textContent = cardPoints + 'pt';
+      document.getElementById('appleCardbonus').textContent = cardBonusPoints + 'pt';
+      document.getElementById('appleHapitas').textContent = hapitasPoints + 'pt';
+      
+      // キャンペーンポイント（税込ベース）
+      var campaigns = getAppleActiveCampaigns();
+      totalPoints += calcAppleCampaignWithCap('0and5', campaigns, priceWithTax, 0.01, 500);
+      totalPoints += calcAppleCampaignWithCap('books', campaigns, priceWithTax, 0.005, 500);
+      totalPoints += calcAppleCampaignWithCap('mobile4', campaigns, priceWithTax, 0.04, 2000);
+      totalPoints += calcAppleCampaignWithCap('victory', campaigns, priceWithTax, 0.01, 1000);
+      totalPoints += calcAppleCampaignWithCap('39shop', campaigns, priceWithTax, 0.01, 3000);
+      totalPoints += calcAppleCampaignWithCap('tuethurs', campaigns, priceWithTax, 0.01, null);
+      totalPoints += calcAppleCampaignWithCap('wdouble', campaigns, priceWithTax, 0.02, 1000);
+      totalPoints += calcAppleCampaignWithCap('guerrilla', campaigns, priceWithTax, 0.01, 1000);
+      
+      var marathonRate = (Number(document.getElementById('appleMarathonPercent').value) || 3) / 100;
+      totalPoints += calcAppleCampaignWithCap('marathon', campaigns, priceWithTax, marathonRate, 7000);
+      
+      var dealRate = (Number(document.getElementById('appleDealPercent').value) || 9) / 100;
+      totalPoints += calcAppleCampaignWithCap('deal', campaigns, priceWithTax, dealRate, null);
+      
+      totalPoints += calcAppleCampaignWithCap('deal4h', campaigns, priceWithTax, 0.09, 1000);
+      totalPoints += calcAppleCampaignWithCap('mobileplus', campaigns, priceWithTax, 0.09, 1000);
+      
+      var otherRate = (Number(document.getElementById('appleOtherPercent').value) || 3) / 100;
+      totalPoints += calcAppleCampaignWithCap('other', campaigns, priceWithTax, otherRate, null);
+      
+      // アップルギフトは利益 = ポイント
+      document.getElementById('totalPoints').innerHTML = formatNumber(totalPoints) + '<span class="preview-unit">pt</span>';
+      document.getElementById('expectedProfit').innerHTML = formatNumber(totalPoints) + '<span class="preview-unit">円</span>';
+      document.getElementById('expectedProfit').className = 'preview-value' + (totalPoints < 0 ? ' negative' : '');
+    }
+    
+    function getAppleActiveCampaigns() {
+      var active = [];
+      document.querySelectorAll('#appleCampaignGrid .campaign-item.active').forEach(function(el) {
+        active.push(el.dataset.campaign);
+      });
+      return active;
+    }
+    
+    function calcAppleCampaignWithCap(name, campaigns, price, rate, cap) {
+      var el = document.getElementById('appleCamp' + name.charAt(0).toUpperCase() + name.slice(1));
+      if (!campaigns.includes(name)) {
+        if (el) el.textContent = '0pt';
+        return 0;
+      }
+      var pts = Math.floor(price * rate);
+      if (cap && pts > cap) pts = cap;
+      if (el) el.textContent = pts + 'pt';
+      return pts;
+    }
+    
+    function clearAppleFixedPoints() {
+      document.getElementById('appleBase').textContent = '0pt';
+      document.getElementById('appleCard').textContent = '0pt';
+      document.getElementById('appleCardbonus').textContent = '0pt';
+      document.getElementById('appleHapitas').textContent = '0pt';
+    }
+    
+    function clearAppleCampaignPoints() {
+      var ids = ['0and5', 'Books', 'Mobile4', 'Victory', '39shop', 'Tuethurs', 'Wdouble', 'Guerrilla', 'Marathon', 'Deal', 'Deal4h', 'Mobileplus', 'Other'];
+      ids.forEach(function(id) {
+        var el = document.getElementById('appleCamp' + id);
+        if (el) el.textContent = '0pt';
+      });
+    }
+    
+    function setAppleAltplan(value) {
+      document.querySelectorAll('#appleAltplanToggle .toggle-btn').forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.value === value);
+      });
+    }
+    
+    function getAppleAltplanValue() {
+      var active = document.querySelector('#appleAltplanToggle .toggle-btn.active');
+      return active ? active.dataset.value : 'なし';
     }
     
     function calculatePreview() {
@@ -545,7 +875,7 @@
       var basePoints = Math.floor(priceWithoutTax * 0.01);
       var cardPoints = Math.floor(priceWithTax * 0.01);
       var cardBonusPoints = Math.floor(priceWithoutTax * 0.01);
-      var hapitasPoints = Math.floor(priceWithoutTax * 0.01);
+      var hapitasPoints = Math.min(Math.floor(priceWithoutTax * 0.01), 909); // 上限909pt
       
       totalPoints += basePoints + cardPoints + cardBonusPoints + hapitasPoints;
       
@@ -868,6 +1198,11 @@
     }
     
     function generateTemplate() {
+      if (currentTab === 'apple') {
+        generateAppleTemplate();
+        return;
+      }
+      
       var data = getFormData();
       var listPrice = Number(data.listPrice) || 0;
       var couponDiscount = Number(data.couponDiscount) || 0;
@@ -880,7 +1215,7 @@
         base: Math.floor(priceWithoutTax * 0.01),
         card: Math.floor(priceWithTax * 0.01),
         cardBonus: Math.floor(priceWithoutTax * 0.01),
-        hapitas: Math.floor(priceWithoutTax * 0.01)
+        hapitas: Math.min(Math.floor(priceWithoutTax * 0.01), 909)
       };
       
       var campaignPts = calculateCampaignPointsForTemplate(data, priceWithoutTax);
@@ -939,7 +1274,7 @@
       lines.push('基本税抜1% ' + fixedPts.base + 'pt');
       lines.push('クレカ税込1% ' + fixedPts.card + 'pt');
       lines.push('楽天カード特典税抜1% ' + fixedPts.cardBonus + 'pt');
-      lines.push('ハピタス税抜1% ' + fixedPts.hapitas + 'pt');
+      lines.push('ハピタス税抜1%(上限909pt) ' + fixedPts.hapitas + 'pt');
       
       // 選択されたキャンペーンのポイント
       campaignPts.lines.forEach(function(line) {
@@ -952,6 +1287,149 @@
       
       document.getElementById('templateText').value = lines.join('\n');
       document.getElementById('templateModal').classList.add('show');
+    }
+    
+    function generateAppleTemplate() {
+      var data = getAppleFormData();
+      var listPrice = Number(data.listPrice) || 0;
+      var couponDiscount = Number(data.couponDiscount) || 0;
+      var priceWithTax = listPrice - couponDiscount;
+      
+      // ポイント計算（税込ベース）
+      var fixedPts = {
+        base: Math.floor(priceWithTax * 0.01),
+        card: Math.floor(priceWithTax * 0.01),
+        cardBonus: Math.floor(priceWithTax * 0.01),
+        hapitas: Math.min(Math.floor(priceWithTax * 0.01), 909)
+      };
+      
+      var campaignPts = calculateAppleCampaignPointsForTemplate(data, priceWithTax);
+      var totalPoints = fixedPts.base + fixedPts.card + fixedPts.cardBonus + fixedPts.hapitas + campaignPts.total;
+      
+      // 日付フォーマット
+      var dateFormatted = data.date ? data.date.replace(/-/g, '/') : '';
+      
+      // テンプレート生成
+      var lines = [];
+      lines.push('@everyone');
+      lines.push('【楽天 見込み利益' + formatNumber(totalPoints) + '円】🔥 🔥 🔥');
+      lines.push('');
+      lines.push('✅ 配信日：' + dateFormatted);
+      if (data.campaignName) lines.push('✅ キャンペーン名：' + data.campaignName);
+      lines.push('✅ 配信内容：' + data.type);
+      lines.push('');
+      lines.push('📌購入期間：本日中');
+      lines.push('🔹決済方法：楽天プレミアムカード決済');
+      lines.push('🔹会員条件：楽天会員');
+      if (data.requiredCondition) lines.push('🔹必須条件：' + data.requiredCondition);
+      lines.push('🔹経由するポイントサイト：ハピタス');
+      lines.push('🔹用途：新型iPhone購入時に利用');
+      lines.push('');
+      if (couponDiscount > 0) {
+        lines.push('✅クーポン利用：【' + formatNumber(couponDiscount) + '円】引クーポンを利用必須！');
+        lines.push('');
+      }
+      if (data.campaignEntryUrl) {
+        lines.push('📢キャンペーンエントリー＆クーポン取得リンク');
+        if (data.campaignName) lines.push(data.campaignName);
+        lines.push(data.campaignEntryUrl);
+        lines.push('');
+      }
+      if (data.couponUrl) {
+        lines.push('📢クーポン取得');
+        lines.push(data.couponUrl);
+        lines.push('');
+      }
+      lines.push('🎯経由するポイントサイト');
+      lines.push('🔗ハピタス https://m.hapitas.jp/item/detail/itemid/33008?i=20939249&route=pcText&apn=itemsharelink');
+      lines.push('');
+      lines.push('🎯購入対象商品🛒');
+      lines.push('商品名：' + data.productName);
+      lines.push('🛒購入リンク：' + (data.productUrl || ''));
+      lines.push('');
+      lines.push('📊利益計算');
+      var priceText = '💰購入金額（税込）：' + formatNumber(priceWithTax) + '円';
+      if (couponDiscount > 0) priceText += '（' + formatNumber(couponDiscount) + '円引きクーポン利用）';
+      lines.push(priceText);
+      lines.push('💎獲得ポイント：' + formatNumber(totalPoints) + 'P');
+      lines.push('💰見込利益：' + formatNumber(totalPoints) + '円');
+      lines.push('');
+      lines.push('📌ポイント内訳：');
+      lines.push('基本税込1% ' + fixedPts.base + 'pt');
+      lines.push('クレカ税込1% ' + fixedPts.card + 'pt');
+      lines.push('楽天カード特典税込1% ' + fixedPts.cardBonus + 'pt');
+      lines.push('ハピタス税込1%(上限909pt) ' + fixedPts.hapitas + 'pt');
+      
+      // 選択されたキャンペーンのポイント
+      campaignPts.lines.forEach(function(line) {
+        lines.push(line);
+      });
+      
+      lines.push('');
+      lines.push('⚠️ 注意：初回は1万円のみ購入できます。初回から46日目以降は2回目の購入ができるようになります。');
+      if (data.remarks) lines.push('※備考：' + data.remarks);
+      lines.push('※代替商品配信予定：' + data.altplan);
+      
+      document.getElementById('templateText').value = lines.join('\n');
+      document.getElementById('templateModal').classList.add('show');
+    }
+    
+    function getAppleFormData() {
+      var listPrice = Number(document.getElementById('appleListPrice').value) || 0;
+      var couponDiscount = Number(document.getElementById('appleCouponDiscount').value) || 0;
+      return {
+        date: document.getElementById('appleDeliveryDate').value,
+        campaignName: document.getElementById('appleCampaignName').value,
+        type: document.getElementById('appleDeliveryType').value,
+        productName: document.getElementById('appleProductName').value,
+        productUrl: document.getElementById('appleProductUrl').value,
+        couponUrl: document.getElementById('appleCouponUrl').value,
+        campaignEntryUrl: document.getElementById('appleCampaignEntryUrl').value,
+        requiredCondition: document.getElementById('appleRequiredCondition').value,
+        listPrice: listPrice,
+        couponDiscount: couponDiscount,
+        priceWithTax: listPrice - couponDiscount,
+        remarks: document.getElementById('appleRemarks').value,
+        campaigns: getAppleActiveCampaigns(),
+        altplan: getAppleAltplanValue(),
+        marathonPercent: document.getElementById('appleMarathonPercent').value,
+        dealPercent: document.getElementById('appleDealPercent').value,
+        otherPercent: document.getElementById('appleOtherPercent').value
+      };
+    }
+    
+    function calculateAppleCampaignPointsForTemplate(data, priceWithTax) {
+      var campaigns = data.campaigns || [];
+      var total = 0;
+      var lines = [];
+      
+      var campaignConfig = {
+        '0and5': { name: '0と5の日税込1%(上限500pt)', rate: 0.01, cap: 500 },
+        'books': { name: 'ブックス税込0.5%(上限500pt)', rate: 0.005, cap: 500 },
+        'mobile4': { name: '楽天モバイル税込4%(上限2,000pt)', rate: 0.04, cap: 2000 },
+        'victory': { name: '勝利税込1%(上限1,000pt)', rate: 0.01, cap: 1000 },
+        '39shop': { name: '39ショップ税込1%(上限3,000pt)', rate: 0.01, cap: 3000 },
+        'tuethurs': { name: '火曜木曜税込1%(楽天プレミアムカード)', rate: 0.01, cap: null },
+        'wdouble': { name: 'ワンダブルDAY税込2%(上限1,000pt)', rate: 0.02, cap: 1000 },
+        'guerrilla': { name: 'ゲリラ税込1%(上限1,000pt)', rate: 0.01, cap: 1000 },
+        'marathon': { name: 'マラソン税込(上限7,000pt)', rate: (Number(data.marathonPercent) || 3) / 100, cap: 7000 },
+        'deal': { name: 'DEAL税込', rate: (Number(data.dealPercent) || 9) / 100, cap: null },
+        'deal4h': { name: '4時間限定DEAL税込9%(上限1,000pt)', rate: 0.09, cap: 1000 },
+        'mobileplus': { name: 'モバイル契約者税込9%(上限1,000pt)', rate: 0.09, cap: 1000 },
+        'other': { name: 'その他キャンペーン税込', rate: (Number(data.otherPercent) || 3) / 100, cap: null }
+      };
+      
+      campaigns.forEach(function(c) {
+        var config = campaignConfig[c];
+        if (config) {
+          var pts = Math.floor(priceWithTax * config.rate);
+          if (config.cap && pts > config.cap) pts = config.cap;
+          total += pts;
+          lines.push(config.name + ' ' + pts + 'pt');
+        }
+      });
+      
+      return { total: total, lines: lines };
     }
     
     function calculateCampaignPointsForTemplate(data, priceWithoutTax) {
