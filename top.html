@@ -9,17 +9,16 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
-      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
       min-height: 100vh;
       padding: 40px 20px;
     }
     .container { max-width: 800px; margin: 0 auto; }
     .header { text-align: center; margin-bottom: 40px; }
     .header h1 { 
-      color: #fff; font-size: 32px; font-weight: 700; margin-bottom: 8px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      color: #1e293b; font-size: 32px; font-weight: 700; margin-bottom: 8px;
     }
-    .header p { color: rgba(255,255,255,0.6); font-size: 15px; }
+    .header p { color: #64748b; font-size: 15px; }
     
     .ec-grid {
       display: grid;
@@ -37,7 +36,7 @@
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       text-decoration: none;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
       position: relative;
       overflow: hidden;
     }
@@ -49,7 +48,7 @@
     }
     .ec-card:hover {
       transform: translateY(-8px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.12);
     }
     
     .ec-card.rakuten::before { background: linear-gradient(90deg, #bf0000, #e60012); }
@@ -76,10 +75,10 @@
     .ec-card.poikatsu .ec-icon { background: linear-gradient(135deg, #10b981, #34d399); }
     
     .ec-name { 
-      color: #1a202c; font-size: 18px; font-weight: 700; margin-bottom: 6px;
+      color: #1e293b; font-size: 18px; font-weight: 700; margin-bottom: 6px;
     }
     .ec-description { 
-      color: #718096; font-size: 13px; line-height: 1.5;
+      color: #64748b; font-size: 13px; line-height: 1.5;
     }
     
     .ec-arrow {
@@ -87,21 +86,21 @@
       right: 20px; top: 50%;
       transform: translateY(-50%);
       width: 36px; height: 36px;
-      background: #f7fafc;
+      background: #f1f5f9;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      color: #a0aec0; font-size: 18px;
+      color: #94a3b8; font-size: 18px;
       transition: all 0.3s;
     }
     .ec-card:hover .ec-arrow {
-      background: #edf2f7;
-      color: #4a5568;
+      background: #e2e8f0;
+      color: #475569;
       transform: translateY(-50%) translateX(4px);
     }
     
     .footer { 
       text-align: center; margin-top: 50px; 
-      color: rgba(255,255,255,0.4); font-size: 12px; 
+      color: #94a3b8; font-size: 12px; 
     }
   </style>
 </head>
