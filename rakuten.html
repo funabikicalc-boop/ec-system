@@ -518,18 +518,14 @@
         <label class="form-label">キャンペーンエントリーリンク</label>
         <input type="url" class="form-input" id="appleCampaignEntryUrl" placeholder="https://event.rakuten.co.jp/...">
       </div>
-    </div>
-    
-    <div class="section">
-      <div class="section-title">💰 金額入力</div>
       <div class="form-row-3">
         <div class="form-group">
           <label class="form-label">定価（税込）</label>
           <input type="number" class="form-input" id="appleListPrice" placeholder="0">
         </div>
         <div class="form-group">
-          <label class="form-label">クーポン割引</label>
-          <input type="number" class="form-input" id="appleCouponDiscount" placeholder="0" value="0">
+          <label class="form-label">クーポン割引額</label>
+          <input type="number" class="form-input" id="appleCouponDiscount" placeholder="0">
         </div>
         <div class="form-group">
           <label class="form-label">購入金額（税込）</label>
@@ -538,88 +534,123 @@
       </div>
       <div class="form-group">
         <label class="form-label">備考</label>
-        <input type="text" class="form-input" id="appleRemarks" placeholder="メモがあれば入力">
+        <textarea class="form-textarea" id="appleRemarks" placeholder="特殊な条件やテンプレに差し込む内容があれば記入..." style="min-height:50px;"></textarea>
       </div>
     </div>
     
     <div class="section">
-      <div class="section-title">🎯 固定獲得ポイント（税込ベース）</div>
-      <div class="points-grid">
-        <div class="point-item"><span class="point-label">基本税込1%</span><span class="point-value" id="appleBase">0pt</span></div>
-        <div class="point-item"><span class="point-label">クレカ税込1%</span><span class="point-value" id="appleCard">0pt</span></div>
-        <div class="point-item"><span class="point-label">楽天カード特典税込1%</span><span class="point-value" id="appleCardbonus">0pt</span></div>
-        <div class="point-item"><span class="point-label">ハピタス税込1%<span class="point-cap">(上限909pt)</span></span><span class="point-value" id="appleHapitas">0pt</span></div>
+      <div class="section-title">固定ポイント（税込ベース・常に適用）</div>
+      <div class="fixed-grid">
+        <div class="fixed-item">
+          <span class="fixed-label">基本</span>
+          <span class="fixed-rate">税込1%</span>
+          <span class="fixed-points" id="appleBase">-</span>
+        </div>
+        <div class="fixed-item">
+          <span class="fixed-label">クレカ</span>
+          <span class="fixed-rate">税込1%</span>
+          <span class="fixed-points" id="appleCard">-</span>
+        </div>
+        <div class="fixed-item">
+          <span class="fixed-label">楽天カード特典</span>
+          <span class="fixed-rate">税込1%</span>
+          <span class="fixed-points" id="appleCardbonus">-</span>
+        </div>
+        <div class="fixed-item">
+          <span class="fixed-label">ハピタス</span>
+          <span class="fixed-rate">税込1% 上限909</span>
+          <span class="fixed-points" id="appleHapitas">-</span>
+        </div>
       </div>
     </div>
     
     <div class="section">
-      <div class="section-title">🎁 キャンペーンポイント（税込ベース）</div>
+      <div class="section-title">キャンペーン選択（税込ベース）</div>
       <div class="campaign-grid" id="appleCampaignGrid">
-        <div class="campaign-item" data-campaign="0and5" onclick="toggleAppleCampaign(this)">
-          <span class="campaign-name">0と5の日</span><span class="campaign-rate">税込1%</span>
-          <span class="campaign-cap">上限500pt</span><span class="campaign-points" id="appleCamp0and5">0pt</span>
+        <div class="campaign-item" onclick="toggleAppleCampaign(this)" data-campaign="0and5">
+          <div class="campaign-checkbox"></div>
+          <div class="campaign-label">0と5の日<br><small style="color:#718096">税込1% 上限500pt</small></div>
+          <div class="campaign-points" id="apple-points-0and5"></div>
         </div>
-        <div class="campaign-item" data-campaign="books" onclick="toggleAppleCampaign(this)">
-          <span class="campaign-name">ブックス</span><span class="campaign-rate">税込0.5%</span>
-          <span class="campaign-cap">上限500pt</span><span class="campaign-points" id="appleCampBooks">0pt</span>
+        <div class="campaign-item" onclick="toggleAppleCampaign(this)" data-campaign="books">
+          <div class="campaign-checkbox"></div>
+          <div class="campaign-label">ブックス<br><small style="color:#718096">税込0.5% 上限500pt</small></div>
+          <div class="campaign-points" id="apple-points-books"></div>
         </div>
-        <div class="campaign-item" data-campaign="mobile4" onclick="toggleAppleCampaign(this)">
-          <span class="campaign-name">楽天モバイル</span><span class="campaign-rate">税込4%</span>
-          <span class="campaign-cap">上限2,000pt</span><span class="campaign-points" id="appleCampMobile4">0pt</span>
+        <div class="campaign-item" onclick="toggleAppleCampaign(this)" data-campaign="mobile4">
+          <div class="campaign-checkbox"></div>
+          <div class="campaign-label">楽天モバイル<br><small style="color:#718096">税込4% 上限2,000pt</small></div>
+          <div class="campaign-points" id="apple-points-mobile4"></div>
         </div>
-        <div class="campaign-item" data-campaign="victory" onclick="toggleAppleCampaign(this)">
-          <span class="campaign-name">勝利</span><span class="campaign-rate">税込1%</span>
-          <span class="campaign-cap">上限1,000pt</span><span class="campaign-points" id="appleCampVictory">0pt</span>
+        <div class="campaign-item" onclick="toggleAppleCampaign(this)" data-campaign="victory">
+          <div class="campaign-checkbox"></div>
+          <div class="campaign-label">勝利<br><small style="color:#718096">税込1% 上限1,000pt</small></div>
+          <div class="campaign-points" id="apple-points-victory"></div>
         </div>
-        <div class="campaign-item" data-campaign="39shop" onclick="toggleAppleCampaign(this)">
-          <span class="campaign-name">39ショップ</span><span class="campaign-rate">税込1%</span>
-          <span class="campaign-cap">上限3,000pt</span><span class="campaign-points" id="appleCamp39shop">0pt</span>
+        <div class="campaign-item" onclick="toggleAppleCampaign(this)" data-campaign="39shop">
+          <div class="campaign-checkbox"></div>
+          <div class="campaign-label">39ショップ<br><small style="color:#718096">税込1% 上限3,000pt</small></div>
+          <div class="campaign-points" id="apple-points-39shop"></div>
         </div>
-        <div class="campaign-item" data-campaign="tuethurs" onclick="toggleAppleCampaign(this)">
-          <span class="campaign-name">火曜木曜</span><span class="campaign-rate">税込1%</span>
-          <span class="campaign-cap">楽天プレミアムカード</span><span class="campaign-points" id="appleCampTuethurs">0pt</span>
+        <div class="campaign-item" onclick="toggleAppleCampaign(this)" data-campaign="tuethurs">
+          <div class="campaign-checkbox"></div>
+          <div class="campaign-label">火曜木曜<br><small style="color:#718096">税込1% プレミアムカード</small></div>
+          <div class="campaign-points" id="apple-points-tuethurs"></div>
         </div>
-        <div class="campaign-item" data-campaign="wdouble" onclick="toggleAppleCampaign(this)">
-          <span class="campaign-name">ワンダブルDAY</span><span class="campaign-rate">税込2%</span>
-          <span class="campaign-cap">上限1,000pt</span><span class="campaign-points" id="appleCampWdouble">0pt</span>
+        <div class="campaign-item" onclick="toggleAppleCampaign(this)" data-campaign="wdouble">
+          <div class="campaign-checkbox"></div>
+          <div class="campaign-label">ワンダブルDAY<br><small style="color:#718096">税込2% 上限1,000pt</small></div>
+          <div class="campaign-points" id="apple-points-wdouble"></div>
         </div>
-        <div class="campaign-item" data-campaign="guerrilla" onclick="toggleAppleCampaign(this)">
-          <span class="campaign-name">ゲリラ</span><span class="campaign-rate">税込1%</span>
-          <span class="campaign-cap">上限1,000pt</span><span class="campaign-points" id="appleCampGuerrilla">0pt</span>
+        <div class="campaign-item" onclick="toggleAppleCampaign(this)" data-campaign="guerrilla">
+          <div class="campaign-checkbox"></div>
+          <div class="campaign-label">ゲリラ<br><small style="color:#718096">税込1% 上限1,000pt</small></div>
+          <div class="campaign-points" id="apple-points-guerrilla"></div>
         </div>
-        <div class="campaign-item with-select" data-campaign="marathon" onclick="toggleAppleCampaign(this)">
-          <span class="campaign-name">マラソン</span>
+        <div class="campaign-item has-select" onclick="toggleAppleCampaign(this)" data-campaign="marathon">
+          <div class="campaign-checkbox"></div>
+          <div class="campaign-label">マラソン<br><small style="color:#718096">税込 上限7,000pt</small></div>
+          <div class="campaign-points" id="apple-points-marathon"></div>
           <select class="campaign-select" id="appleMarathonPercent" onclick="event.stopPropagation()">
-            <option value="3">3%</option><option value="4">4%</option><option value="5">5%</option>
-            <option value="6">6%</option><option value="7">7%</option><option value="8">8%</option>
-            <option value="9">9%</option><option value="10">10%</option>
+            <option value="3">3%</option>
+            <option value="4">4%</option>
+            <option value="5">5%</option>
+            <option value="6">6%</option>
+            <option value="7">7%</option>
+            <option value="8">8%</option>
           </select>
-          <span class="campaign-cap">上限7,000pt</span><span class="campaign-points" id="appleCampMarathon">0pt</span>
         </div>
-        <div class="campaign-item with-select" data-campaign="deal" onclick="toggleAppleCampaign(this)">
-          <span class="campaign-name">DEAL</span>
+        <div class="campaign-item has-select" onclick="toggleAppleCampaign(this)" data-campaign="deal">
+          <div class="campaign-checkbox"></div>
+          <div class="campaign-label">DEAL<br><small style="color:#718096">税込9% or 14%</small></div>
+          <div class="campaign-points" id="apple-points-deal"></div>
           <select class="campaign-select" id="appleDealPercent" onclick="event.stopPropagation()">
-            <option value="9">9%</option><option value="10">10%</option><option value="15">15%</option>
-            <option value="20">20%</option><option value="30">30%</option><option value="40">40%</option>
-            <option value="50">50%</option>
+            <option value="9">9%</option>
+            <option value="14">14%</option>
           </select>
-          <span class="campaign-cap">上限なし</span><span class="campaign-points" id="appleCampDeal">0pt</span>
         </div>
-        <div class="campaign-item" data-campaign="deal4h" onclick="toggleAppleCampaign(this)">
-          <span class="campaign-name">4時間限定DEAL</span><span class="campaign-rate">税込9%</span>
-          <span class="campaign-cap">上限1,000pt</span><span class="campaign-points" id="appleCampDeal4h">0pt</span>
+        <div class="campaign-item" onclick="toggleAppleCampaign(this)" data-campaign="deal4h">
+          <div class="campaign-checkbox"></div>
+          <div class="campaign-label">4時間限定DEAL<br><small style="color:#718096">税込9% 上限1,000pt</small></div>
+          <div class="campaign-points" id="apple-points-deal4h"></div>
         </div>
-        <div class="campaign-item" data-campaign="mobileplus" onclick="toggleAppleCampaign(this)">
-          <span class="campaign-name">モバイル契約者</span><span class="campaign-rate">税込9%</span>
-          <span class="campaign-cap">上限1,000pt</span><span class="campaign-points" id="appleCampMobileplus">0pt</span>
+        <div class="campaign-item" onclick="toggleAppleCampaign(this)" data-campaign="mobileplus">
+          <div class="campaign-checkbox"></div>
+          <div class="campaign-label">モバイル契約者<br><small style="color:#718096">税込9% 上限1,000pt</small></div>
+          <div class="campaign-points" id="apple-points-mobileplus"></div>
         </div>
-        <div class="campaign-item with-select" data-campaign="other" onclick="toggleAppleCampaign(this)">
-          <span class="campaign-name">その他</span>
+        <div class="campaign-item has-select wide" onclick="toggleAppleCampaign(this)" data-campaign="other">
+          <div class="campaign-checkbox"></div>
+          <div class="campaign-label">その他キャンペーン<br><small style="color:#718096">税込</small></div>
+          <div class="campaign-points" id="apple-points-other"></div>
           <select class="campaign-select" id="appleOtherPercent" onclick="event.stopPropagation()">
-            <option value="3">3%</option><option value="4">4%</option><option value="5">5%</option>
-            <option value="6">6%</option><option value="7">7%</option><option value="8">8%</option>
+            <option value="3">3%</option>
+            <option value="4">4%</option>
+            <option value="5">5%</option>
+            <option value="6">6%</option>
+            <option value="7">7%</option>
+            <option value="8">8%</option>
           </select>
-          <span class="campaign-cap">上限なし</span><span class="campaign-points" id="appleCampOther">0pt</span>
         </div>
       </div>
       <div class="form-row" style="margin-top:16px;">
@@ -814,9 +845,9 @@
     }
     
     function calcAppleCampaignWithCap(name, campaigns, price, rate, cap) {
-      var el = document.getElementById('appleCamp' + name.charAt(0).toUpperCase() + name.slice(1));
+      var el = document.getElementById('apple-points-' + name);
       if (!campaigns.includes(name)) {
-        if (el) el.textContent = '0pt';
+        if (el) el.textContent = '';
         return 0;
       }
       var pts = Math.floor(price * rate);
@@ -826,17 +857,17 @@
     }
     
     function clearAppleFixedPoints() {
-      document.getElementById('appleBase').textContent = '0pt';
-      document.getElementById('appleCard').textContent = '0pt';
-      document.getElementById('appleCardbonus').textContent = '0pt';
-      document.getElementById('appleHapitas').textContent = '0pt';
+      document.getElementById('appleBase').textContent = '-';
+      document.getElementById('appleCard').textContent = '-';
+      document.getElementById('appleCardbonus').textContent = '-';
+      document.getElementById('appleHapitas').textContent = '-';
     }
     
     function clearAppleCampaignPoints() {
-      var ids = ['0and5', 'Books', 'Mobile4', 'Victory', '39shop', 'Tuethurs', 'Wdouble', 'Guerrilla', 'Marathon', 'Deal', 'Deal4h', 'Mobileplus', 'Other'];
+      var ids = ['0and5', 'books', 'mobile4', 'victory', '39shop', 'tuethurs', 'wdouble', 'guerrilla', 'marathon', 'deal', 'deal4h', 'mobileplus', 'other'];
       ids.forEach(function(id) {
-        var el = document.getElementById('appleCamp' + id);
-        if (el) el.textContent = '0pt';
+        var el = document.getElementById('apple-points-' + id);
+        if (el) el.textContent = '';
       });
     }
     
