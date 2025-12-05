@@ -15,7 +15,7 @@
     .page-wrapper { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; }
     .main-content { flex: 1; max-width: 900px; }
     .sidebar { width: 280px; flex-shrink: 0; }
-    .sidebar-sticky { position: sticky; top: 16px; }
+    .sidebar-sticky { position: sticky; top: 140px; }
     .hamburger-menu { position: relative; margin-bottom: 8px; }
     .hamburger-btn {
       width: 44px; height: 44px; border-radius: 10px; background: #fff;
@@ -464,13 +464,6 @@
     
     <input type="hidden" id="editingRowNumber" value="">
     
-    <div class="section">
-      <div class="section-title">📋 配信履歴（最新20件）</div>
-      <div class="history-list" id="historyList">
-        <div class="history-empty">読み込み中...</div>
-      </div>
-    </div>
-    
     </div><!-- normalForm -->
     
     <!-- アップルギフトフォーム -->
@@ -682,6 +675,14 @@
     <input type="hidden" id="appleEditingRowNumber" value="">
     
     </div><!-- appleForm -->
+    
+    <!-- 配信履歴（共通） -->
+    <div class="section">
+      <div class="section-title">📋 配信履歴（最新20件）</div>
+      <div class="history-list" id="historyList">
+        <div class="history-empty">読み込み中...</div>
+      </div>
+    </div>
     
     </div><!-- main-content -->
     
