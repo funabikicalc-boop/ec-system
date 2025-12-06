@@ -844,7 +844,7 @@
       <!-- 編集・投稿画面 -->
       <div id="templateEditMode" style="display: none;">
         <div class="modal-header">
-          <span>✏️ 投稿内容を編集</span>
+          <span>📋 投稿内容を確認・編集</span>
           <button class="modal-close" onclick="closeTemplateModal()">×</button>
         </div>
         <textarea class="modal-textarea" id="templateEditText"></textarea>
@@ -861,7 +861,7 @@
           </div>
         </div>
         <div class="modal-buttons">
-          <button class="btn btn-secondary" onclick="switchToPreviewMode()">← 戻る</button>
+          <button class="btn btn-secondary" onclick="copyEditTemplate()">📋 コピー</button>
           <button class="btn btn-discord" id="postBtn" onclick="postToDiscord()">🚀 投稿する</button>
         </div>
       </div>
@@ -1629,8 +1629,13 @@
       if (data.remarks) lines.push('※備考：' + data.remarks);
       lines.push('※代替商品配信予定：' + data.altplan);
       
-      document.getElementById('templateText').value = lines.join('\n');
+      var template = lines.join('\n');
+      document.getElementById('templateText').value = template;
+      document.getElementById('templateEditText').value = template;
       document.getElementById('templateModal').classList.add('show');
+      // 直接編集モードを表示
+      document.getElementById('templatePreviewMode').style.display = 'none';
+      document.getElementById('templateEditMode').style.display = 'flex';
     }
     
     function generateAppleTemplate() {
@@ -1714,8 +1719,13 @@
       if (data.remarks) lines.push('※備考：' + data.remarks);
       lines.push('※代替商品配信予定：' + data.altplan);
       
-      document.getElementById('templateText').value = lines.join('\n');
+      var template = lines.join('\n');
+      document.getElementById('templateText').value = template;
+      document.getElementById('templateEditText').value = template;
       document.getElementById('templateModal').classList.add('show');
+      // 直接編集モードを表示
+      document.getElementById('templatePreviewMode').style.display = 'none';
+      document.getElementById('templateEditMode').style.display = 'flex';
     }
     
     function getAppleFormData() {
@@ -1948,6 +1958,13 @@
     
     function copyTemplate() {
       var textarea = document.getElementById('templateText');
+      textarea.select();
+      document.execCommand('copy');
+      showToast('テンプレートをコピーしました', 'success');
+    }
+    
+    function copyEditTemplate() {
+      var textarea = document.getElementById('templateEditText');
       textarea.select();
       document.execCommand('copy');
       showToast('テンプレートをコピーしました', 'success');
