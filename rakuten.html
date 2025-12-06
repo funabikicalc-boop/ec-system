@@ -218,6 +218,28 @@
       padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
       font-size: 14px; background: #fff;
     }
+    .sidebar-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px; margin-bottom: 16px;
+      background: #fff; border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .sidebar-ec-icon {
+      width: 44px; height: 44px; 
+      background: linear-gradient(135deg, #bf0000, #e60012);
+      border-radius: 12px; 
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 800; color: #fff;
+      flex-shrink: 0;
+    }
+    .sidebar-ec-info { flex: 1; min-width: 0; }
+    .sidebar-ec-name { 
+      color: #1e293b; font-size: 14px; font-weight: 700; 
+    }
+    .sidebar-product-name {
+      color: #64748b; font-size: 13px; margin-top: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
     .tab-container {
       display: flex; gap: 8px; margin-bottom: 16px;
     }
@@ -310,7 +332,7 @@
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">商品名</label>
-          <input type="text" class="form-input" id="productName" placeholder="例: PlayStation5">
+          <input type="text" class="form-input" id="productName" placeholder="例: PlayStation5" oninput="updateSidebarProductName()">
         </div>
         <div class="form-group">
           <label class="form-label">必須条件</label>
@@ -331,6 +353,10 @@
         <label class="form-label">キャンペーンエントリーリンク</label>
         <input type="url" class="form-input" id="campaignEntryUrl" placeholder="https://event.rakuten.co.jp/...">
       </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">金額入力</div>
       <div class="form-row-4">
         <div class="form-group">
           <label class="form-label">定価（税込）</label>
@@ -524,7 +550,7 @@
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">商品名</label>
-          <input type="text" class="form-input" id="appleProductName" value="アップルギフト券">
+          <input type="text" class="form-input" id="appleProductName" value="アップルギフト券" oninput="updateSidebarProductName()">
         </div>
         <div class="form-group">
           <label class="form-label">必須条件</label>
@@ -707,8 +733,15 @@
     
     <div class="sidebar">
       <div class="sidebar-sticky">
+        <div class="sidebar-header">
+          <div class="sidebar-ec-icon">R</div>
+          <div class="sidebar-ec-info">
+            <div class="sidebar-ec-name">楽天配信</div>
+            <div class="sidebar-product-name" id="sidebarProductName">商品未入力</div>
+          </div>
+        </div>
         <div class="section preview-section">
-          <div class="section-title" style="color:#38a169;">計算結果プレビュー</div>
+          <div class="section-title" style="color:#059669;">計算結果プレビュー</div>
           <div class="preview-grid">
             <div class="preview-item">
               <div class="preview-label">獲得ポイント</div>
@@ -782,6 +815,17 @@
     document.getElementById('deliveryDate').valueAsDate = new Date();
     document.getElementById('appleDeliveryDate').valueAsDate = new Date();
     
+    // サイドバーの商品名を更新
+    function updateSidebarProductName() {
+      var productName = '';
+      if (currentTab === 'apple') {
+        productName = document.getElementById('appleProductName').value;
+      } else {
+        productName = document.getElementById('productName').value;
+      }
+      document.getElementById('sidebarProductName').textContent = productName || '商品未入力';
+    }
+    
     document.addEventListener('DOMContentLoaded', function() {
       loadHistory();
       setupRealtimeCalc();
@@ -794,6 +838,7 @@
       document.getElementById('tabApple').classList.toggle('active', tab === 'apple');
       document.getElementById('normalForm').style.display = tab === 'normal' ? 'block' : 'none';
       document.getElementById('appleForm').style.display = tab === 'apple' ? 'block' : 'none';
+      updateSidebarProductName();
     }
     
     function toggleCampaign(el) {
