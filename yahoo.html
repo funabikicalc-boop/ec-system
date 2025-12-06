@@ -158,6 +158,28 @@
     .history-stat-value { color: #10b981; font-weight: 600; }
     .history-stat-value.negative { color: #ef4444; }
     .history-empty { text-align: center; padding: 40px 20px; color: #64748b; }
+    .sidebar-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px; margin-bottom: 16px;
+      background: #fff; border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .sidebar-ec-icon {
+      width: 44px; height: 44px; 
+      background: linear-gradient(135deg, #ff0033, #ff4466);
+      border-radius: 12px; 
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 800; color: #fff;
+      flex-shrink: 0;
+    }
+    .sidebar-ec-info { flex: 1; min-width: 0; }
+    .sidebar-ec-name { 
+      color: #1e293b; font-size: 14px; font-weight: 700; 
+    }
+    .sidebar-product-name {
+      color: #64748b; font-size: 13px; margin-top: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
     .toast {
       position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
       padding: 14px 24px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
@@ -214,7 +236,7 @@
       </div>
       <div class="form-group">
         <label class="form-label">商品名</label>
-        <input type="text" class="form-input" id="productName" placeholder="例: PlayStation5">
+        <input type="text" class="form-input" id="productName" placeholder="例: PlayStation5" oninput="updateSidebarProductName()">
       </div>
       <div class="form-group">
         <label class="form-label">購入リンク</label>
@@ -350,6 +372,13 @@
     
     <div class="sidebar">
       <div class="sidebar-sticky">
+        <div class="sidebar-header">
+          <div class="sidebar-ec-icon">Y!</div>
+          <div class="sidebar-ec-info">
+            <div class="sidebar-ec-name">Yahoo配信</div>
+            <div class="sidebar-product-name" id="sidebarProductName">商品未入力</div>
+          </div>
+        </div>
         <div class="section preview-section">
           <div class="section-title" style="color:#059669;">計算結果プレビュー</div>
           <div class="preview-grid">
@@ -381,6 +410,12 @@
       loadHistory();
       setupRealtimeCalc();
     });
+    
+    // サイドバーの商品名を更新
+    function updateSidebarProductName() {
+      var productName = document.getElementById('productName').value;
+      document.getElementById('sidebarProductName').textContent = productName || '商品未入力';
+    }
     
     function toggleCampaign(el) {
       el.classList.toggle('active');
