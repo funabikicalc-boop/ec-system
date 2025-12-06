@@ -130,6 +130,12 @@
     .preview-unit { font-size: 14px; font-weight: 400; }
     .sidebar-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
     .sidebar-buttons .btn { width: 100%; }
+    .sidebar-buttons #editButtons { display: flex; gap: 8px; }
+    .sidebar-buttons #editButtons .btn { flex: 1; padding: 14px 12px; font-size: 13px; }
+    .btn-secondary {
+      background: #f1f5f9; border: 1px solid #e2e8f0; color: #475569;
+    }
+    .btn-secondary:hover { background: #e2e8f0; }
     .btn {
       padding: 16px 24px; border-radius: 12px; font-size: 15px; font-weight: 600;
       border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -231,6 +237,23 @@
     .modal-textarea {
       width: 100%; min-height: 200px; padding: 16px; border: none;
       font-size: 14px; line-height: 1.6; resize: none; background: #fff;
+    }
+    .modal-buttons { display: flex; gap: 12px; padding: 16px; border-top: 1px solid #e2e8f0; }
+    .modal-buttons .btn { flex: 1; }
+    .schedule-options {
+      display: flex; align-items: center; gap: 16px; padding: 12px 16px;
+      background: #f8fafc; border-top: 1px solid #e2e8f0;
+    }
+    .schedule-label {
+      display: flex; align-items: center; gap: 6px; font-size: 14px; color: #4a5568; cursor: pointer;
+    }
+    .schedule-label input[type="radio"] { cursor: pointer; }
+    .schedule-datetime {
+      display: flex; gap: 8px; margin-left: auto;
+    }
+    .schedule-input {
+      padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
+      font-size: 14px; background: #fff;
     }
     .toast {
       position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
@@ -336,9 +359,9 @@
           <span class="fixed-points" id="points-card">-</span>
         </div>
         <div class="fixed-item">
-          <span class="fixed-label">モッピー</span>
-          <span class="fixed-rate">税抜1%</span>
-          <span class="fixed-points" id="points-moppy">-</span>
+          <span class="fixed-label">POWL</span>
+          <span class="fixed-rate">税抜1.3%</span>
+          <span class="fixed-points" id="points-powl">-</span>
         </div>
         <div class="fixed-item">
           <span class="fixed-label">LYP会員</span>
@@ -446,8 +469,15 @@
         </div>
         
         <div class="sidebar-buttons">
-          <button class="btn btn-primary" id="saveBtn" onclick="saveToSheet()">📝 記録する</button>
-          <button class="btn btn-discord" onclick="postToDiscord()" disabled>📋 確認して投稿</button>
+          <!-- 新規入力時 -->
+          <div id="newEntryButtons">
+            <button class="btn btn-discord" id="saveAndPostBtn" onclick="generateTemplate()">📝 記録して投稿</button>
+          </div>
+          <!-- 編集時 -->
+          <div id="editButtons" style="display:none;">
+            <button class="btn btn-secondary" id="updateBtn" onclick="updateOnly()">📝 更新する</button>
+            <button class="btn btn-discord" onclick="generateTemplate()">📋 投稿する</button>
+          </div>
         </div>
         
         <!-- 予約投稿確認ボタン -->
@@ -483,6 +513,49 @@
       <div class="modal-buttons">
         <button class="btn btn-secondary" onclick="closeScheduledDetailModal()">閉じる</button>
         <button class="btn btn-danger" id="cancelScheduleBtn" onclick="cancelSchedule()">🗑️ 予約を取り消す</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- テンプレートモーダル -->
+  <div class="modal-overlay" id="templateModal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <!-- 確認画面 -->
+      <div id="templatePreviewMode">
+        <div class="modal-header">
+          <span>📋 Discord配信テンプレート</span>
+          <button class="modal-close" onclick="closeTemplateModal()">×</button>
+        </div>
+        <textarea class="modal-textarea" id="templateText" readonly></textarea>
+        <div class="modal-buttons">
+          <button class="btn btn-primary" onclick="copyTemplate()">📋 コピー</button>
+          <button class="btn btn-discord" onclick="switchToPostMode()">🚀 Discord投稿</button>
+          <button class="btn btn-secondary" onclick="closeTemplateModal()">閉じる</button>
+        </div>
+      </div>
+      <!-- 編集・投稿画面 -->
+      <div id="templateEditMode" style="display: none;">
+        <div class="modal-header">
+          <span>✏️ 投稿内容を編集</span>
+          <button class="modal-close" onclick="closeTemplateModal()">×</button>
+        </div>
+        <textarea class="modal-textarea" id="templateEditText"></textarea>
+        <div class="schedule-options">
+          <label class="schedule-label">
+            <input type="radio" name="postType" value="now" checked onchange="toggleSchedule()"> 今すぐ投稿
+          </label>
+          <label class="schedule-label">
+            <input type="radio" name="postType" value="schedule" onchange="toggleSchedule()"> 予約投稿
+          </label>
+          <div class="schedule-datetime" id="scheduleDatetime" style="display: none;">
+            <input type="date" class="schedule-input" id="scheduleDate">
+            <input type="time" class="schedule-input" id="scheduleTime">
+          </div>
+        </div>
+        <div class="modal-buttons">
+          <button class="btn btn-secondary" onclick="switchToPreviewMode()">← 戻る</button>
+          <button class="btn btn-discord" id="postBtn" onclick="postToDiscord()">🚀 投稿する</button>
+        </div>
       </div>
     </div>
   </div>
@@ -538,14 +611,14 @@
       // 固定ポイント
       var paypayCardPts = Math.floor(priceWithTax * 0.01);
       var cardPts = Math.floor(priceWithoutTax * 0.03);
-      var moppyPts = Math.floor(priceWithoutTax * 0.01);
+      var powlPts = Math.floor(priceWithoutTax * 0.013);
       var lypPts = Math.floor(priceWithoutTax * 0.02);
       
-      totalPoints += paypayCardPts + cardPts + moppyPts + lypPts;
+      totalPoints += paypayCardPts + cardPts + powlPts + lypPts;
       
       updateFixedPoints('paypaycard', paypayCardPts);
       updateFixedPoints('card', cardPts);
-      updateFixedPoints('moppy', moppyPts);
+      updateFixedPoints('powl', powlPts);
       updateFixedPoints('lyp', lypPts);
       
       // キャンペーンポイント
@@ -630,7 +703,7 @@
     }
     
     function clearFixedPoints() {
-      ['paypaycard', 'card', 'moppy', 'lyp'].forEach(function(id) {
+      ['paypaycard', 'card', 'powl', 'lyp'].forEach(function(id) {
         document.getElementById('points-' + id).textContent = '-';
       });
     }
@@ -724,6 +797,10 @@
       clearCampaignPoints();
       document.getElementById('totalPoints').innerHTML = '0<span class="preview-unit">pt</span>';
       document.getElementById('expectedProfit').innerHTML = '0<span class="preview-unit">円</span>';
+      
+      // 新規モードに切り替え
+      switchToNewMode();
+      updateSidebarProductName();
     }
     
     function loadHistory() {
@@ -794,11 +871,240 @@
         });
       }
       
+      // 編集モードに切り替え
+      switchToEditMode();
+      
       calculatePreview();
+      updateSidebarProductName();
+    }
+    
+    // ボタン表示切り替え
+    function switchToEditMode() {
+      document.getElementById('newEntryButtons').style.display = 'none';
+      document.getElementById('editButtons').style.display = 'flex';
+    }
+    
+    function switchToNewMode() {
+      document.getElementById('newEntryButtons').style.display = 'block';
+      document.getElementById('editButtons').style.display = 'none';
+    }
+    
+    // 更新のみ（編集時）
+    function updateOnly() {
+      if (!validateForm()) return;
+      
+      var btn = document.getElementById('updateBtn');
+      btn.disabled = true;
+      btn.innerHTML = '⏳ 更新中...';
+      
+      var data = getFormData();
+      var editingRow = document.getElementById('editingRowNumber').value;
+      
+      if (!editingRow) {
+        showToast('更新対象がありません', 'error');
+        btn.disabled = false;
+        btn.innerHTML = '📝 更新する';
+        return;
+      }
+      
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'updateYahooData', rowNumber: parseInt(editingRow), data: data })
+      })
+      .then(function(response) { return response.json(); })
+      .then(function(result) {
+        btn.disabled = false;
+        btn.innerHTML = '📝 更新する';
+        if (result.success) {
+          showToast('更新しました', 'success');
+          loadHistory();
+        } else {
+          showToast(result.message, 'error');
+        }
+      })
+      .catch(function(error) {
+        btn.disabled = false;
+        btn.innerHTML = '📝 更新する';
+        showToast('更新に失敗しました', 'error');
+      });
+    }
+    
+    // 保存処理（投稿時に呼ばれる）
+    function saveToSheetForPost(callback) {
+      var data = getFormData();
+      var editingRow = document.getElementById('editingRowNumber').value;
+      var requestBody = editingRow 
+        ? { action: 'updateYahooData', rowNumber: parseInt(editingRow), data: data }
+        : { action: 'saveYahooData', data: data };
+      
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(requestBody)
+      })
+      .then(function(response) { return response.json(); })
+      .then(function(result) {
+        if (result.success) {
+          loadHistory();
+          if (callback) callback(true);
+        } else {
+          showToast(result.message, 'error');
+          if (callback) callback(false);
+        }
+      })
+      .catch(function(error) {
+        showToast('保存に失敗しました', 'error');
+        if (callback) callback(false);
+      });
+    }
+    
+    // テンプレート生成
+    function generateTemplate() {
+      if (!validateForm()) return;
+      
+      var data = getFormData();
+      var listPrice = Number(data.listPrice) || 0;
+      var coupon = Number(data.coupon) || 0;
+      var priceWithTax = listPrice - coupon;
+      
+      // TODO: Yahooのテンプレートフォーマットを設定
+      var template = '【Yahoo配信】\n';
+      template += '商品名: ' + data.productName + '\n';
+      template += '購入金額: ' + formatNumber(priceWithTax) + '円\n';
+      template += '購入リンク: ' + data.productUrl + '\n';
+      if (data.remarks) {
+        template += '備考: ' + data.remarks + '\n';
+      }
+      
+      document.getElementById('templateText').value = template;
+      document.getElementById('templateEditText').value = template;
+      document.getElementById('templateModal').classList.add('show');
+      document.getElementById('templatePreviewMode').style.display = 'block';
+      document.getElementById('templateEditMode').style.display = 'none';
+    }
+    
+    function closeTemplateModal() {
+      document.getElementById('templateModal').classList.remove('show');
+    }
+    
+    function closeModal(event) {
+      if (event.target === event.currentTarget) {
+        closeTemplateModal();
+      }
+    }
+    
+    function switchToPostMode() {
+      document.getElementById('templateEditText').value = document.getElementById('templateText').value;
+      document.getElementById('templatePreviewMode').style.display = 'none';
+      document.getElementById('templateEditMode').style.display = 'block';
+    }
+    
+    function switchToPreviewMode() {
+      document.getElementById('templatePreviewMode').style.display = 'block';
+      document.getElementById('templateEditMode').style.display = 'none';
+    }
+    
+    function toggleSchedule() {
+      var postType = document.querySelector('input[name="postType"]:checked').value;
+      document.getElementById('scheduleDatetime').style.display = postType === 'schedule' ? 'flex' : 'none';
+    }
+    
+    function copyTemplate() {
+      var textarea = document.getElementById('templateText');
+      textarea.select();
+      document.execCommand('copy');
+      showToast('テンプレートをコピーしました', 'success');
     }
     
     function postToDiscord() {
-      showToast('Discord配信機能は後ほど実装予定', 'error');
+      var postType = document.querySelector('input[name="postType"]:checked').value;
+      var message = document.getElementById('templateEditText').value;
+      
+      if (!message.trim()) {
+        showToast('投稿内容が空です', 'error');
+        return;
+      }
+      
+      var productName = document.getElementById('productName').value;
+      
+      var btn = document.getElementById('postBtn');
+      btn.disabled = true;
+      btn.textContent = '⏳ 処理中...';
+      
+      // まずシートに保存
+      saveToSheetForPost(function(saveSuccess) {
+        if (!saveSuccess) {
+          btn.disabled = false;
+          btn.textContent = '🚀 投稿する';
+          return;
+        }
+        
+        if (postType === 'schedule') {
+          // 予約投稿
+          var scheduleDate = document.getElementById('scheduleDate').value;
+          var scheduleTime = document.getElementById('scheduleTime').value;
+          
+          if (!scheduleDate || !scheduleTime) {
+            showToast('予約日時を設定してください', 'error');
+            btn.disabled = false;
+            btn.textContent = '🚀 投稿する';
+            return;
+          }
+          
+          var scheduledAt = scheduleDate + 'T' + scheduleTime + ':00';
+          var scheduledDateTime = new Date(scheduledAt);
+          
+          if (scheduledDateTime <= new Date()) {
+            showToast('予約日時は現在より後に設定してください', 'error');
+            btn.disabled = false;
+            btn.textContent = '🚀 投稿する';
+            return;
+          }
+          
+          fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({
+              action: 'saveDiscordSchedule',
+              data: {
+                message: message,
+                scheduledAt: scheduledAt,
+                ecType: 'Yahoo',
+                productName: productName,
+                tabType: 'normal',
+                status: '予約中'
+              }
+            })
+          })
+          .then(function(response) { return response.json(); })
+          .then(function(result) {
+            btn.disabled = false;
+            btn.textContent = '🚀 投稿する';
+            if (result.success) {
+              showToast('記録＆予約しました: ' + scheduleDate + ' ' + scheduleTime, 'success');
+              closeTemplateModal();
+              clearForm();
+              loadScheduledPosts();
+            } else {
+              showToast(result.message || '予約に失敗しました', 'error');
+            }
+          })
+          .catch(function(error) {
+            btn.disabled = false;
+            btn.textContent = '🚀 投稿する';
+            showToast('予約に失敗しました', 'error');
+          });
+          
+        } else {
+          // 今すぐ投稿（Webhook未設定）
+          btn.disabled = false;
+          btn.textContent = '🚀 投稿する';
+          showToast('記録しました（Webhook URLが未設定のため投稿はスキップ）', 'success');
+          closeTemplateModal();
+          clearForm();
+        }
+      });
     }
     
     function goBack() {
