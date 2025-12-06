@@ -262,14 +262,18 @@
     }
     .btn-danger:hover { background: linear-gradient(135deg, #dc2626, #b91c1c); }
     .modal-textarea {
-      width: 100%; min-height: 200px; padding: 16px; border: none;
-      font-size: 14px; line-height: 1.6; resize: none; background: #fff;
+      flex: 1; margin: 16px; padding: 16px; border: 1px solid #e2e8f0; border-radius: 10px;
+      font-family: monospace; font-size: 13px; line-height: 1.6; resize: none;
+      background: #f7fafc; min-height: 350px; overflow-y: auto;
     }
-    .modal-buttons { display: flex; gap: 12px; padding: 16px; border-top: 1px solid #e2e8f0; }
+    .modal-buttons { display: flex; gap: 12px; padding: 16px 20px; border-top: 1px solid #e2e8f0; flex-shrink: 0; }
     .modal-buttons .btn { flex: 1; }
+    #templatePreviewMode, #templateEditMode {
+      display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden;
+    }
     .schedule-options {
-      display: flex; align-items: center; gap: 16px; padding: 12px 16px;
-      background: #f8fafc; border-top: 1px solid #e2e8f0;
+      display: flex; align-items: center; gap: 20px; padding: 12px 16px;
+      background: #f7fafc; border-top: 1px solid #e2e8f0; flex-shrink: 0;
     }
     .schedule-label {
       display: flex; align-items: center; gap: 6px; font-size: 14px; color: #4a5568; cursor: pointer;
@@ -348,43 +352,51 @@
           </select>
         </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">商品名</label>
-        <input type="text" class="form-input" id="productName" placeholder="例: PlayStation5" oninput="updateSidebarProductName()">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">商品名</label>
+          <input type="text" class="form-input" id="productName" placeholder="例: PlayStation5" oninput="updateSidebarProductName()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">必須条件</label>
+          <input type="text" class="form-input" id="requiredCondition" placeholder="例: エントリー必須、先着100名">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">購入リンク</label>
+          <input type="url" class="form-input" id="productUrl" placeholder="https://store.shopping.yahoo.co.jp/...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">クーポンリンク</label>
+          <input type="url" class="form-input" id="couponUrl" placeholder="https://...">
+        </div>
       </div>
       <div class="form-group">
-        <label class="form-label">購入リンク</label>
-        <input type="url" class="form-input" id="productUrl" placeholder="https://store.shopping.yahoo.co.jp/...">
-      </div>
-      <div class="form-group">
-        <label class="form-label">エントリーリンク</label>
+        <label class="form-label">キャンペーンエントリーリンク</label>
         <input type="url" class="form-input" id="entryUrl" placeholder="https://...">
-      </div>
-      <div class="form-group">
-        <label class="form-label">クーポンリンク</label>
-        <input type="url" class="form-input" id="couponUrl" placeholder="https://...">
       </div>
     </div>
     
     <div class="section">
       <div class="section-title">金額入力</div>
-      <div class="form-row-3">
+      <div class="form-row-4">
         <div class="form-group">
           <label class="form-label">定価（税込）</label>
           <input type="number" class="form-input" id="listPrice" placeholder="0">
         </div>
         <div class="form-group">
-          <label class="form-label">クーポン</label>
+          <label class="form-label">クーポン割引額</label>
           <input type="number" class="form-input" id="coupon" placeholder="0">
         </div>
         <div class="form-group">
           <label class="form-label">購入金額（税込）</label>
           <div class="calc-display" id="priceWithTaxDisplay">0</div>
         </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">委託販売額</label>
-        <input type="number" class="form-input" id="consignmentPrice" placeholder="0">
+        <div class="form-group">
+          <label class="form-label">見込委託販売額</label>
+          <input type="number" class="form-input" id="consignmentPrice" placeholder="0">
+        </div>
       </div>
       <div class="form-group">
         <label class="form-label">備考</label>
@@ -600,7 +612,7 @@
           </div>
         </div>
         <div class="modal-buttons">
-          <button class="btn btn-secondary" onclick="copyEditTemplate()">📋 コピー</button>
+          <button class="btn btn-primary" onclick="copyEditTemplate()">📋 コピー</button>
           <button class="btn btn-discord" id="postBtn" onclick="postToDiscord()">🚀 投稿する</button>
         </div>
       </div>
@@ -768,6 +780,7 @@
         campaignName: document.getElementById('campaignName').value,
         type: document.getElementById('deliveryType').value,
         productName: document.getElementById('productName').value,
+        requiredCondition: document.getElementById('requiredCondition').value,
         productUrl: document.getElementById('productUrl').value,
         entryUrl: document.getElementById('entryUrl').value,
         couponUrl: document.getElementById('couponUrl').value,
@@ -841,6 +854,7 @@
       document.getElementById('campaignName').value = '';
       document.getElementById('deliveryType').value = '';
       document.getElementById('productName').value = '';
+      document.getElementById('requiredCondition').value = '';
       document.getElementById('productUrl').value = '';
       document.getElementById('entryUrl').value = '';
       document.getElementById('couponUrl').value = '';
@@ -1069,6 +1083,7 @@
       lines.push('📌購入期間：本日中');
       lines.push('🔹決済方法：PayPayカード決済');
       lines.push('🔹会員条件：LYPプレミアム会員');
+      if (data.requiredCondition) lines.push('🔹必須条件：' + data.requiredCondition);
       lines.push('🔹経由するポイントサイト：POWL');
       lines.push('');
       
