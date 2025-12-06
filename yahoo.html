@@ -743,25 +743,33 @@
       if (!validateForm()) return;
       
       var btn = document.getElementById('saveBtn');
-      btn.disabled = true;
-      btn.innerHTML = '⏳ 保存中...';
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '⏳ 保存中...';
+      }
       
       var data = getFormData();
       var editingRow = document.getElementById('editingRowNumber').value;
+      var requestBody = editingRow 
+        ? { action: 'updateYahooData', rowNumber: parseInt(editingRow), data: data }
+        : { action: 'saveYahooData', data: data };
       
-      if (editingRow) {
-        google.script.run.withSuccessHandler(onSaveSuccess).withFailureHandler(onSaveError)
-          .updateYahooData(parseInt(editingRow), data);
-      } else {
-        google.script.run.withSuccessHandler(onSaveSuccess).withFailureHandler(onSaveError)
-          .saveYahooData(data);
-      }
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(requestBody)
+      })
+      .then(function(response) { return response.json(); })
+      .then(function(result) { onSaveSuccess(result); })
+      .catch(function(error) { onSaveError(error); });
     }
     
     function onSaveSuccess(result) {
       var btn = document.getElementById('saveBtn');
-      btn.disabled = false;
-      btn.innerHTML = '📝 記録する';
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '📝 記録する';
+      }
       
       if (result.success) {
         showToast(result.message, 'success');
@@ -774,8 +782,10 @@
     
     function onSaveError(error) {
       var btn = document.getElementById('saveBtn');
-      btn.disabled = false;
-      btn.innerHTML = '📝 記録する';
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '📝 記録する';
+      }
       showToast('保存に失敗しました', 'error');
     }
     
@@ -804,9 +814,12 @@
     }
     
     function loadHistory() {
-      google.script.run.withSuccessHandler(renderHistory).withFailureHandler(function() {
-        document.getElementById('historyList').innerHTML = '<div class="history-empty">読み込みに失敗しました</div>';
-      }).getYahooHistory();
+      fetch(API_URL + '?action=getYahooHistory')
+        .then(function(response) { return response.json(); })
+        .then(function(history) { renderHistory(history); })
+        .catch(function(error) {
+          document.getElementById('historyList').innerHTML = '<div class="history-empty">読み込みに失敗しました</div>';
+        });
     }
     
     function renderHistory(history) {
@@ -838,13 +851,18 @@
       var el = document.querySelector('.history-item[data-row="' + rowNumber + '"]');
       if (el) el.classList.add('selected');
       
-      google.script.run.withSuccessHandler(function(data) {
-        if (data) {
-          fillForm(data);
-          showToast('履歴データを読み込みました', 'success');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-      }).getYahooDataByRow(rowNumber);
+      fetch(API_URL + '?action=getYahooDataByRow&rowNumber=' + rowNumber)
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+          if (data) {
+            fillForm(data);
+            showToast('履歴データを読み込みました', 'success');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        })
+        .catch(function(error) {
+          showToast('データの読み込みに失敗しました', 'error');
+        });
     }
     
     function fillForm(data) {
