@@ -242,28 +242,29 @@
     }
     /* 予約投稿セクション */
     .scheduled-section {
-      margin-top: 16px; padding: 12px 14px;
+      margin-top: 16px; padding: 10px 12px;
       background: #fff; border-radius: 12px;
       border: 1px solid #e2e8f0;
       cursor: pointer; transition: all 0.2s;
+      max-height: 120px; overflow: hidden;
     }
     .scheduled-section:hover { border-color: #818cf8; background: #f5f3ff; }
     .scheduled-header {
-      display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
     }
-    .scheduled-icon { font-size: 16px; }
-    .scheduled-title { font-size: 13px; font-weight: 600; color: #1e293b; }
+    .scheduled-icon { font-size: 14px; }
+    .scheduled-title { font-size: 12px; font-weight: 600; color: #1e293b; }
     .scheduled-count {
-      margin-left: auto; font-size: 12px; font-weight: 600;
-      color: #6366f1; background: #eef2ff; padding: 2px 8px; border-radius: 10px;
+      margin-left: auto; font-size: 11px; font-weight: 600;
+      color: #6366f1; background: #eef2ff; padding: 2px 6px; border-radius: 8px;
     }
-    .scheduled-list { max-height: 80px; overflow: hidden; }
+    .scheduled-list { max-height: 70px; overflow: hidden; }
     .scheduled-item {
-      font-size: 12px; color: #64748b; padding: 4px 0;
+      font-size: 11px; color: #64748b; padding: 2px 0;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .scheduled-item-ec { color: #6366f1; font-weight: 600; }
-    .scheduled-empty { font-size: 12px; color: #94a3b8; text-align: center; padding: 4px 0; }
+    .scheduled-empty { font-size: 11px; color: #94a3b8; text-align: center; padding: 4px 0; }
     /* 予約モーダル */
     .scheduled-modal-content {
       background: #fff; border-radius: 16px; width: 90%; max-width: 500px;
