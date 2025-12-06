@@ -320,13 +320,25 @@
     
     <div class="section">
       <div class="section-title">基本情報</div>
-      <div class="form-row">
+      <div class="form-row-3">
         <div class="form-group">
           <label class="form-label">配信日</label>
           <input type="date" class="form-input" id="deliveryDate">
         </div>
         <div class="form-group">
-          <label class="form-label">配信商品</label>
+          <label class="form-label">キャンペーン名</label>
+          <select class="form-select" id="campaignName">
+            <option value="">選択してください</option>
+            <option value="5のつく日">5のつく日</option>
+            <option value="ファーストDAY">ファーストDAY</option>
+            <option value="プレミアムな日曜日">プレミアムな日曜日</option>
+            <option value="感謝DAY">感謝DAY</option>
+            <option value="PayPay祭り">PayPay祭り</option>
+            <option value="ハッピーアワー">ハッピーアワー</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">配信内容</label>
           <select class="form-select" id="deliveryType">
             <option value="">選択してください</option>
             <option value="本配信">本配信</option>
@@ -753,6 +765,7 @@
     function getFormData() {
       return {
         date: document.getElementById('deliveryDate').value,
+        campaignName: document.getElementById('campaignName').value,
         type: document.getElementById('deliveryType').value,
         productName: document.getElementById('productName').value,
         productUrl: document.getElementById('productUrl').value,
@@ -828,6 +841,7 @@
     
     function clearForm() {
       document.getElementById('deliveryDate').valueAsDate = new Date();
+      document.getElementById('campaignName').value = '';
       document.getElementById('deliveryType').value = '';
       document.getElementById('productName').value = '';
       document.getElementById('productUrl').value = '';
@@ -1052,6 +1066,7 @@
       lines.push('【Yahoo 見込み利益' + formatNumber(expectedProfit) + '円】🔥 🔥 🔥');
       lines.push('');
       lines.push('✅ 配信日：' + dateFormatted);
+      if (data.campaignName) lines.push('✅ キャンペーン名：' + data.campaignName);
       lines.push('✅ 配信内容：' + data.type);
       lines.push('');
       lines.push('📌購入期間：本日中');
@@ -1066,7 +1081,8 @@
       }
       
       if (data.entryUrl) {
-        lines.push('📢キャンペーンエントリーリンク');
+        lines.push('📢キャンペーンエントリー＆クーポン取得リンク');
+        if (data.campaignName) lines.push(data.campaignName);
         lines.push(data.entryUrl);
         lines.push('');
       }
