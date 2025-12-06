@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Yahooショッピング配信 - EC配信システム</title>
@@ -8,164 +9,190 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
-      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
       min-height: 100vh; padding: 16px; padding-bottom: 100px;
     }
-    .container { max-width: 600px; margin: 0 auto; }
+    .page-wrapper { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; }
+    .main-content { flex: 1; max-width: 900px; }
+    .sidebar { width: 280px; flex-shrink: 0; }
+    .sidebar-sticky { position: sticky; top: 100px; }
     .hamburger-menu { position: relative; margin-bottom: 8px; }
     .hamburger-btn {
       width: 44px; height: 44px; border-radius: 10px; background: #fff;
-      border: 1px solid #e2e8f0; color: #4a5568; font-size: 24px; cursor: pointer;
+      border: 1px solid #e2e8f0; color: #475569; font-size: 24px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
-    .hamburger-btn:hover { background: #f7fafc; }
+    .hamburger-btn:hover { background: #f8fafc; }
     .menu-dropdown {
       display: none; position: absolute; top: 50px; left: 0; background: #fff;
-      border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.12);
       min-width: 200px; z-index: 1000; overflow: hidden;
     }
     .menu-dropdown.show { display: block; }
     .menu-dropdown a {
-      display: block; padding: 12px 16px; color: #2d3748; text-decoration: none;
-      font-size: 14px; border-bottom: 1px solid #f0f0f0;
+      display: block; padding: 12px 16px; color: #1e293b; text-decoration: none;
+      font-size: 14px; border-bottom: 1px solid #f1f5f9;
     }
     .menu-dropdown a:last-child { border-bottom: none; }
-    .menu-dropdown a:hover { background: #f7fafc; }
-    .menu-dropdown a.disabled { opacity: 0.5; pointer-events: none; }
-    .header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 8px 0; }
+    .menu-dropdown a:hover { background: #f8fafc; }
+    .header { 
+      display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 16px 20px;
+      background: #fff; border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
     .back-btn {
-      width: 40px; height: 40px; border-radius: 10px; background: #fff;
-      border: 1px solid #e2e8f0; color: #4a5568; font-size: 20px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; text-decoration: none;
+      width: 40px; height: 40px; border-radius: 10px; background: #f8fafc;
+      border: 1px solid #e2e8f0; color: #475569; font-size: 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
     }
-    .back-btn:hover { background: #f7fafc; }
-    .header-title { display: flex; align-items: center; gap: 8px; }
+    .back-btn:hover { background: #f1f5f9; }
+    .header-title { display: flex; align-items: center; gap: 12px; }
     .header-icon {
-      width: 36px; height: 36px; background: linear-gradient(135deg, #ff0033 0%, #ff4466 100%);
-      border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;
+      width: 44px; height: 44px; background: linear-gradient(135deg, #ff0033, #ff4466);
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 800; color: #fff;
     }
-    .header h1 { color: #2d3748; font-size: 20px; font-weight: 600; }
+    .header h1 { color: #1e293b; font-size: 22px; font-weight: 700; }
     .section {
-      background: #fff; border: 1px solid #e2e8f0; border-radius: 16px;
-      padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      background: #fff; border-radius: 20px;
+      padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     }
     .section-title {
-      color: #2d3748; font-size: 14px; font-weight: 600; margin-bottom: 16px;
-      display: flex; align-items: center; gap: 8px;
+      color: #1e293b; font-size: 15px; font-weight: 700; margin-bottom: 18px;
+      display: flex; align-items: center; gap: 10px;
     }
-    .section-title::before { content: ''; width: 4px; height: 16px; background: #ff0033; border-radius: 2px; }
+    .section-title::before { content: ''; width: 4px; height: 18px; background: linear-gradient(180deg, #ff0033, #ff4466); border-radius: 2px; }
     .form-group { margin-bottom: 16px; }
     .form-group:last-child { margin-bottom: 0; }
-    .form-label { display: block; color: #718096; font-size: 13px; margin-bottom: 6px; }
+    .form-label { display: block; color: #64748b; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
     .form-input, .form-select, .form-textarea {
-      width: 100%; padding: 12px 14px; background: #f7fafc;
-      border: 1px solid #e2e8f0; border-radius: 10px; color: #2d3748; font-size: 15px;
+      width: 100%; padding: 12px 14px; background: #f8fafc;
+      border: 2px solid #e2e8f0; border-radius: 10px; color: #1e293b; font-size: 15px;
+      transition: all 0.2s;
     }
     .form-textarea { min-height: 80px; resize: vertical; font-family: inherit; }
     .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: #ff0033; background: #fff; }
-    .form-input::placeholder, .form-textarea::placeholder { color: #a0aec0; }
+    .form-input::placeholder, .form-textarea::placeholder { color: #94a3b8; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-    .campaign-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .campaign-item {
-      display: flex; align-items: center; gap: 10px; padding: 12px;
-      background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 10px; cursor: pointer;
+    .form-row-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
+    .calc-display {
+      background: #f1f5f9; border: 2px solid #e2e8f0; border-radius: 10px;
+      padding: 12px 14px; color: #1e293b; font-size: 15px; font-weight: 600;
     }
-    .campaign-item:hover { background: #edf2f7; }
-    .campaign-item.active { background: #fff5f5; border-color: #ff0033; }
+    .campaign-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .campaign-item {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px;
+      background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .campaign-item:hover { background: #f1f5f9; border-color: #cbd5e1; }
+    .campaign-item.active { background: #fff1f2; border-color: #ff0033; }
     .campaign-checkbox {
-      width: 20px; height: 20px; border-radius: 5px; border: 2px solid #cbd5e0;
+      width: 20px; height: 20px; border-radius: 6px; border: 2px solid #cbd5e1;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: all 0.2s;
     }
     .campaign-item.active .campaign-checkbox { background: #ff0033; border-color: #ff0033; }
     .campaign-checkbox::after { content: '✓'; color: #fff; font-size: 12px; opacity: 0; }
     .campaign-item.active .campaign-checkbox::after { opacity: 1; }
-    .campaign-label { color: #4a5568; font-size: 13px; line-height: 1.3; }
-    .campaign-item.active .campaign-label { color: #2d3748; }
+    .campaign-label { color: #475569; font-size: 13px; line-height: 1.3; flex: 1; }
+    .campaign-item.active .campaign-label { color: #1e293b; font-weight: 500; }
     .campaign-points {
       width: 100%; margin-top: 4px; font-size: 12px; font-weight: 600; color: #ff0033;
       display: none;
     }
     .campaign-item.active .campaign-points { display: block; }
-    .fixed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .fixed-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
     .fixed-item {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 8px 12px; background: #fff5f5; border: 1px solid #fed7d7; border-radius: 8px;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      padding: 12px 8px; background: #fff1f2; border: 1px solid #fecdd3; border-radius: 10px;
     }
-    .fixed-label { color: #2d3748; font-size: 12px; font-weight: 500; }
-    .fixed-rate { color: #718096; font-size: 11px; }
-    .fixed-points { color: #ff0033; font-size: 12px; font-weight: 600; }
-    .preview-section { background: #f0fff4; border-color: #9ae6b4; }
-    .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .preview-item { text-align: center; padding: 16px; background: #fff; border-radius: 12px; border: 1px solid #c6f6d5; }
-    .preview-label { color: #718096; font-size: 12px; margin-bottom: 6px; }
-    .preview-value { color: #38a169; font-size: 24px; font-weight: 700; }
-    .preview-value.negative { color: #e53e3e; }
+    .fixed-label { color: #1e293b; font-size: 12px; font-weight: 600; }
+    .fixed-rate { color: #64748b; font-size: 10px; }
+    .fixed-points { color: #ff0033; font-size: 14px; font-weight: 700; }
+    .preview-section { 
+      background: #fff; 
+      border: 2px solid #10b981;
+    }
+    .preview-section .section-title { color: #059669; }
+    .preview-section .section-title::before { background: linear-gradient(180deg, #10b981, #34d399); }
+    .preview-grid { display: flex; flex-direction: column; gap: 12px; }
+    .preview-item { 
+      text-align: center; padding: 20px 16px; 
+      background: #f0fdf4; border-radius: 14px; 
+      border: 1px solid #bbf7d0;
+    }
+    .preview-label { color: #64748b; font-size: 12px; margin-bottom: 6px; }
+    .preview-value { color: #059669; font-size: 28px; font-weight: 700; }
+    .preview-value.negative { color: #dc2626; }
     .preview-unit { font-size: 14px; font-weight: 400; }
-    .button-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .sidebar-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+    .sidebar-buttons .btn { width: 100%; }
     .btn {
       padding: 16px 24px; border-radius: 12px; font-size: 15px; font-weight: 600;
       border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all 0.2s;
     }
     .btn-primary { background: linear-gradient(135deg, #ff0033 0%, #cc0029 100%); color: #fff; }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,0,51,0.3); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,0,51,0.4); }
     .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
     .btn-discord { background: linear-gradient(135deg, #5865F2 0%, #4752c4 100%); color: #fff; }
-    .btn-discord:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-discord:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(88,101,242,0.4); }
+    .btn-discord:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     .history-list { display: flex; flex-direction: column; gap: 8px; }
     .history-item {
-      padding: 14px 16px; background: #f7fafc; border: 1px solid #e2e8f0;
-      border-radius: 10px; cursor: pointer;
+      padding: 14px 16px; background: #f8fafc; border: 2px solid #e2e8f0;
+      border-radius: 12px; cursor: pointer; transition: all 0.2s;
     }
-    .history-item:hover { background: #edf2f7; }
-    .history-item.selected { border-color: #ff0033; background: #fff5f5; }
+    .history-item:hover { background: #f1f5f9; border-color: #cbd5e1; }
+    .history-item.selected { border-color: #ff0033; background: #fff1f2; }
     .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .history-date { color: #718096; font-size: 12px; }
-    .history-type { color: #cc0029; font-size: 11px; padding: 2px 8px; background: #fff5f5; border-radius: 4px; }
-    .history-product { color: #2d3748; font-size: 14px; font-weight: 500; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .history-date { color: #64748b; font-size: 12px; }
+    .history-type { color: #ff0033; font-size: 11px; padding: 2px 8px; background: #fff1f2; border-radius: 6px; font-weight: 500; }
+    .history-product { color: #1e293b; font-size: 14px; font-weight: 600; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .history-stats { display: flex; gap: 16px; }
     .history-stat { font-size: 12px; }
-    .history-stat-label { color: #718096; }
-    .history-stat-value { color: #38a169; font-weight: 600; }
-    .history-stat-value.negative { color: #e53e3e; }
-    .history-empty { text-align: center; padding: 40px 20px; color: #718096; }
+    .history-stat-label { color: #64748b; }
+    .history-stat-value { color: #10b981; font-weight: 600; }
+    .history-stat-value.negative { color: #ef4444; }
+    .history-empty { text-align: center; padding: 40px 20px; color: #64748b; }
     .toast {
       position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
       padding: 14px 24px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
-      color: #2d3748; font-size: 14px; opacity: 0; transition: all 0.3s ease; z-index: 1000;
+      color: #1e293b; font-size: 14px; opacity: 0; transition: all 0.3s ease; z-index: 1000;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-    .toast.success { border-color: #9ae6b4; background: #f0fff4; color: #276749; }
-    .toast.error { border-color: #feb2b2; background: #fff5f5; color: #c53030; }
-    .calc-display {
-      background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 10px;
-      padding: 12px 14px; color: #2d3748; font-size: 15px; font-weight: 600;
-    }
+    .toast.success { border-color: #86efac; background: #f0fdf4; color: #166534; }
+    .toast.error { border-color: #fca5a5; background: #fef2f2; color: #dc2626; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="hamburger-menu">
-      <button class="hamburger-btn" onclick="toggleMenu()">≡</button>
-      <div class="menu-dropdown" id="menuDropdown">
-        <a href="rakuten.html">🛒 楽天</a>
-        <a href="yahoo.html">🛍️ Yahoo</a>
-        <a href="dshopping.html">📱 dショッピング</a>
-        <a href="#" class="disabled">📦 Amazon（準備中）</a>
-        <a href="#" class="disabled">🎀 Qoo10（準備中）</a>
-        <a href="#" class="disabled">🏪 その他EC（準備中）</a>
-        <a href="#" class="disabled">💰 ポイ活（準備中）</a>
+  <div class="page-wrapper">
+    <div class="main-content">
+      <div class="hamburger-menu">
+        <button class="hamburger-btn" onclick="toggleMenu()">≡</button>
+        <div class="menu-dropdown" id="menuDropdown">
+          <a href="#" onclick="event.preventDefault();navigateTo('index')">🏠 Top</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('rakuten')">🛒 楽天</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('yahoo')">🛍️ Yahoo</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('dshopping')">📱 dショッピング</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('amazon')">📦 Amazon</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('qoo10')">🎀 Qoo10</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('other')">🏪 その他EC</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('poikatsu')">💰 ポイ活</a>
+        </div>
       </div>
-    </div>
-    
-    <div class="header">
-      <a class="back-btn" href="top.html">←</a>
-      <div class="header-title">
-        <div class="header-icon">🛍️</div>
-        <h1>Yahooショッピング配信</h1>
+      
+      <div class="header">
+        <button class="back-btn" onclick="goBack()">←</button>
+        <div class="header-title">
+          <div class="header-icon">Y!</div>
+          <h1>Yahooショッピング配信</h1>
+        </div>
       </div>
-    </div>
     
     <div class="section">
       <div class="section-title">基本情報</div>
@@ -193,6 +220,10 @@
         <label class="form-label">購入リンク</label>
         <input type="url" class="form-input" id="productUrl" placeholder="https://store.shopping.yahoo.co.jp/...">
       </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">金額入力</div>
       <div class="form-row-3">
         <div class="form-group">
           <label class="form-label">定価（税込）</label>
@@ -227,7 +258,7 @@
         </div>
         <div class="fixed-item">
           <span class="fixed-label">カード利用</span>
-          <span class="fixed-rate">税抜3%</span>
+          <span class="fixed-rate">税抜3% 月間上限5,000P</span>
           <span class="fixed-points" id="points-card">-</span>
         </div>
         <div class="fixed-item">
@@ -237,7 +268,7 @@
         </div>
         <div class="fixed-item">
           <span class="fixed-label">LYP会員</span>
-          <span class="fixed-rate">税抜2%</span>
+          <span class="fixed-rate">税抜2% 月間上限5,000P</span>
           <span class="fixed-points" id="points-lyp">-</span>
         </div>
       </div>
@@ -248,77 +279,95 @@
       <div class="campaign-grid">
         <div class="campaign-item" onclick="toggleCampaign(this)" data-campaign="storepoint">
           <div class="campaign-checkbox"></div>
-          <div class="campaign-label">ストアポイント<br><small style="color:#718096">税抜1%</small></div>
+          <div class="campaign-label">ストアポイント<br><small style="color:#718096">税抜1% 上限1,000P</small></div>
           <div class="campaign-points" id="points-storepoint"></div>
+        </div>
+        <div class="campaign-item has-select" onclick="toggleCampaign(this)" data-campaign="storebonus">
+          <div class="campaign-checkbox"></div>
+          <div class="campaign-label">ストア上乗せ分<br><small style="color:#718096">税抜</small></div>
+          <select class="campaign-select" id="storeBonusPercent" onclick="event.stopPropagation()">
+            <option value="4">4%</option>
+            <option value="5">5%</option>
+            <option value="9">9%</option>
+            <option value="10">10%</option>
+          </select>
+          <div class="campaign-points" id="points-storebonus"></div>
         </div>
         <div class="campaign-item" onclick="toggleCampaign(this)" data-campaign="5day">
           <div class="campaign-checkbox"></div>
-          <div class="campaign-label">5の付く日<br><small style="color:#718096">税抜4%</small></div>
+          <div class="campaign-label">5の付く日<br><small style="color:#718096">税抜4% 上限1,000P</small></div>
           <div class="campaign-points" id="points-5day"></div>
         </div>
         <div class="campaign-item" onclick="toggleCampaign(this)" data-campaign="premiumsunday">
           <div class="campaign-checkbox"></div>
-          <div class="campaign-label">プレミアムな日曜日<br><small style="color:#718096">税抜5%</small></div>
+          <div class="campaign-label">プレミアムな日曜日<br><small style="color:#718096">税抜5% 上限2,000P</small></div>
           <div class="campaign-points" id="points-premiumsunday"></div>
         </div>
         <div class="campaign-item" onclick="toggleCampaign(this)" data-campaign="happyhour">
           <div class="campaign-checkbox"></div>
-          <div class="campaign-label">ハッピーアワー<br><small style="color:#718096">税抜4%</small></div>
+          <div class="campaign-label">ハッピーアワー<br><small style="color:#718096">税抜4% 上限3,000P</small></div>
           <div class="campaign-points" id="points-happyhour"></div>
         </div>
         <div class="campaign-item" onclick="toggleCampaign(this)" data-campaign="paypay6">
           <div class="campaign-checkbox"></div>
-          <div class="campaign-label">超PayPayまつり<br><small style="color:#718096">税抜6%</small></div>
+          <div class="campaign-label">超PayPayまつり<br><small style="color:#718096">税抜6% 上限2,000P</small></div>
           <div class="campaign-points" id="points-paypay6"></div>
         </div>
         <div class="campaign-item" onclick="toggleCampaign(this)" data-campaign="paypay2">
           <div class="campaign-checkbox"></div>
-          <div class="campaign-label">超PayPayまつり<br><small style="color:#718096">税抜2%</small></div>
+          <div class="campaign-label">超PayPayまつり<br><small style="color:#718096">税抜2% 上限2,000P</small></div>
           <div class="campaign-points" id="points-paypay2"></div>
         </div>
         <div class="campaign-item" onclick="toggleCampaign(this)" data-campaign="firstday">
           <div class="campaign-checkbox"></div>
-          <div class="campaign-label">ファーストDAY<br><small style="color:#718096">税抜3%</small></div>
+          <div class="campaign-label">ファーストDAY<br><small style="color:#718096">税抜3% 上限2,000P</small></div>
           <div class="campaign-points" id="points-firstday"></div>
         </div>
         <div class="campaign-item" onclick="toggleCampaign(this)" data-campaign="bonus5">
           <div class="campaign-checkbox"></div>
-          <div class="campaign-label">ボーナスストア<br><small style="color:#718096">税抜5%</small></div>
+          <div class="campaign-label">ボーナスストア<br><small style="color:#718096">税抜5% 上限なし</small></div>
           <div class="campaign-points" id="points-bonus5"></div>
         </div>
         <div class="campaign-item" onclick="toggleCampaign(this)" data-campaign="bonus10">
           <div class="campaign-checkbox"></div>
-          <div class="campaign-label">ボーナスストア<br><small style="color:#718096">税抜10%</small></div>
+          <div class="campaign-label">ボーナスストア<br><small style="color:#718096">税抜10% 上限なし</small></div>
           <div class="campaign-points" id="points-bonus10"></div>
         </div>
       </div>
     </div>
     
-    <div class="section preview-section">
-      <div class="section-title" style="color:#38a169;">計算結果プレビュー</div>
-      <div class="preview-grid">
-        <div class="preview-item">
-          <div class="preview-label">獲得ポイント</div>
-          <div class="preview-value" id="totalPoints">0<span class="preview-unit">pt</span></div>
-        </div>
-        <div class="preview-item">
-          <div class="preview-label">見込利益</div>
-          <div class="preview-value" id="expectedProfit">0<span class="preview-unit">円</span></div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="button-group">
-      <button class="btn btn-primary" id="saveBtn" onclick="saveToSheet()">📝 記録する</button>
-      <button class="btn btn-discord" onclick="postToDiscord()" disabled>💬 Discord配信</button>
-    </div>
-    
     <input type="hidden" id="editingRowNumber" value="">
     
+    <!-- 配信履歴 -->
     <div class="section">
       <div class="section-title">📋 配信履歴（最新20件）</div>
       <div class="history-list" id="historyList">
         <div class="history-empty">読み込み中...</div>
+      </div>
+    </div>
+    
+    </div><!-- main-content -->
+    
+    <div class="sidebar">
+      <div class="sidebar-sticky">
+        <div class="section preview-section">
+          <div class="section-title" style="color:#059669;">計算結果プレビュー</div>
+          <div class="preview-grid">
+            <div class="preview-item">
+              <div class="preview-label">獲得ポイント</div>
+              <div class="preview-value" id="totalPoints">0<span class="preview-unit">pt</span></div>
+            </div>
+            <div class="preview-item">
+              <div class="preview-label">見込利益</div>
+              <div class="preview-value" id="expectedProfit">0<span class="preview-unit">円</span></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="sidebar-buttons">
+          <button class="btn btn-primary" id="saveBtn" onclick="saveToSheet()">📝 記録する</button>
+          <button class="btn btn-discord" onclick="postToDiscord()" disabled>📋 確認して投稿</button>
+        </div>
       </div>
     </div>
   </div>
@@ -326,61 +375,12 @@
   <div class="toast" id="toast"></div>
   
   <script>
-    // ★★★ GASのデプロイURL ★★★
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbyXdgehZGBhfWNCRA5uwC1Jr6Kp8lzNy-6mCieFu4HaZBiC2jfPB5BXa7TlhHt_FHHF/exec';
-    
     document.getElementById('deliveryDate').valueAsDate = new Date();
     
     document.addEventListener('DOMContentLoaded', function() {
       loadHistory();
       setupRealtimeCalc();
     });
-    
-    // ============================================
-    // GAS API通信関数
-    // ============================================
-    
-    async function callGasGet(action, params = {}) {
-      const url = new URL(GAS_URL);
-      url.searchParams.append('action', action);
-      for (const key in params) {
-        url.searchParams.append(key, params[key]);
-      }
-      
-      try {
-        const response = await fetch(url.toString());
-        return await response.json();
-      } catch (error) {
-        console.error('API Error:', error);
-        throw error;
-      }
-    }
-    
-    async function callGasPost(action, data, rowNumber = null) {
-      const body = { action, data };
-      if (rowNumber !== null) {
-        body.rowNumber = rowNumber;
-      }
-      
-      try {
-        const response = await fetch(GAS_URL, {
-          method: 'POST',
-          body: JSON.stringify(body),
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8'
-          }
-        });
-        const text = await response.text();
-        return JSON.parse(text);
-      } catch (error) {
-        console.error('API Error:', error);
-        throw error;
-      }
-    }
-    
-    // ============================================
-    // キャンペーン・計算関連
-    // ============================================
     
     function toggleCampaign(el) {
       el.classList.toggle('active');
@@ -391,6 +391,7 @@
       document.getElementById('listPrice').addEventListener('input', calculatePreview);
       document.getElementById('coupon').addEventListener('input', calculatePreview);
       document.getElementById('consignmentPrice').addEventListener('input', calculatePreview);
+      document.getElementById('storeBonusPercent').addEventListener('change', calculatePreview);
     }
     
     function calculatePreview() {
@@ -430,100 +431,108 @@
       var campaigns = getActiveCampaigns();
       var pts;
       
-      pts = Math.floor(priceWithoutTax * 0.01);
+      // ストアポイント（税抜1% 上限1,000P）
+      pts = Math.min(Math.floor(priceWithoutTax * 0.01), 1000);
       updateCampaignPoints('storepoint', campaigns.includes('storepoint') ? pts : 0);
       if (campaigns.includes('storepoint')) totalPoints += pts;
       
-      pts = Math.floor(priceWithoutTax * 0.04);
+      // ストア上乗せ分（税抜 選択%）
+      var storeBonusPercent = Number(document.getElementById('storeBonusPercent').value) || 4;
+      pts = Math.floor(priceWithoutTax * (storeBonusPercent / 100));
+      updateCampaignPoints('storebonus', campaigns.includes('storebonus') ? pts : 0);
+      if (campaigns.includes('storebonus')) totalPoints += pts;
+      
+      // 5の付く日（税抜4% 上限1,000P）
+      pts = Math.min(Math.floor(priceWithoutTax * 0.04), 1000);
       updateCampaignPoints('5day', campaigns.includes('5day') ? pts : 0);
       if (campaigns.includes('5day')) totalPoints += pts;
       
-      pts = Math.floor(priceWithoutTax * 0.05);
+      // プレミアムな日曜日（税抜5% 上限2,000P）
+      pts = Math.min(Math.floor(priceWithoutTax * 0.05), 2000);
       updateCampaignPoints('premiumsunday', campaigns.includes('premiumsunday') ? pts : 0);
       if (campaigns.includes('premiumsunday')) totalPoints += pts;
       
-      pts = Math.floor(priceWithoutTax * 0.04);
+      // ハッピーアワー（税抜4% 上限3,000P）
+      pts = Math.min(Math.floor(priceWithoutTax * 0.04), 3000);
       updateCampaignPoints('happyhour', campaigns.includes('happyhour') ? pts : 0);
       if (campaigns.includes('happyhour')) totalPoints += pts;
       
-      pts = Math.floor(priceWithoutTax * 0.06);
+      // 超PayPayまつり 6%（税抜6% 上限2,000P）
+      pts = Math.min(Math.floor(priceWithoutTax * 0.06), 2000);
       updateCampaignPoints('paypay6', campaigns.includes('paypay6') ? pts : 0);
       if (campaigns.includes('paypay6')) totalPoints += pts;
       
-      pts = Math.floor(priceWithoutTax * 0.02);
+      // 超PayPayまつり 2%（税抜2% 上限2,000P）
+      pts = Math.min(Math.floor(priceWithoutTax * 0.02), 2000);
       updateCampaignPoints('paypay2', campaigns.includes('paypay2') ? pts : 0);
       if (campaigns.includes('paypay2')) totalPoints += pts;
       
-      pts = Math.floor(priceWithoutTax * 0.03);
+      // ファーストDAY（税抜3% 上限2,000P）
+      pts = Math.min(Math.floor(priceWithoutTax * 0.03), 2000);
       updateCampaignPoints('firstday', campaigns.includes('firstday') ? pts : 0);
       if (campaigns.includes('firstday')) totalPoints += pts;
       
+      // ボーナスストア 5%（税抜5% 上限なし）
       pts = Math.floor(priceWithoutTax * 0.05);
       updateCampaignPoints('bonus5', campaigns.includes('bonus5') ? pts : 0);
       if (campaigns.includes('bonus5')) totalPoints += pts;
       
+      // ボーナスストア 10%（税抜10% 上限なし）
       pts = Math.floor(priceWithoutTax * 0.10);
       updateCampaignPoints('bonus10', campaigns.includes('bonus10') ? pts : 0);
       if (campaigns.includes('bonus10')) totalPoints += pts;
       
-      // 見込利益
-      var expectedProfit = consignmentPrice - priceWithTax + totalPoints;
-      
+      // 表示更新
       document.getElementById('totalPoints').innerHTML = formatNumber(totalPoints) + '<span class="preview-unit">pt</span>';
+      
+      var expectedProfit = totalPoints + consignmentPrice - priceWithTax;
       var profitEl = document.getElementById('expectedProfit');
       profitEl.innerHTML = formatNumber(expectedProfit) + '<span class="preview-unit">円</span>';
       profitEl.className = 'preview-value' + (expectedProfit < 0 ? ' negative' : '');
     }
     
     function getActiveCampaigns() {
-      var items = document.querySelectorAll('.campaign-item.active');
-      return Array.from(items).map(function(item) { return item.dataset.campaign; });
-    }
-    
-    function updateCampaignPoints(campaign, pts) {
-      var el = document.getElementById('points-' + campaign);
-      if (el) el.textContent = pts > 0 ? '+' + formatNumber(pts) + 'pt' : '';
+      var active = [];
+      document.querySelectorAll('.campaign-item.active').forEach(function(item) {
+        active.push(item.dataset.campaign);
+      });
+      return active;
     }
     
     function updateFixedPoints(id, pts) {
+      document.getElementById('points-' + id).textContent = formatNumber(pts) + 'pt';
+    }
+    
+    function updateCampaignPoints(id, pts) {
       var el = document.getElementById('points-' + id);
-      if (el) el.textContent = pts > 0 ? '+' + formatNumber(pts) + 'pt' : '-';
+      if (el) el.textContent = pts > 0 ? '+' + formatNumber(pts) + 'pt' : '';
+    }
+    
+    function clearFixedPoints() {
+      ['paypaycard', 'card', 'moppy', 'lyp'].forEach(function(id) {
+        document.getElementById('points-' + id).textContent = '-';
+      });
     }
     
     function clearCampaignPoints() {
-      var campaigns = ['storepoint', '5day', 'premiumsunday', 'happyhour', 'paypay6', 'paypay2', 'firstday', 'bonus5', 'bonus10'];
-      campaigns.forEach(function(c) {
-        var el = document.getElementById('points-' + c);
+      ['storepoint', 'storebonus', '5day', 'premiumsunday', 'happyhour', 'paypay6', 'paypay2', 'firstday', 'bonus5', 'bonus10'].forEach(function(id) {
+        var el = document.getElementById('points-' + id);
         if (el) el.textContent = '';
       });
     }
     
-    function clearFixedPoints() {
-      var fixed = ['paypaycard', 'card', 'moppy', 'lyp'];
-      fixed.forEach(function(c) {
-        var el = document.getElementById('points-' + c);
-        if (el) el.textContent = '-';
-      });
-    }
-    
-    // ============================================
-    // フォーム関連
-    // ============================================
-    
     function getFormData() {
-      var listPrice = Number(document.getElementById('listPrice').value) || 0;
-      var coupon = Number(document.getElementById('coupon').value) || 0;
       return {
         date: document.getElementById('deliveryDate').value,
         type: document.getElementById('deliveryType').value,
         productName: document.getElementById('productName').value,
         productUrl: document.getElementById('productUrl').value,
-        listPrice: listPrice,
-        coupon: coupon,
-        priceWithTax: listPrice - coupon,
-        consignmentPrice: document.getElementById('consignmentPrice').value,
+        listPrice: Number(document.getElementById('listPrice').value) || 0,
+        coupon: Number(document.getElementById('coupon').value) || 0,
+        consignmentPrice: Number(document.getElementById('consignmentPrice').value) || 0,
         remarks: document.getElementById('remarks').value,
-        campaigns: getActiveCampaigns()
+        campaigns: getActiveCampaigns(),
+        storeBonusPercent: Number(document.getElementById('storeBonusPercent').value) || 4
       };
     }
     
@@ -536,7 +545,7 @@
       return true;
     }
     
-    async function saveToSheet() {
+    function saveToSheet() {
       if (!validateForm()) return;
       
       var btn = document.getElementById('saveBtn');
@@ -546,29 +555,34 @@
       var data = getFormData();
       var editingRow = document.getElementById('editingRowNumber').value;
       
-      try {
-        let result;
-        if (editingRow) {
-          result = await callGasPost('updateYahooData', data, parseInt(editingRow));
-        } else {
-          result = await callGasPost('saveYahooData', data);
-        }
-        
-        btn.disabled = false;
-        btn.innerHTML = '📝 記録する';
-        
-        if (result.success) {
-          showToast(result.message, 'success');
-          clearForm();
-          loadHistory();
-        } else {
-          showToast(result.message || 'エラーが発生しました', 'error');
-        }
-      } catch (error) {
-        btn.disabled = false;
-        btn.innerHTML = '📝 記録する';
-        showToast('保存に失敗しました', 'error');
+      if (editingRow) {
+        google.script.run.withSuccessHandler(onSaveSuccess).withFailureHandler(onSaveError)
+          .updateYahooData(parseInt(editingRow), data);
+      } else {
+        google.script.run.withSuccessHandler(onSaveSuccess).withFailureHandler(onSaveError)
+          .saveYahooData(data);
       }
+    }
+    
+    function onSaveSuccess(result) {
+      var btn = document.getElementById('saveBtn');
+      btn.disabled = false;
+      btn.innerHTML = '📝 記録する';
+      
+      if (result.success) {
+        showToast(result.message, 'success');
+        clearForm();
+        loadHistory();
+      } else {
+        showToast(result.message, 'error');
+      }
+    }
+    
+    function onSaveError(error) {
+      var btn = document.getElementById('saveBtn');
+      btn.disabled = false;
+      btn.innerHTML = '📝 記録する';
+      showToast('保存に失敗しました', 'error');
     }
     
     function clearForm() {
@@ -582,6 +596,7 @@
       document.getElementById('remarks').value = '';
       document.getElementById('editingRowNumber').value = '';
       document.getElementById('priceWithTaxDisplay').textContent = '0';
+      document.getElementById('storeBonusPercent').value = '4';
       document.querySelectorAll('.campaign-item.active').forEach(function(item) { item.classList.remove('active'); });
       document.querySelectorAll('.history-item.selected').forEach(function(item) { item.classList.remove('selected'); });
       clearFixedPoints();
@@ -590,39 +605,10 @@
       document.getElementById('expectedProfit').innerHTML = '0<span class="preview-unit">円</span>';
     }
     
-    function fillForm(data) {
-      document.getElementById('deliveryDate').value = data.date;
-      document.getElementById('deliveryType').value = data.type;
-      document.getElementById('productName').value = data.productName;
-      document.getElementById('productUrl').value = data.productUrl;
-      document.getElementById('listPrice').value = data.listPrice;
-      document.getElementById('coupon').value = data.coupon;
-      document.getElementById('consignmentPrice').value = data.consignmentPrice;
-      document.getElementById('remarks').value = data.remarks || '';
-      document.getElementById('editingRowNumber').value = data.rowNumber;
-      
-      document.querySelectorAll('.campaign-item').forEach(function(item) { item.classList.remove('active'); });
-      if (data.campaigns) {
-        data.campaigns.forEach(function(campaign) {
-          var item = document.querySelector('.campaign-item[data-campaign="' + campaign + '"]');
-          if (item) item.classList.add('active');
-        });
-      }
-      
-      calculatePreview();
-    }
-    
-    // ============================================
-    // 履歴関連
-    // ============================================
-    
-    async function loadHistory() {
-      try {
-        const history = await callGasGet('getYahooHistory');
-        renderHistory(history);
-      } catch (error) {
+    function loadHistory() {
+      google.script.run.withSuccessHandler(renderHistory).withFailureHandler(function() {
         document.getElementById('historyList').innerHTML = '<div class="history-empty">読み込みに失敗しました</div>';
-      }
+      }).getYahooHistory();
     }
     
     function renderHistory(history) {
@@ -649,33 +635,61 @@
       container.innerHTML = html;
     }
     
-    async function loadHistoryItem(rowNumber) {
+    function loadHistoryItem(rowNumber) {
       document.querySelectorAll('.history-item').forEach(function(item) { item.classList.remove('selected'); });
       var el = document.querySelector('.history-item[data-row="' + rowNumber + '"]');
       if (el) el.classList.add('selected');
       
-      try {
-        const data = await callGasGet('getYahooDataByRow', { rowNumber });
+      google.script.run.withSuccessHandler(function(data) {
         if (data) {
           fillForm(data);
           showToast('履歴データを読み込みました', 'success');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-      } catch (error) {
-        showToast('データの読み込みに失敗しました', 'error');
-      }
+      }).getYahooDataByRow(rowNumber);
     }
     
-    // ============================================
-    // UI関連
-    // ============================================
+    function fillForm(data) {
+      document.getElementById('deliveryDate').value = data.date;
+      document.getElementById('deliveryType').value = data.type;
+      document.getElementById('productName').value = data.productName;
+      document.getElementById('productUrl').value = data.productUrl;
+      document.getElementById('listPrice').value = data.listPrice;
+      document.getElementById('coupon').value = data.coupon;
+      document.getElementById('consignmentPrice').value = data.consignmentPrice;
+      document.getElementById('remarks').value = data.remarks || '';
+      document.getElementById('editingRowNumber').value = data.rowNumber;
+      
+      // ストア上乗せ分のパーセント設定
+      if (data.storeBonusPercent) {
+        document.getElementById('storeBonusPercent').value = data.storeBonusPercent;
+      }
+      
+      document.querySelectorAll('.campaign-item').forEach(function(item) { item.classList.remove('active'); });
+      if (data.campaigns) {
+        data.campaigns.forEach(function(campaign) {
+          var item = document.querySelector('.campaign-item[data-campaign="' + campaign + '"]');
+          if (item) item.classList.add('active');
+        });
+      }
+      
+      calculatePreview();
+    }
     
     function postToDiscord() {
       showToast('Discord配信機能は後ほど実装予定', 'error');
     }
     
+    function goBack() {
+      window.location.href = 'index.html';
+    }
+    
     function toggleMenu() {
       document.getElementById('menuDropdown').classList.toggle('show');
+    }
+    
+    function navigateTo(page) {
+      window.location.href = page + '.html';
     }
     
     document.addEventListener('click', function(e) {
