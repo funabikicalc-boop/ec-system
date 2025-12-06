@@ -240,31 +240,19 @@
       color: #64748b; font-size: 13px; margin-top: 2px;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    /* 予約投稿セクション */
-    .scheduled-section {
-      margin-top: 16px; padding: 10px 12px;
-      background: #fff; border-radius: 12px;
-      border: 1px solid #e2e8f0;
+    /* 予約投稿ボタン */
+    .btn-scheduled {
+      width: 100%; margin-top: 12px; padding: 12px 16px;
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 12px;
+      color: #475569; font-size: 13px; font-weight: 600;
       cursor: pointer; transition: all 0.2s;
-      max-height: 120px; overflow: hidden;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .scheduled-section:hover { border-color: #818cf8; background: #f5f3ff; }
-    .scheduled-header {
-      display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
+    .btn-scheduled:hover { border-color: #818cf8; background: #f5f3ff; color: #6366f1; }
+    .scheduled-badge {
+      background: #6366f1; color: #fff; font-size: 11px; font-weight: 700;
+      padding: 2px 8px; border-radius: 10px; min-width: 20px; text-align: center;
     }
-    .scheduled-icon { font-size: 14px; }
-    .scheduled-title { font-size: 12px; font-weight: 600; color: #1e293b; }
-    .scheduled-count {
-      margin-left: auto; font-size: 11px; font-weight: 600;
-      color: #6366f1; background: #eef2ff; padding: 2px 6px; border-radius: 8px;
-    }
-    .scheduled-list { max-height: 70px; overflow: hidden; }
-    .scheduled-item {
-      font-size: 11px; color: #64748b; padding: 2px 0;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .scheduled-item-ec { color: #6366f1; font-weight: 600; }
-    .scheduled-empty { font-size: 11px; color: #94a3b8; text-align: center; padding: 4px 0; }
     /* 予約モーダル */
     .scheduled-modal-content {
       background: #fff; border-radius: 16px; width: 90%; max-width: 500px;
@@ -818,17 +806,10 @@
           <button class="btn btn-discord" onclick="generateTemplate()">📋 確認して投稿</button>
         </div>
         
-        <!-- 予約投稿一覧 -->
-        <div class="scheduled-section" id="scheduledSection" onclick="openScheduledModal()">
-          <div class="scheduled-header">
-            <span class="scheduled-icon">📅</span>
-            <span class="scheduled-title">予約投稿</span>
-            <span class="scheduled-count" id="scheduledCount">0件</span>
-          </div>
-          <div class="scheduled-list" id="scheduledList">
-            <div class="scheduled-empty">予約なし</div>
-          </div>
-        </div>
+        <!-- 予約投稿確認ボタン -->
+        <button class="btn btn-scheduled" id="scheduledBtn" onclick="openScheduledModal()">
+          📅 予約中の投稿を確認 <span class="scheduled-badge" id="scheduledCount" style="display:none;">0</span>
+        </button>
       </div>
     </div><!-- sidebar -->
   </div><!-- page-wrapper -->
@@ -1884,26 +1865,13 @@
     function renderScheduledSidebar() {
       var pendingPosts = scheduledPosts.filter(function(p) { return p.status === '予約中'; });
       var countEl = document.getElementById('scheduledCount');
-      var listEl = document.getElementById('scheduledList');
       
-      countEl.textContent = pendingPosts.length + '件';
-      
-      if (pendingPosts.length === 0) {
-        listEl.innerHTML = '<div class="scheduled-empty">予約なし</div>';
-        return;
+      if (pendingPosts.length > 0) {
+        countEl.textContent = pendingPosts.length;
+        countEl.style.display = 'inline-block';
+      } else {
+        countEl.style.display = 'none';
       }
-      
-      var html = '';
-      pendingPosts.slice(0, 3).forEach(function(post) {
-        html += '<div class="scheduled-item">' +
-          '<span class="scheduled-item-ec">' + post.ecType + '</span> / ' + 
-          (post.productName || '商品名なし') +
-          '</div>';
-      });
-      if (pendingPosts.length > 3) {
-        html += '<div class="scheduled-item" style="color:#6366f1;">他 ' + (pendingPosts.length - 3) + '件...</div>';
-      }
-      listEl.innerHTML = html;
     }
     
     function openScheduledModal() {
