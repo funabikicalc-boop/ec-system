@@ -136,6 +136,8 @@
     .preview-unit { font-size: 14px; font-weight: 400; }
     .sidebar-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
     .sidebar-buttons .btn { width: 100%; }
+    .sidebar-buttons #editButtons { display: flex; gap: 8px; }
+    .sidebar-buttons #editButtons .btn { flex: 1; padding: 14px 12px; font-size: 13px; }
     .button-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
     .btn {
       padding: 16px 24px; border-radius: 12px; font-size: 15px; font-weight: 600;
@@ -802,8 +804,15 @@
           </div>
         </div>
         <div class="sidebar-buttons">
-          <button class="btn btn-primary" id="saveBtn" onclick="saveToSheet()">📝 記録する</button>
-          <button class="btn btn-discord" onclick="generateTemplate()">📋 確認して投稿</button>
+          <!-- 新規入力時 -->
+          <div id="newEntryButtons">
+            <button class="btn btn-discord" id="saveAndPostBtn" onclick="generateTemplate()">📝 記録して投稿</button>
+          </div>
+          <!-- 編集時 -->
+          <div id="editButtons" style="display:none;">
+            <button class="btn btn-secondary" id="updateBtn" onclick="updateOnly()">📝 更新する</button>
+            <button class="btn btn-discord" onclick="generateTemplate()">📋 投稿する</button>
+          </div>
         </div>
         
         <!-- 予約投稿確認ボタン -->
@@ -1250,12 +1259,106 @@
       return true;
     }
     
+    // 更新のみ（編集時）
+    function updateOnly() {
+      if (!validateForm()) return;
+      
+      var btn = document.getElementById('updateBtn');
+      btn.disabled = true;
+      btn.innerHTML = '⏳ 更新中...';
+      
+      var data, editingRow, requestBody;
+      
+      if (currentTab === 'apple') {
+        data = getAppleFormData();
+        data.isApple = true;
+        editingRow = document.getElementById('appleEditingRowNumber').value;
+      } else {
+        data = getFormData();
+        editingRow = document.getElementById('editingRowNumber').value;
+      }
+      
+      if (!editingRow) {
+        showToast('更新対象がありません', 'error');
+        btn.disabled = false;
+        btn.innerHTML = '📝 更新する';
+        return;
+      }
+      
+      requestBody = { action: 'updateRakutenData', rowNumber: parseInt(editingRow), data: data };
+      
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(requestBody)
+      })
+      .then(function(response) { return response.json(); })
+      .then(function(result) {
+        btn.disabled = false;
+        btn.innerHTML = '📝 更新する';
+        if (result.success) {
+          showToast('更新しました', 'success');
+          loadHistory();
+        } else {
+          showToast(result.message, 'error');
+        }
+      })
+      .catch(function(error) {
+        btn.disabled = false;
+        btn.innerHTML = '📝 更新する';
+        showToast('更新に失敗しました', 'error');
+      });
+    }
+    
+    // 保存処理（投稿時に呼ばれる）
+    function saveToSheetForPost(callback) {
+      var data, editingRow, requestBody;
+      
+      if (currentTab === 'apple') {
+        data = getAppleFormData();
+        data.isApple = true;
+        editingRow = document.getElementById('appleEditingRowNumber').value;
+        requestBody = editingRow 
+          ? { action: 'updateRakutenData', rowNumber: parseInt(editingRow), data: data }
+          : { action: 'saveRakutenData', data: data };
+      } else {
+        data = getFormData();
+        editingRow = document.getElementById('editingRowNumber').value;
+        requestBody = editingRow 
+          ? { action: 'updateRakutenData', rowNumber: parseInt(editingRow), data: data }
+          : { action: 'saveRakutenData', data: data };
+      }
+      
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(requestBody)
+      })
+      .then(function(response) { return response.json(); })
+      .then(function(result) {
+        if (result.success) {
+          loadHistory();
+          if (callback) callback(true);
+        } else {
+          showToast(result.message, 'error');
+          if (callback) callback(false);
+        }
+      })
+      .catch(function(error) {
+        showToast('保存に失敗しました', 'error');
+        if (callback) callback(false);
+      });
+    }
+    
+    // 旧saveToSheet（互換性のため残す）
     function saveToSheet() {
       if (!validateForm()) return;
       
       var btn = document.getElementById('saveBtn');
-      btn.disabled = true;
-      btn.innerHTML = '⏳ 保存中...';
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '⏳ 保存中...';
+      }
       
       var data, editingRow, requestBody;
       
@@ -1286,8 +1389,10 @@
     
     function onSaveSuccess(result) {
       var btn = document.getElementById('saveBtn');
-      btn.disabled = false;
-      btn.innerHTML = '📝 記録する';
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '📝 記録する';
+      }
       
       if (result.success) {
         showToast(result.message, 'success');
@@ -1300,8 +1405,10 @@
     
     function onSaveError(error) {
       var btn = document.getElementById('saveBtn');
-      btn.disabled = false;
-      btn.innerHTML = '📝 記録する';
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '📝 記録する';
+      }
       showToast('保存に失敗しました', 'error');
     }
     
@@ -1327,6 +1434,10 @@
       clearCampaignPoints();
       document.getElementById('totalPoints').innerHTML = '0<span class="preview-unit">pt</span>';
       document.getElementById('expectedProfit').innerHTML = '0<span class="preview-unit">円</span>';
+      
+      // 新規モードに切り替え
+      switchToNewMode();
+      updateSidebarProductName();
     }
     
     function loadHistory() {
@@ -1410,7 +1521,22 @@
       
       setAltplan(data.altplan || 'なし');
       
+      // 編集モードに切り替え
+      switchToEditMode();
+      
       calculatePreview();
+      updateSidebarProductName();
+    }
+    
+    // ボタン表示切り替え
+    function switchToEditMode() {
+      document.getElementById('newEntryButtons').style.display = 'none';
+      document.getElementById('editButtons').style.display = 'flex';
+    }
+    
+    function switchToNewMode() {
+      document.getElementById('newEntryButtons').style.display = 'block';
+      document.getElementById('editButtons').style.display = 'none';
     }
     
     function generateTemplate() {
@@ -1738,66 +1864,84 @@
         productName = document.getElementById('productName').value;
       }
       
-      if (postType === 'schedule') {
-        // 予約投稿
-        var scheduleDate = document.getElementById('scheduleDate').value;
-        var scheduleTime = document.getElementById('scheduleTime').value;
-        
-        if (!scheduleDate || !scheduleTime) {
-          showToast('予約日時を設定してください', 'error');
+      var btn = document.getElementById('postBtn');
+      btn.disabled = true;
+      btn.textContent = '⏳ 処理中...';
+      
+      // まずシートに保存
+      saveToSheetForPost(function(saveSuccess) {
+        if (!saveSuccess) {
+          btn.disabled = false;
+          btn.textContent = '🚀 投稿する';
           return;
         }
         
-        var scheduledAt = scheduleDate + 'T' + scheduleTime + ':00';
-        var scheduledDateTime = new Date(scheduledAt);
-        
-        if (scheduledDateTime <= new Date()) {
-          showToast('予約日時は現在より後に設定してください', 'error');
-          return;
-        }
-        
-        // 予約データを保存
-        var btn = document.getElementById('postBtn');
-        btn.disabled = true;
-        btn.textContent = '⏳ 保存中...';
-        
-        fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({
-            action: 'saveDiscordSchedule',
-            data: {
-              message: message,
-              scheduledAt: scheduledAt,
-              ecType: '楽天',
-              productName: productName,
-              tabType: currentTab,
-              status: '予約中'
+        if (postType === 'schedule') {
+          // 予約投稿
+          var scheduleDate = document.getElementById('scheduleDate').value;
+          var scheduleTime = document.getElementById('scheduleTime').value;
+          
+          if (!scheduleDate || !scheduleTime) {
+            showToast('予約日時を設定してください', 'error');
+            btn.disabled = false;
+            btn.textContent = '🚀 投稿する';
+            return;
+          }
+          
+          var scheduledAt = scheduleDate + 'T' + scheduleTime + ':00';
+          var scheduledDateTime = new Date(scheduledAt);
+          
+          if (scheduledDateTime <= new Date()) {
+            showToast('予約日時は現在より後に設定してください', 'error');
+            btn.disabled = false;
+            btn.textContent = '🚀 投稿する';
+            return;
+          }
+          
+          // 予約データを保存
+          fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({
+              action: 'saveDiscordSchedule',
+              data: {
+                message: message,
+                scheduledAt: scheduledAt,
+                ecType: '楽天',
+                productName: productName,
+                tabType: currentTab,
+                status: '予約中'
+              }
+            })
+          })
+          .then(function(response) { return response.json(); })
+          .then(function(result) {
+            btn.disabled = false;
+            btn.textContent = '🚀 投稿する';
+            if (result.success) {
+              showToast('記録＆予約しました: ' + scheduleDate + ' ' + scheduleTime, 'success');
+              closeTemplateModal();
+              clearForm();
+              loadScheduledPosts();
+            } else {
+              showToast(result.message || '予約に失敗しました', 'error');
             }
           })
-        })
-        .then(function(response) { return response.json(); })
-        .then(function(result) {
+          .catch(function(error) {
+            btn.disabled = false;
+            btn.textContent = '🚀 投稿する';
+            showToast('予約に失敗しました', 'error');
+          });
+          
+        } else {
+          // 今すぐ投稿（Webhook未設定）
           btn.disabled = false;
-          btn.textContent = '📅 予約する';
-          if (result.success) {
-            showToast('予約しました: ' + scheduleDate + ' ' + scheduleTime, 'success');
-            closeTemplateModal();
-            loadScheduledPosts(); // 予約一覧を更新
-          } else {
-            showToast(result.message || '予約に失敗しました', 'error');
-          }
-        })
-        .catch(function(error) {
-          btn.disabled = false;
-          btn.textContent = '📅 予約する';
-          showToast('予約に失敗しました', 'error');
-        });
-        
-      } else {
-        // 今すぐ投稿（Webhook未設定）
-        showToast('Webhook URLが未設定です', 'error');
-      }
+          btn.textContent = '🚀 投稿する';
+          showToast('記録しました（Webhook URLが未設定のため投稿はスキップ）', 'success');
+          closeTemplateModal();
+          clearForm();
+        }
+      });
     }
     
     function copyTemplate() {
