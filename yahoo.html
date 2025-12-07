@@ -931,12 +931,16 @@
     
     function fillForm(data) {
       document.getElementById('deliveryDate').value = data.date;
-      document.getElementById('deliveryType').value = data.type;
-      document.getElementById('productName').value = data.productName;
-      document.getElementById('productUrl').value = data.productUrl;
-      document.getElementById('listPrice').value = data.listPrice;
-      document.getElementById('coupon').value = data.coupon;
-      document.getElementById('consignmentPrice').value = data.consignmentPrice;
+      document.getElementById('campaignName').value = data.campaignName || '';
+      document.getElementById('deliveryType').value = data.type || '';
+      document.getElementById('productName').value = data.productName || '';
+      document.getElementById('requiredCondition').value = data.requiredCondition || '';
+      document.getElementById('productUrl').value = data.productUrl || '';
+      document.getElementById('entryUrl').value = data.entryUrl || '';
+      document.getElementById('couponUrl').value = data.couponUrl || '';
+      document.getElementById('listPrice').value = data.listPrice || '';
+      document.getElementById('coupon').value = data.coupon || '';
+      document.getElementById('consignmentPrice').value = data.consignmentPrice || '';
       document.getElementById('remarks').value = data.remarks || '';
       document.getElementById('editingRowNumber').value = data.rowNumber;
       
