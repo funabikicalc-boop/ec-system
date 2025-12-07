@@ -807,6 +807,80 @@
     }
     
     function getFormData() {
+      var listPrice = Number(document.getElementById('listPrice').value) || 0;
+      var coupon = Number(document.getElementById('coupon').value) || 0;
+      var consignmentPrice = Number(document.getElementById('consignmentPrice').value) || 0;
+      var storeBonusPercent = Number(document.getElementById('storeBonusPercent').value) || 4;
+      var campaigns = getActiveCampaigns();
+      
+      // 計算
+      var priceWithTax = listPrice - coupon;
+      var priceWithoutTax = Math.floor(priceWithTax / 1.1);
+      
+      // 固定ポイント
+      var paypayCardPts = Math.floor(priceWithTax * 0.01);
+      var cardPts = Math.floor(priceWithoutTax * 0.03);
+      var powlPts = Math.floor(priceWithoutTax * 0.013);
+      var lypPts = Math.floor(priceWithoutTax * 0.02);
+      var fixedTotal = paypayCardPts + cardPts + powlPts + lypPts;
+      
+      // キャンペーンポイント
+      var campaignTotal = 0;
+      var campaignPoints = {};
+      
+      // ストアポイント（税抜1% 上限1,000P）
+      var pts = Math.min(Math.floor(priceWithoutTax * 0.01), 1000);
+      campaignPoints.storepoint = campaigns.includes('storepoint') ? pts : 0;
+      if (campaigns.includes('storepoint')) campaignTotal += pts;
+      
+      // ストア上乗せ分（税抜 選択%）
+      pts = Math.floor(priceWithoutTax * (storeBonusPercent / 100));
+      campaignPoints.storebonus = campaigns.includes('storebonus') ? pts : 0;
+      if (campaigns.includes('storebonus')) campaignTotal += pts;
+      
+      // 5の付く日（税抜4% 上限1,000P）
+      pts = Math.min(Math.floor(priceWithoutTax * 0.04), 1000);
+      campaignPoints['5day'] = campaigns.includes('5day') ? pts : 0;
+      if (campaigns.includes('5day')) campaignTotal += pts;
+      
+      // プレミアムな日曜日（税抜5% 上限2,000P）
+      pts = Math.min(Math.floor(priceWithoutTax * 0.05), 2000);
+      campaignPoints.premiumsunday = campaigns.includes('premiumsunday') ? pts : 0;
+      if (campaigns.includes('premiumsunday')) campaignTotal += pts;
+      
+      // ハッピーアワー（税抜4% 上限3,000P）
+      pts = Math.min(Math.floor(priceWithoutTax * 0.04), 3000);
+      campaignPoints.happyhour = campaigns.includes('happyhour') ? pts : 0;
+      if (campaigns.includes('happyhour')) campaignTotal += pts;
+      
+      // 超PayPayまつり 6%（税抜6% 上限2,000P）
+      pts = Math.min(Math.floor(priceWithoutTax * 0.06), 2000);
+      campaignPoints.paypay6 = campaigns.includes('paypay6') ? pts : 0;
+      if (campaigns.includes('paypay6')) campaignTotal += pts;
+      
+      // 超PayPayまつり 2%（税抜2% 上限2,000P）
+      pts = Math.min(Math.floor(priceWithoutTax * 0.02), 2000);
+      campaignPoints.paypay2 = campaigns.includes('paypay2') ? pts : 0;
+      if (campaigns.includes('paypay2')) campaignTotal += pts;
+      
+      // ファーストDAY（税抜3% 上限2,000P）
+      pts = Math.min(Math.floor(priceWithoutTax * 0.03), 2000);
+      campaignPoints.firstday = campaigns.includes('firstday') ? pts : 0;
+      if (campaigns.includes('firstday')) campaignTotal += pts;
+      
+      // ボーナスストア 5%（税抜5% 上限なし）
+      pts = Math.floor(priceWithoutTax * 0.05);
+      campaignPoints.bonus5 = campaigns.includes('bonus5') ? pts : 0;
+      if (campaigns.includes('bonus5')) campaignTotal += pts;
+      
+      // ボーナスストア 10%（税抜10% 上限なし）
+      pts = Math.floor(priceWithoutTax * 0.10);
+      campaignPoints.bonus10 = campaigns.includes('bonus10') ? pts : 0;
+      if (campaigns.includes('bonus10')) campaignTotal += pts;
+      
+      var totalPoints = fixedTotal + campaignTotal;
+      var expectedProfit = totalPoints + consignmentPrice - priceWithTax;
+      
       return {
         date: document.getElementById('deliveryDate').value,
         campaignName: document.getElementById('campaignName').value,
@@ -816,12 +890,24 @@
         productUrl: document.getElementById('productUrl').value,
         entryUrl: document.getElementById('entryUrl').value,
         couponUrl: document.getElementById('couponUrl').value,
-        listPrice: Number(document.getElementById('listPrice').value) || 0,
-        coupon: Number(document.getElementById('coupon').value) || 0,
-        consignmentPrice: Number(document.getElementById('consignmentPrice').value) || 0,
+        listPrice: listPrice,
+        coupon: coupon,
+        priceWithTax: priceWithTax,
+        priceWithoutTax: priceWithoutTax,
+        consignmentPrice: consignmentPrice,
         remarks: document.getElementById('remarks').value,
-        campaigns: getActiveCampaigns(),
-        storeBonusPercent: Number(document.getElementById('storeBonusPercent').value) || 4
+        campaigns: campaigns,
+        storeBonusPercent: storeBonusPercent,
+        // 計算済みポイント
+        fixedPoints: {
+          paypayCard: paypayCardPts,
+          card: cardPts,
+          powl: powlPts,
+          lyp: lypPts
+        },
+        campaignPoints: campaignPoints,
+        totalPoints: totalPoints,
+        expectedProfit: expectedProfit
       };
     }
     
