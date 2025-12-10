@@ -565,12 +565,16 @@
           <div class="campaign-label">その他キャンペーン<br><small style="color:#718096">税抜</small></div>
           <div class="campaign-points" id="points-other"></div>
           <select class="campaign-select" id="otherPercent" onclick="event.stopPropagation()">
+            <option value="1">1%</option>
+            <option value="2">2%</option>
             <option value="3">3%</option>
             <option value="4">4%</option>
             <option value="5">5%</option>
             <option value="6">6%</option>
             <option value="7">7%</option>
             <option value="8">8%</option>
+            <option value="9">9%</option>
+            <option value="10">10%</option>
           </select>
         </div>
       </div>
@@ -779,12 +783,16 @@
           <div class="campaign-label">その他キャンペーン<br><small style="color:#718096">税込</small></div>
           <div class="campaign-points" id="apple-points-other"></div>
           <select class="campaign-select" id="appleOtherPercent" onclick="event.stopPropagation()">
+            <option value="1">1%</option>
+            <option value="2">2%</option>
             <option value="3">3%</option>
             <option value="4">4%</option>
             <option value="5">5%</option>
             <option value="6">6%</option>
             <option value="7">7%</option>
             <option value="8">8%</option>
+            <option value="9">9%</option>
+            <option value="10">10%</option>
           </select>
         </div>
       </div>
@@ -1626,7 +1634,6 @@
       }
       if (data.campaignEntryUrl) {
         lines.push('📢キャンペーンエントリー＆クーポン取得リンク');
-        if (data.campaignName) lines.push(data.campaignName);
         lines.push(data.campaignEntryUrl);
         lines.push('');
       }
@@ -1718,7 +1725,6 @@
       }
       if (data.campaignEntryUrl) {
         lines.push('📢キャンペーンエントリー＆クーポン取得リンク');
-        if (data.campaignName) lines.push(data.campaignName);
         lines.push(data.campaignEntryUrl);
         lines.push('');
       }
