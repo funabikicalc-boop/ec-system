@@ -423,8 +423,8 @@
           <span class="fixed-points" id="points-card">-</span>
         </div>
         <div class="fixed-item">
-          <span class="fixed-label">colleee</span>
-          <span class="fixed-rate">税抜0.8%</span>
+          <span class="fixed-label">GMOポイ活</span>
+          <span class="fixed-rate">税込0.8%</span>
           <span class="fixed-points" id="points-pointsite">-</span>
         </div>
       </div>
@@ -638,7 +638,7 @@
       // 固定ポイント
       var basePoints = Math.floor(priceWithoutTax * 0.01);
       var cardPoints = Math.floor(priceWithTax * 0.02);
-      var pointSitePoints = Math.floor(priceWithoutTax * 0.008);
+      var pointSitePoints = Math.floor(priceWithTax * 0.008);
       
       totalPoints += basePoints + cardPoints + pointSitePoints;
       
@@ -958,7 +958,7 @@
       var fixedPts = {
         base: Math.floor(priceWithoutTax * 0.01),
         card: Math.floor(priceWithTax * 0.02),
-        pointsite: Math.floor(priceWithoutTax * 0.008)
+        pointsite: Math.floor(priceWithTax * 0.008)
       };
       
       var campaignPts = calculateCampaignPointsForTemplate(data, priceWithoutTax);
@@ -980,7 +980,7 @@
       lines.push('📌購入期間：本日中');
       lines.push('🔹決済方法：dカード決済');
       lines.push('🔹会員条件：dポイントクラブ会員');
-      lines.push('🔹経由するポイントサイト：colleee');
+      lines.push('🔹経由するポイントサイト：GMOポイ活');
       lines.push('');
       if (data.entryLink) {
         lines.push('📢キャンペーンエントリーリンク');
@@ -988,7 +988,7 @@
         lines.push('');
       }
       lines.push('🎯経由するポイントサイト');
-      lines.push('🔗colleee https://colleee.net/programs/1327?fid=6315cb148c424780cbd4a892e9876d81&pr_id=3');
+      lines.push('🔗GMOポイ活 https://poikatu.gmob.jp/');
       lines.push('');
       lines.push('🎯購入対象商品🛒');
       lines.push('商品名：' + data.productName);
@@ -1003,7 +1003,7 @@
       lines.push('📌ポイント内訳：');
       lines.push('基本税抜1% ' + fixedPts.base + 'pt');
       lines.push('dカード税込2% ' + fixedPts.card + 'pt');
-      lines.push('colleee税抜0.8% ' + fixedPts.pointsite + 'pt');
+      lines.push('GMOポイ活税込0.8% ' + fixedPts.pointsite + 'pt');
       
       // 選択されたキャンペーンのポイント
       campaignPts.lines.forEach(function(line) {
