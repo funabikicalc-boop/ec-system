@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>その他EC配信 - EC配信システム</title>
@@ -8,156 +9,349 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
-      background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
       min-height: 100vh; padding: 16px; padding-bottom: 100px;
     }
-    .container { max-width: 600px; margin: 0 auto; }
+    .page-wrapper { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; }
+    .main-content { flex: 1; max-width: 900px; }
+    .sidebar { width: 280px; flex-shrink: 0; }
+    .sidebar-sticky { position: sticky; top: 140px; }
     .hamburger-menu { position: relative; margin-bottom: 8px; }
     .hamburger-btn {
       width: 44px; height: 44px; border-radius: 10px; background: #fff;
-      border: 1px solid #e2e8f0; color: #4a5568; font-size: 24px; cursor: pointer;
+      border: 1px solid #e2e8f0; color: #475569; font-size: 24px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
-    .hamburger-btn:hover { background: #f7fafc; }
+    .hamburger-btn:hover { background: #f8fafc; }
     .menu-dropdown {
       display: none; position: absolute; top: 50px; left: 0; background: #fff;
-      border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.12);
       min-width: 200px; z-index: 1000; overflow: hidden;
     }
     .menu-dropdown.show { display: block; }
     .menu-dropdown a {
-      display: block; padding: 12px 16px; color: #2d3748; text-decoration: none;
-      font-size: 14px; border-bottom: 1px solid #f0f0f0;
+      display: block; padding: 12px 16px; color: #1e293b; text-decoration: none;
+      font-size: 14px; border-bottom: 1px solid #f1f5f9;
     }
     .menu-dropdown a:last-child { border-bottom: none; }
-    .menu-dropdown a:hover { background: #f7fafc; }
-    .menu-dropdown a.disabled { opacity: 0.5; pointer-events: none; }
-    .header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 8px 0; }
+    .menu-dropdown a:hover { background: #f8fafc; }
+    .header { 
+      display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 16px 20px;
+      background: #fff; border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
     .back-btn {
-      width: 40px; height: 40px; border-radius: 10px; background: #fff;
-      border: 1px solid #e2e8f0; color: #4a5568; font-size: 20px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; text-decoration: none;
+      width: 40px; height: 40px; border-radius: 10px; background: #f8fafc;
+      border: 1px solid #e2e8f0; color: #475569; font-size: 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
     }
-    .header-title { display: flex; align-items: center; gap: 8px; }
+    .back-btn:hover { background: #f1f5f9; }
+    .header-title { display: flex; align-items: center; gap: 12px; }
     .header-icon {
-      width: 36px; height: 36px; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-      border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;
+      width: 44px; height: 44px; background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 800; color: #fff;
     }
-    .header h1 { color: #2d3748; font-size: 20px; font-weight: 600; }
+    .header h1 { color: #1e293b; font-size: 22px; font-weight: 700; }
     .section {
-      background: #fff; border: 1px solid #e2e8f0; border-radius: 16px;
-      padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      background: #fff; border-radius: 20px;
+      padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     }
     .section-title {
-      color: #2d3748; font-size: 14px; font-weight: 600; margin-bottom: 16px;
-      display: flex; align-items: center; gap: 8px;
+      color: #1e293b; font-size: 15px; font-weight: 700; margin-bottom: 18px;
+      display: flex; align-items: center; gap: 10px;
     }
-    .section-title::before { content: ''; width: 4px; height: 16px; background: #6366f1; border-radius: 2px; }
+    .section-title::before { content: ''; width: 4px; height: 18px; background: linear-gradient(180deg, #6366f1, #8b5cf6); border-radius: 2px; }
     .form-group { margin-bottom: 16px; }
-    .form-label { display: block; color: #718096; font-size: 13px; margin-bottom: 6px; }
-    .form-input, .form-select {
-      width: 100%; padding: 12px 14px; background: #f7fafc;
-      border: 1px solid #e2e8f0; border-radius: 10px; color: #2d3748; font-size: 15px;
+    .form-group:last-child { margin-bottom: 0; }
+    .form-label { display: block; color: #64748b; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; padding: 12px 14px; background: #f8fafc;
+      border: 2px solid #e2e8f0; border-radius: 10px; color: #1e293b; font-size: 15px;
+      transition: all 0.2s;
     }
-    .form-input:focus, .form-select:focus { outline: none; border-color: #6366f1; background: #fff; }
-    .form-input::placeholder { color: #a0aec0; }
+    .form-textarea { min-height: 80px; resize: vertical; font-family: inherit; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: #6366f1; background: #fff; }
+    .form-input::placeholder, .form-textarea::placeholder { color: #94a3b8; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .campaign-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .campaign-item {
-      display: flex; align-items: center; gap: 10px; padding: 12px;
-      background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 10px; cursor: pointer;
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .form-row-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
+    .calc-display {
+      background: #f1f5f9; border: 2px solid #e2e8f0; border-radius: 10px;
+      padding: 12px 14px; color: #1e293b; font-size: 15px; font-weight: 600;
     }
-    .campaign-item:hover { background: #edf2f7; }
+    .campaign-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .campaign-item {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px;
+      background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .campaign-item:hover { background: #f1f5f9; border-color: #cbd5e1; }
     .campaign-item.active { background: #eef2ff; border-color: #6366f1; }
     .campaign-checkbox {
-      width: 20px; height: 20px; border-radius: 5px; border: 2px solid #cbd5e0;
+      width: 20px; height: 20px; border-radius: 6px; border: 2px solid #cbd5e1;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: all 0.2s;
     }
     .campaign-item.active .campaign-checkbox { background: #6366f1; border-color: #6366f1; }
     .campaign-checkbox::after { content: '✓'; color: #fff; font-size: 12px; opacity: 0; }
     .campaign-item.active .campaign-checkbox::after { opacity: 1; }
-    .campaign-label { color: #4a5568; font-size: 13px; line-height: 1.3; }
-    .preview-section { background: #f0fff4; border-color: #9ae6b4; }
-    .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .preview-item { text-align: center; padding: 16px; background: #fff; border-radius: 12px; border: 1px solid #c6f6d5; }
-    .preview-label { color: #718096; font-size: 12px; margin-bottom: 6px; }
-    .preview-value { color: #38a169; font-size: 24px; font-weight: 700; }
-    .preview-value.negative { color: #e53e3e; }
+    .campaign-label { color: #475569; font-size: 13px; line-height: 1.3; flex: 1; }
+    .campaign-item.active .campaign-label { color: #1e293b; font-weight: 500; }
+    .campaign-points {
+      width: 100%; margin-top: 4px; font-size: 12px; font-weight: 600; color: #6366f1;
+      display: none;
+    }
+    .campaign-item.active .campaign-points { display: block; }
+    .campaign-select {
+      padding: 4px 8px; font-size: 12px; border-radius: 6px; border: 1px solid #cbd5e1;
+      background: #fff; cursor: pointer;
+    }
+    .campaign-item.has-select { flex-wrap: wrap; }
+    .fixed-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .fixed-item {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      padding: 12px 8px; background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 10px;
+    }
+    .fixed-label { color: #1e293b; font-size: 12px; font-weight: 600; }
+    .fixed-rate { color: #64748b; font-size: 10px; }
+    .fixed-points { color: #6366f1; font-size: 14px; font-weight: 700; }
+    .preview-section { 
+      background: #fff; 
+      border: 2px solid #10b981;
+    }
+    .preview-section .section-title { color: #059669; }
+    .preview-section .section-title::before { background: linear-gradient(180deg, #10b981, #34d399); }
+    .preview-grid { display: flex; flex-direction: column; gap: 12px; }
+    .preview-item { 
+      text-align: center; padding: 20px 16px; 
+      background: #f0fdf4; border-radius: 14px; 
+      border: 1px solid #bbf7d0;
+    }
+    .preview-label { color: #64748b; font-size: 12px; margin-bottom: 6px; }
+    .preview-value { color: #059669; font-size: 28px; font-weight: 700; }
+    .preview-value.negative { color: #dc2626; }
     .preview-unit { font-size: 14px; font-weight: 400; }
-    .button-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .sidebar-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+    .sidebar-buttons .btn { width: 100%; }
+    .sidebar-buttons #editButtons { display: flex; gap: 8px; }
+    .sidebar-buttons #editButtons .btn { flex: 1; padding: 14px 12px; font-size: 13px; }
     .btn {
       padding: 16px 24px; border-radius: 12px; font-size: 15px; font-weight: 600;
       border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all 0.2s;
     }
-    .btn-primary { background: linear-gradient(135deg, #6366f1 0%, #5558e3 100%); color: #fff; }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99,102,241,0.3); }
+    .btn-primary { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: #fff; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99,102,241,0.4); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
     .btn-discord { background: linear-gradient(135deg, #5865F2 0%, #4752c4 100%); color: #fff; }
+    .btn-discord:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(88,101,242,0.4); }
     .btn-discord:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-secondary { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #fff; }
+    .btn-secondary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(249,115,22,0.4); }
     .history-list { display: flex; flex-direction: column; gap: 8px; }
     .history-item {
-      padding: 14px 16px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 10px; cursor: pointer;
+      padding: 14px 16px; background: #f8fafc; border: 2px solid #e2e8f0;
+      border-radius: 12px; cursor: pointer; transition: all 0.2s;
     }
-    .history-item:hover { background: #edf2f7; }
+    .history-item:hover { background: #f1f5f9; border-color: #cbd5e1; }
     .history-item.selected { border-color: #6366f1; background: #eef2ff; }
-    .history-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
-    .history-date { color: #718096; font-size: 12px; }
-    .history-type { color: #5558e3; font-size: 11px; padding: 2px 8px; background: #eef2ff; border-radius: 4px; }
-    .history-product { color: #2d3748; font-size: 14px; font-weight: 500; margin-bottom: 8px; }
+    .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .history-date { color: #64748b; font-size: 12px; }
+    .history-type { color: #6366f1; font-size: 11px; padding: 2px 8px; background: #eef2ff; border-radius: 6px; font-weight: 500; }
+    .history-product { color: #1e293b; font-size: 14px; font-weight: 600; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .history-stats { display: flex; gap: 16px; }
     .history-stat { font-size: 12px; }
-    .history-stat-label { color: #718096; }
-    .history-stat-value { color: #38a169; font-weight: 600; }
+    .history-stat-label { color: #64748b; }
+    .history-stat-value { color: #10b981; font-weight: 600; }
+    .history-stat-value.negative { color: #ef4444; }
+    .history-empty { text-align: center; padding: 40px 20px; color: #64748b; }
+    .toggle-group { display: flex; gap: 8px; }
+    .toggle-btn {
+      flex: 1; padding: 12px 20px; border: 2px solid #e2e8f0; border-radius: 10px;
+      background: #f8fafc; color: #64748b; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .toggle-btn:hover { background: #f1f5f9; }
+    .toggle-btn.active { background: #eef2ff; border-color: #6366f1; color: #6366f1; }
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-content {
+      background: #fff; border-radius: 16px; width: 90%; max-width: 700px; max-height: 90vh;
+      display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 20px; border-bottom: 1px solid #e2e8f0; font-weight: 600; font-size: 16px;
+      flex-shrink: 0;
+    }
+    .modal-close {
+      background: none; border: none; font-size: 24px; cursor: pointer; color: #718096;
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    }
+    .modal-close:hover { color: #6366f1; }
+    .modal-textarea {
+      flex: 1; margin: 16px; padding: 16px; border: 1px solid #e2e8f0; border-radius: 10px;
+      font-family: monospace; font-size: 13px; line-height: 1.6; resize: none;
+      background: #f7fafc; min-height: 350px; overflow-y: auto;
+    }
+    .modal-buttons { display: flex; gap: 12px; padding: 16px 20px; border-top: 1px solid #e2e8f0; flex-shrink: 0; }
+    .modal-buttons .btn { flex: 1; }
+    #templatePreviewMode, #templateEditMode {
+      display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden;
+    }
+    .discord-channels-section {
+      padding: 12px 16px; background: #f0f9ff; border-top: 1px solid #e2e8f0; flex-shrink: 0;
+    }
+    .discord-channels-header {
+      font-size: 13px; font-weight: 600; color: #1e40af; margin-bottom: 8px;
+    }
+    .discord-channels-list {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .discord-channels-loading {
+      font-size: 13px; color: #64748b;
+    }
+    .discord-channel-item {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 12px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
+      font-size: 13px; color: #475569; cursor: pointer; transition: all 0.2s;
+    }
+    .discord-channel-item:hover {
+      border-color: #3b82f6; background: #eff6ff;
+    }
+    .discord-channel-item.checked {
+      border-color: #3b82f6; background: #dbeafe; color: #1e40af;
+    }
+    .discord-channel-item input[type="checkbox"] {
+      cursor: pointer;
+    }
+    .schedule-options {
+      display: flex; align-items: center; gap: 20px; padding: 12px 16px;
+      background: #f7fafc; border-top: 1px solid #e2e8f0; flex-shrink: 0;
+    }
+    .schedule-label {
+      display: flex; align-items: center; gap: 6px; font-size: 14px; color: #4a5568; cursor: pointer;
+    }
+    .schedule-label input[type="radio"] { cursor: pointer; }
+    .schedule-datetime {
+      display: flex; gap: 8px; margin-left: auto;
+    }
+    .schedule-input {
+      padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
+      font-size: 14px; background: #fff;
+    }
+    .sidebar-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px; margin-bottom: 16px;
+      background: #fff; border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .sidebar-ec-icon {
+      width: 44px; height: 44px; 
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-radius: 12px; 
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 800; color: #fff;
+      flex-shrink: 0;
+    }
+    .sidebar-ec-info { flex: 1; min-width: 0; }
+    .sidebar-ec-name { 
+      color: #1e293b; font-size: 14px; font-weight: 700; 
+    }
+    .sidebar-product-name {
+      color: #64748b; font-size: 13px; margin-top: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .btn-scheduled {
+      width: 100%; margin-top: 12px; padding: 12px 16px;
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 12px;
+      color: #475569; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-scheduled:hover { border-color: #818cf8; background: #f5f3ff; color: #6366f1; }
+    .scheduled-badge {
+      background: #6366f1; color: #fff; font-size: 11px; font-weight: 700;
+      padding: 2px 8px; border-radius: 10px; min-width: 20px; text-align: center;
+    }
+    .scheduled-modal-content {
+      background: #fff; border-radius: 16px; width: 90%; max-width: 500px;
+      max-height: 80vh; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .scheduled-modal-list {
+      flex: 1; overflow-y: auto; padding: 16px;
+    }
+    .scheduled-modal-item {
+      padding: 14px; margin-bottom: 10px; background: #f8fafc;
+      border: 1px solid #e2e8f0; border-radius: 12px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .scheduled-modal-item:hover { border-color: #818cf8; background: #f5f3ff; }
+    .scheduled-modal-item-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;
+    }
+    .scheduled-modal-item-datetime { font-size: 13px; color: #6366f1; font-weight: 600; }
+    .scheduled-modal-item-ec {
+      font-size: 11px; padding: 2px 8px; border-radius: 6px;
+      font-weight: 600;
+    }
+    .scheduled-modal-item-ec.other { background: #eef2ff; color: #6366f1; }
+    .scheduled-modal-item-product { font-size: 14px; color: #1e293b; font-weight: 600; }
+    .scheduled-detail-info {
+      padding: 12px 16px; background: #f8fafc; border-bottom: 1px solid #e2e8f0;
+      font-size: 13px; color: #64748b;
+    }
+    .scheduled-detail-info strong { color: #1e293b; }
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: #fff; border: none;
+    }
+    .btn-danger:hover { background: linear-gradient(135deg, #dc2626, #b91c1c); }
     .toast {
       position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
       padding: 14px 24px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
       color: #2d3748; font-size: 14px; opacity: 0; transition: all 0.3s ease; z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
     .toast.success { border-color: #9ae6b4; background: #f0fff4; color: #276749; }
     .toast.error { border-color: #feb2b2; background: #fff5f5; color: #c53030; }
-    .wip-banner {
-      background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
-      border: 2px dashed #6366f1;
-      border-radius: 12px;
-      padding: 16px;
-      text-align: center;
-      margin-bottom: 16px;
-    }
-    .wip-banner h3 { color: #3730a3; font-size: 16px; margin-bottom: 4px; }
-    .wip-banner p { color: #4338ca; font-size: 13px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="hamburger-menu">
-      <button class="hamburger-btn" onclick="toggleMenu()">≡</button>
-      <div class="menu-dropdown" id="menuDropdown">
-        <a href="rakuten.html">🛒 楽天</a>
-        <a href="yahoo.html">🛍️ Yahoo</a>
-        <a href="dshopping.html">📱 dショッピング</a>
-        <a href="amazon.html">📦 Amazon</a>
-        <a href="qoo10.html">🎀 Qoo10</a>
-        <a href="other.html">🏪 その他EC</a>
-        <a href="poikatsu.html">💰 ポイ活</a>
+  <div class="page-wrapper">
+    <div class="main-content">
+      <div class="hamburger-menu">
+        <button class="hamburger-btn" onclick="toggleMenu()">≡</button>
+        <div class="menu-dropdown" id="menuDropdown">
+          <a href="#" onclick="event.preventDefault();navigateTo('index')">🏠 Top</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('rakuten')">🛒 楽天</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('yahoo')">🛍️ Yahoo</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('dshopping')">📱 dショッピング</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('amazon')">📦 Amazon</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('qoo10')">🎀 Qoo10</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('other')">🏪 その他EC</a>
+          <a href="#" onclick="event.preventDefault();navigateTo('poikatsu')">💰 ポイ活</a>
+        </div>
       </div>
-    </div>
-    
-    <div class="header">
-      <a class="back-btn" href="top.html">←</a>
-      <div class="header-title">
-        <div class="header-icon">🌐</div>
-        <h1>その他EC配信</h1>
+      
+      <div class="header">
+        <button class="back-btn" onclick="goBack()">←</button>
+        <div class="header-title">
+          <div class="header-icon">🏪</div>
+          <h1>その他EC配信</h1>
+        </div>
       </div>
-    </div>
-    
-    <div class="wip-banner">
-      <h3>🚧 開発中</h3>
-      <p>この機能は現在準備中です。スプレッドシート連携は後日実装予定です。</p>
-    </div>
     
     <div class="section">
       <div class="section-title">基本情報</div>
-      <div class="form-row">
+      <div class="form-row-3">
         <div class="form-group">
           <label class="form-label">配信日</label>
           <input type="date" class="form-input" id="deliveryDate">
@@ -166,85 +360,256 @@
           <label class="form-label">配信商品</label>
           <select class="form-select" id="deliveryType">
             <option value="">選択してください</option>
-            <option value="通常配信">通常配信</option>
+            <option value="本配信">本配信</option>
+            <option value="本配信②">本配信②</option>
+            <option value="代替商品配信①">代替商品配信①</option>
+            <option value="代替商品配信②">代替商品配信②</option>
           </select>
         </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">商品名</label>
-        <input type="text" class="form-input" id="productName" placeholder="例: 商品名を入力">
-      </div>
-      <div class="form-group">
-        <label class="form-label">購入リンク</label>
-        <input type="url" class="form-input" id="productUrl" placeholder="https://...">
+        <div class="form-group">
+          <label class="form-label">キャンペーン名</label>
+          <input type="text" class="form-input" id="campaignName" placeholder="例: ○○キャンペーン">
+        </div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">購入金額（税込）</label>
-          <input type="number" class="form-input" id="priceWithTax" placeholder="0">
+          <label class="form-label">商品名</label>
+          <input type="text" class="form-input" id="productName" placeholder="例: 商品名" oninput="updateSidebarProductName()">
         </div>
         <div class="form-group">
-          <label class="form-label">委託販売額</label>
-          <input type="number" class="form-input" id="consignmentPrice" placeholder="0">
+          <label class="form-label">購入リンク</label>
+          <input type="url" class="form-input" id="purchaseLink" placeholder="https://...">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">キャンペーンエントリーリンク</label>
+          <input type="url" class="form-input" id="campaignEntryLink" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">ポイントサイト経由リンク</label>
+          <input type="url" class="form-input" id="pointSiteLink" placeholder="https://...">
         </div>
       </div>
     </div>
     
     <div class="section">
-      <div class="section-title">ポイント還元（自動計算）</div>
+      <div class="section-title">金額入力</div>
+      <div class="form-row-4">
+        <div class="form-group">
+          <label class="form-label">定価（税込）</label>
+          <input type="number" class="form-input" id="listPrice" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">クーポン割引額</label>
+          <input type="number" class="form-input" id="couponDiscount" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">購入金額（税込）</label>
+          <div class="calc-display" id="priceWithTaxDisplay">0</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">購入金額（税抜）</label>
+          <div class="calc-display" id="priceWithoutTaxDisplay">0</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">見込委託販売額</label>
+          <input type="number" class="form-input" id="consignmentPrice" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">備考</label>
+          <input type="text" class="form-input" id="remarks" placeholder="備考があれば入力...">
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">固定ポイント（常に適用）</div>
+      <div class="fixed-grid">
+        <div class="fixed-item">
+          <span class="fixed-label">クレジットカード</span>
+          <span class="fixed-rate">税込1%</span>
+          <span class="fixed-points" id="points-card">-</span>
+        </div>
+        <div class="fixed-item">
+          <span class="fixed-label">サイト基本ポイント</span>
+          <span class="fixed-rate">税込1%</span>
+          <span class="fixed-points" id="points-site">-</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">キャンペーン選択</div>
       <div class="campaign-grid">
-        <div class="campaign-item active" style="pointer-events:none;">
+        <div class="campaign-item has-select" onclick="toggleCampaign(this)" data-campaign="pointsite">
           <div class="campaign-checkbox"></div>
-          <div class="campaign-label">基本ポイント<br><small style="color:#718096">税込1%</small></div>
+          <div class="campaign-label">ポイントサイト<br><small style="color:#718096">税込</small></div>
+          <div class="campaign-points" id="points-pointsite"></div>
+          <select class="campaign-select" id="pointsitePercent" onclick="event.stopPropagation()" onchange="calculatePreview()">
+            <option value="1">1%</option>
+            <option value="2">2%</option>
+            <option value="3">3%</option>
+            <option value="4">4%</option>
+            <option value="5">5%</option>
+            <option value="6">6%</option>
+          </select>
         </div>
-        <div class="campaign-item active" style="pointer-events:none;">
+        <div class="campaign-item has-select" onclick="toggleCampaign(this)" data-campaign="othercampaign">
           <div class="campaign-checkbox"></div>
-          <div class="campaign-label">カード利用<br><small style="color:#718096">税込2%</small></div>
+          <div class="campaign-label">その他キャンペーン<br><small style="color:#718096">税込</small></div>
+          <div class="campaign-points" id="points-othercampaign"></div>
+          <select class="campaign-select" id="othercampaignPercent" onclick="event.stopPropagation()" onchange="calculatePreview()">
+            <option value="1">1%</option>
+            <option value="2">2%</option>
+            <option value="3">3%</option>
+            <option value="4">4%</option>
+            <option value="5">5%</option>
+            <option value="6">6%</option>
+          </select>
         </div>
-        <div class="campaign-item active" style="pointer-events:none;">
-          <div class="campaign-checkbox"></div>
-          <div class="campaign-label">会員特典<br><small style="color:#718096">税込1.5%</small></div>
-        </div>
-        <div class="campaign-item active" style="pointer-events:none;">
-          <div class="campaign-checkbox"></div>
-          <div class="campaign-label">その他特典<br><small style="color:#718096">税込1%</small></div>
+      </div>
+      <div class="form-row" style="margin-top:16px;">
+        <div class="form-group">
+          <label class="form-label">代替商品配信予定</label>
+          <div class="toggle-group" id="altplanToggle">
+            <button type="button" class="toggle-btn" data-value="あり" onclick="setAltplan('あり')">あり</button>
+            <button type="button" class="toggle-btn active" data-value="なし" onclick="setAltplan('なし')">なし</button>
+          </div>
         </div>
       </div>
     </div>
     
-    <div class="section preview-section">
-      <div class="section-title" style="color:#38a169;">計算結果プレビュー</div>
-      <div class="preview-grid">
-        <div class="preview-item">
-          <div class="preview-label">獲得ポイント</div>
-          <div class="preview-value" id="totalPoints">0<span class="preview-unit">pt</span></div>
-        </div>
-        <div class="preview-item">
-          <div class="preview-label">見込利益</div>
-          <div class="preview-value" id="expectedProfit">0<span class="preview-unit">円</span></div>
-        </div>
-      </div>
-    </div>
+    <input type="hidden" id="editingRowNumber" value="">
     
-    <div class="button-group">
-      <button class="btn btn-primary" onclick="saveToSheet()">📝 記録する</button>
-      <button class="btn btn-discord" onclick="postToDiscord()" disabled>💬 Discord配信</button>
-    </div>
-    
+    <!-- 配信履歴 -->
     <div class="section">
       <div class="section-title">📋 配信履歴（最新20件）</div>
       <div class="history-list" id="historyList">
-        <div class="history-item" onclick="loadHistoryItem(this)">
-          <div class="history-header">
-            <span class="history-date">2024/03/25</span>
-            <span class="history-type">通常配信</span>
-          </div>
-          <div class="history-product">サンプル商品</div>
-          <div class="history-stats">
-            <div class="history-stat"><span class="history-stat-label">獲得: </span><span class="history-stat-value">550pt</span></div>
-            <div class="history-stat"><span class="history-stat-label">利益: </span><span class="history-stat-value">50円</span></div>
+        <div class="history-empty">読み込み中...</div>
+      </div>
+    </div>
+    
+    </div><!-- main-content -->
+    
+    <div class="sidebar">
+      <div class="sidebar-sticky">
+        <div class="sidebar-header">
+          <div class="sidebar-ec-icon">🏪</div>
+          <div class="sidebar-ec-info">
+            <div class="sidebar-ec-name">その他EC配信</div>
+            <div class="sidebar-product-name" id="sidebarProductName">商品未入力</div>
           </div>
         </div>
+        <div class="section preview-section">
+          <div class="section-title" style="color:#059669;">計算結果プレビュー</div>
+          <div class="preview-grid">
+            <div class="preview-item">
+              <div class="preview-label">獲得ポイント</div>
+              <div class="preview-value" id="totalPoints">0<span class="preview-unit">pt</span></div>
+            </div>
+            <div class="preview-item">
+              <div class="preview-label">見込利益</div>
+              <div class="preview-value" id="expectedProfit">0<span class="preview-unit">円</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="sidebar-buttons">
+          <!-- 新規入力時 -->
+          <div id="newEntryButtons">
+            <button class="btn btn-discord" id="saveAndPostBtn" onclick="generateTemplate()">📝 記録して投稿</button>
+          </div>
+          <!-- 編集時 -->
+          <div id="editButtons" style="display:none;">
+            <button class="btn btn-secondary" id="updateBtn" onclick="updateOnly()">📝 更新する</button>
+            <button class="btn btn-discord" onclick="generateTemplate()">📋 投稿する</button>
+          </div>
+        </div>
+        
+        <!-- 予約投稿確認ボタン -->
+        <button class="btn btn-scheduled" id="scheduledBtn" onclick="openScheduledModal()">
+          📅 予約中の投稿を確認 <span class="scheduled-badge" id="scheduledCount" style="display:none;">0</span>
+        </button>
+      </div>
+    </div><!-- sidebar -->
+  </div><!-- page-wrapper -->
+  
+  <!-- テンプレートモーダル -->
+  <div class="modal-overlay" id="templateModal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <!-- 確認画面 -->
+      <div id="templatePreviewMode">
+        <div class="modal-header">
+          <span>📋 Discord配信テンプレート</span>
+          <button class="modal-close" onclick="closeTemplateModal()">×</button>
+        </div>
+        <textarea class="modal-textarea" id="templateText" readonly></textarea>
+        <div class="modal-buttons">
+          <button class="btn btn-primary" onclick="copyTemplate()">📋 コピー</button>
+          <button class="btn btn-discord" onclick="switchToPostMode()">🚀 Discord投稿</button>
+          <button class="btn btn-secondary" onclick="closeTemplateModal()">閉じる</button>
+        </div>
+      </div>
+      <!-- 編集・投稿画面 -->
+      <div id="templateEditMode" style="display: none;">
+        <div class="modal-header">
+          <span>📋 投稿内容を確認・編集</span>
+          <button class="modal-close" onclick="closeTemplateModal()">×</button>
+        </div>
+        <textarea class="modal-textarea" id="templateEditText"></textarea>
+        <div class="discord-channels-section">
+          <div class="discord-channels-header">📍 投稿先を選択</div>
+          <div class="discord-channels-list" id="discordChannelsList">
+            <div class="discord-channels-loading">読み込み中...</div>
+          </div>
+        </div>
+        <div class="schedule-options">
+          <label class="schedule-label">
+            <input type="radio" name="postType" value="now" checked onchange="toggleSchedule()"> 今すぐ投稿
+          </label>
+          <label class="schedule-label">
+            <input type="radio" name="postType" value="schedule" onchange="toggleSchedule()"> 予約投稿
+          </label>
+          <div class="schedule-datetime" id="scheduleDatetime" style="display: none;">
+            <input type="date" class="schedule-input" id="scheduleDate">
+            <input type="time" class="schedule-input" id="scheduleTime">
+          </div>
+        </div>
+        <div class="modal-buttons">
+          <button class="btn btn-primary" onclick="copyEditTemplate()">📋 コピー</button>
+          <button class="btn btn-discord" id="postBtn" onclick="postToDiscord()">🚀 投稿する</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 予約投稿一覧モーダル -->
+  <div class="modal-overlay" id="scheduledModal" onclick="closeScheduledModal(event)">
+    <div class="scheduled-modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span>📅 予約投稿一覧</span>
+        <button class="modal-close" onclick="closeScheduledModal()">×</button>
+      </div>
+      <div class="scheduled-modal-list" id="scheduledModalList">
+        <div class="scheduled-empty">読み込み中...</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 予約内容確認モーダル -->
+  <div class="modal-overlay" id="scheduledDetailModal" onclick="closeScheduledDetailModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span>📝 予約内容</span>
+        <button class="modal-close" onclick="closeScheduledDetailModal()">×</button>
+      </div>
+      <div class="scheduled-detail-info" id="scheduledDetailInfo"></div>
+      <textarea class="modal-textarea" id="scheduledDetailText" readonly></textarea>
+      <div class="modal-buttons">
+        <button class="btn btn-secondary" onclick="closeScheduledDetailModal()">閉じる</button>
+        <button class="btn btn-danger" id="cancelScheduleBtn" onclick="cancelSchedule()">🗑️ 予約を取り消す</button>
       </div>
     </div>
   </div>
@@ -252,30 +617,710 @@
   <div class="toast" id="toast"></div>
   
   <script>
-    document.getElementById('deliveryDate').valueAsDate = new Date();
+    // GAS API URL
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyXdgehZGBhfWNCRA5uwC1Jr6Kp8lzNy-6mCieFu4HaZBiC2jfPB5BXa7TlhHt_FHHF/exec';
+    const EC_TYPE = 'その他EC';
     
+    // 状態管理
+    let currentAltplan = 'なし';
+    let selectedScheduleRow = null;
+    
+    // 初期化
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('deliveryDate').valueAsDate = new Date();
+      loadHistory();
+      loadScheduledCount();
+      
+      // イベントリスナー
+      ['listPrice', 'couponDiscount', 'consignmentPrice'].forEach(id => {
+        document.getElementById(id).addEventListener('input', calculatePreview);
+      });
+      
+      calculatePreview();
+    });
+    
+    // メニュー
     function toggleMenu() {
       document.getElementById('menuDropdown').classList.toggle('show');
     }
-    
-    document.addEventListener('click', function(e) {
+    function navigateTo(page) {
+      window.location.href = page + '.html';
+    }
+    function goBack() {
+      window.history.back();
+    }
+    document.addEventListener('click', (e) => {
       if (!e.target.closest('.hamburger-menu')) {
         document.getElementById('menuDropdown').classList.remove('show');
       }
     });
     
-    function saveToSheet() { showToast('⚠️ この機能は開発中です', 'error'); }
-    function postToDiscord() { showToast('Discord配信機能は後ほど実装予定', 'error'); }
-    function loadHistoryItem(el) {
-      document.querySelectorAll('.history-item').forEach(i => i.classList.remove('selected'));
-      el.classList.add('selected');
-      showToast('履歴データを読み込みました（デモ）', 'success');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    // サイドバー商品名更新
+    function updateSidebarProductName() {
+      const name = document.getElementById('productName').value || '商品未入力';
+      document.getElementById('sidebarProductName').textContent = name;
     }
-    function showToast(msg, type) {
-      const t = document.getElementById('toast');
-      t.textContent = msg; t.className = 'toast ' + type + ' show';
-      setTimeout(() => t.classList.remove('show'), 3000);
+    
+    // プレビュー計算
+    function calculatePreview() {
+      const listPrice = Number(document.getElementById('listPrice').value) || 0;
+      const couponDiscount = Number(document.getElementById('couponDiscount').value) || 0;
+      const priceWithTax = listPrice - couponDiscount;
+      const priceWithoutTax = Math.floor(priceWithTax / 1.1);
+      const consignmentPrice = Number(document.getElementById('consignmentPrice').value) || 0;
+      
+      document.getElementById('priceWithTaxDisplay').textContent = priceWithTax.toLocaleString();
+      document.getElementById('priceWithoutTaxDisplay').textContent = priceWithoutTax.toLocaleString();
+      
+      // 固定ポイント
+      const cardPoints = Math.floor(priceWithTax * 0.01);
+      const sitePoints = Math.floor(priceWithTax * 0.01);
+      document.getElementById('points-card').textContent = cardPoints.toLocaleString() + 'pt';
+      document.getElementById('points-site').textContent = sitePoints.toLocaleString() + 'pt';
+      
+      // ポイントサイト
+      let pointsitePoints = 0;
+      const pointsiteItem = document.querySelector('[data-campaign="pointsite"]');
+      if (pointsiteItem && pointsiteItem.classList.contains('active')) {
+        const percent = Number(document.getElementById('pointsitePercent').value) || 0;
+        pointsitePoints = Math.floor(priceWithTax * percent / 100);
+      }
+      document.getElementById('points-pointsite').textContent = pointsitePoints.toLocaleString() + 'pt';
+      
+      // その他キャンペーン
+      let othercampaignPoints = 0;
+      const othercampaignItem = document.querySelector('[data-campaign="othercampaign"]');
+      if (othercampaignItem && othercampaignItem.classList.contains('active')) {
+        const percent = Number(document.getElementById('othercampaignPercent').value) || 0;
+        othercampaignPoints = Math.floor(priceWithTax * percent / 100);
+      }
+      document.getElementById('points-othercampaign').textContent = othercampaignPoints.toLocaleString() + 'pt';
+      
+      // 合計
+      const totalPoints = cardPoints + sitePoints + pointsitePoints + othercampaignPoints;
+      const profit = consignmentPrice - priceWithTax + totalPoints;
+      
+      document.getElementById('totalPoints').innerHTML = totalPoints.toLocaleString() + '<span class="preview-unit">pt</span>';
+      
+      const profitEl = document.getElementById('expectedProfit');
+      profitEl.innerHTML = profit.toLocaleString() + '<span class="preview-unit">円</span>';
+      profitEl.classList.toggle('negative', profit < 0);
+    }
+    
+    // キャンペーントグル
+    function toggleCampaign(el) {
+      el.classList.toggle('active');
+      calculatePreview();
+    }
+    
+    // 代替商品配信予定
+    function setAltplan(value) {
+      currentAltplan = value;
+      document.querySelectorAll('#altplanToggle .toggle-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.value === value);
+      });
+    }
+    
+    // フォームデータ取得
+    function getFormData() {
+      const listPrice = Number(document.getElementById('listPrice').value) || 0;
+      const couponDiscount = Number(document.getElementById('couponDiscount').value) || 0;
+      const priceWithTax = listPrice - couponDiscount;
+      
+      const pointsiteActive = document.querySelector('[data-campaign="pointsite"]')?.classList.contains('active') || false;
+      const othercampaignActive = document.querySelector('[data-campaign="othercampaign"]')?.classList.contains('active') || false;
+      
+      return {
+        date: document.getElementById('deliveryDate').value,
+        deliveryType: document.getElementById('deliveryType').value,
+        campaignName: document.getElementById('campaignName').value,
+        productName: document.getElementById('productName').value,
+        purchaseLink: document.getElementById('purchaseLink').value,
+        campaignEntryLink: document.getElementById('campaignEntryLink').value,
+        pointSiteLink: document.getElementById('pointSiteLink').value,
+        listPrice: listPrice,
+        couponDiscount: couponDiscount,
+        priceWithTax: priceWithTax,
+        consignmentPrice: Number(document.getElementById('consignmentPrice').value) || 0,
+        pointsiteActive: pointsiteActive,
+        pointsitePercent: document.getElementById('pointsitePercent').value,
+        othercampaignActive: othercampaignActive,
+        othercampaignPercent: document.getElementById('othercampaignPercent').value,
+        altDelivery: currentAltplan,
+        remarks: document.getElementById('remarks').value
+      };
+    }
+    
+    // テンプレート生成
+    function generateTemplate() {
+      const data = getFormData();
+      if (!data.date || !data.productName) {
+        showToast('配信日と商品名を入力してください', 'error');
+        return;
+      }
+      
+      const priceWithTax = data.priceWithTax;
+      const priceWithoutTax = Math.floor(priceWithTax / 1.1);
+      
+      // ポイント計算
+      const cardPoints = Math.floor(priceWithTax * 0.01);
+      const sitePoints = Math.floor(priceWithTax * 0.01);
+      
+      let pointsitePoints = 0;
+      if (data.pointsiteActive) {
+        pointsitePoints = Math.floor(priceWithTax * Number(data.pointsitePercent) / 100);
+      }
+      
+      let othercampaignPoints = 0;
+      if (data.othercampaignActive) {
+        othercampaignPoints = Math.floor(priceWithTax * Number(data.othercampaignPercent) / 100);
+      }
+      
+      const totalPoints = cardPoints + sitePoints + pointsitePoints + othercampaignPoints;
+      const profit = data.consignmentPrice - priceWithTax + totalPoints;
+      
+      const dateFormatted = data.date.replace(/-/g, '/');
+      
+      let template = `@everyone
+【その他EC 見込み利益${profit.toLocaleString()}円】🔥 🔥 🔥
+
+✅ 配信日：${dateFormatted}
+✅ キャンペーン名：${data.campaignName || 'なし'}
+✅ 配信商品：${data.deliveryType}
+
+📌購入期間：本日中
+🔹決済方法：クレジットカード決済`;
+
+      if (data.campaignEntryLink) {
+        template += `
+
+📢キャンペーンエントリーリンク
+${data.campaignEntryLink}`;
+      }
+
+      if (data.pointSiteLink) {
+        template += `
+
+📢ポイントサイト経由リンク
+${data.pointSiteLink}`;
+      }
+
+      template += `
+
+🎯購入対象商品🛒
+商品名：${data.productName}
+🛒購入リンク：${data.purchaseLink || ''}
+
+📊利益計算
+💰購入金額（税込）：${priceWithTax.toLocaleString()}円
+📦見込委託販売額：${data.consignmentPrice.toLocaleString()}円
+💎獲得ポイント：${totalPoints.toLocaleString()}P
+💰見込利益：${profit.toLocaleString()}円
+
+📌ポイント内訳：
+クレジットカード税込1% ${cardPoints.toLocaleString()}pt
+サイト基本ポイント税込1% ${sitePoints.toLocaleString()}pt`;
+
+      if (data.pointsiteActive) {
+        template += `
+ポイントサイト(税込${data.pointsitePercent}%) ${pointsitePoints.toLocaleString()}pt`;
+      }
+
+      if (data.othercampaignActive) {
+        template += `
+その他キャンペーン(税込${data.othercampaignPercent}%) ${othercampaignPoints.toLocaleString()}pt`;
+      }
+
+      if (data.remarks) {
+        template += `
+
+※備考：${data.remarks}`;
+      }
+
+      template += `
+※代替商品配信予定：${data.altDelivery}`;
+
+      document.getElementById('templateText').value = template;
+      document.getElementById('templateEditText').value = template;
+      document.getElementById('templateModal').classList.add('show');
+      document.getElementById('templatePreviewMode').style.display = 'flex';
+      document.getElementById('templateEditMode').style.display = 'none';
+      
+      // 保存処理
+      saveToSheet();
+    }
+    
+    // シートに保存
+    async function saveToSheet() {
+      const data = getFormData();
+      const editingRow = document.getElementById('editingRowNumber').value;
+      
+      try {
+        const action = editingRow ? 'updateOtherEcData' : 'saveOtherEcData';
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: action,
+            rowNumber: editingRow ? Number(editingRow) : null,
+            data: data
+          })
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+          showToast(result.message, 'success');
+          loadHistory();
+        } else {
+          showToast(result.message || '保存に失敗しました', 'error');
+        }
+      } catch (error) {
+        console.error('保存エラー:', error);
+        showToast('保存中にエラーが発生しました', 'error');
+      }
+    }
+    
+    // 更新のみ
+    async function updateOnly() {
+      const editingRow = document.getElementById('editingRowNumber').value;
+      if (!editingRow) {
+        showToast('編集中のデータがありません', 'error');
+        return;
+      }
+      
+      const data = getFormData();
+      if (!data.date || !data.productName) {
+        showToast('配信日と商品名を入力してください', 'error');
+        return;
+      }
+      
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'updateOtherEcData',
+            rowNumber: Number(editingRow),
+            data: data
+          })
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+          showToast('更新しました', 'success');
+          loadHistory();
+        } else {
+          showToast(result.message || '更新に失敗しました', 'error');
+        }
+      } catch (error) {
+        console.error('更新エラー:', error);
+        showToast('更新中にエラーが発生しました', 'error');
+      }
+    }
+    
+    // 履歴読み込み
+    async function loadHistory() {
+      const container = document.getElementById('historyList');
+      
+      try {
+        const response = await fetch(`${API_URL}?action=getOtherEcHistory`);
+        const history = await response.json();
+        
+        if (!history || history.length === 0) {
+          container.innerHTML = '<div class="history-empty">履歴がありません</div>';
+          return;
+        }
+        
+        container.innerHTML = history.map(item => `
+          <div class="history-item" onclick="loadHistoryItem(${item.rowNumber})">
+            <div class="history-header">
+              <span class="history-date">${item.date || ''} - ${item.campaignName || ''}</span>
+              <span class="history-type">${item.deliveryType || ''}</span>
+            </div>
+            <div class="history-product">${item.productName || ''}</div>
+            <div class="history-stats">
+              <div class="history-stat">
+                <span class="history-stat-label">獲得: </span>
+                <span class="history-stat-value">${Number(item.totalPoints || 0).toLocaleString()}pt</span>
+              </div>
+              <div class="history-stat">
+                <span class="history-stat-label">利益: </span>
+                <span class="history-stat-value ${Number(item.expectedProfit || 0) < 0 ? 'negative' : ''}">${Number(item.expectedProfit || 0).toLocaleString()}円</span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+        
+      } catch (error) {
+        console.error('履歴取得エラー:', error);
+        container.innerHTML = '<div class="history-empty">読み込みエラー</div>';
+      }
+    }
+    
+    // 履歴アイテム読み込み
+    async function loadHistoryItem(rowNumber) {
+      try {
+        const response = await fetch(`${API_URL}?action=getOtherEcDataByRow&rowNumber=${rowNumber}`);
+        const data = await response.json();
+        
+        if (!data) {
+          showToast('データの取得に失敗しました', 'error');
+          return;
+        }
+        
+        // フォームに反映
+        document.getElementById('deliveryDate').value = data.date || '';
+        document.getElementById('deliveryType').value = data.deliveryType || '';
+        document.getElementById('campaignName').value = data.campaignName || '';
+        document.getElementById('productName').value = data.productName || '';
+        document.getElementById('purchaseLink').value = data.purchaseLink || '';
+        document.getElementById('campaignEntryLink').value = data.campaignEntryLink || '';
+        document.getElementById('pointSiteLink').value = data.pointSiteLink || '';
+        document.getElementById('listPrice').value = data.listPrice || '';
+        document.getElementById('couponDiscount').value = data.couponDiscount || '';
+        document.getElementById('consignmentPrice').value = data.consignmentPrice || '';
+        document.getElementById('remarks').value = data.remarks || '';
+        
+        // ポイントサイト
+        const pointsiteItem = document.querySelector('[data-campaign="pointsite"]');
+        if (pointsiteItem) {
+          pointsiteItem.classList.toggle('active', data.pointsiteActive === true);
+        }
+        document.getElementById('pointsitePercent').value = data.pointsitePercent || '1';
+        
+        // その他キャンペーン
+        const othercampaignItem = document.querySelector('[data-campaign="othercampaign"]');
+        if (othercampaignItem) {
+          othercampaignItem.classList.toggle('active', data.othercampaignActive === true);
+        }
+        document.getElementById('othercampaignPercent').value = data.othercampaignPercent || '1';
+        
+        // 代替商品配信予定
+        setAltplan(data.altDelivery || 'なし');
+        
+        // 編集モードに切り替え
+        document.getElementById('editingRowNumber').value = rowNumber;
+        document.getElementById('newEntryButtons').style.display = 'none';
+        document.getElementById('editButtons').style.display = 'flex';
+        
+        updateSidebarProductName();
+        calculatePreview();
+        
+        // 履歴アイテムの選択状態
+        document.querySelectorAll('.history-item').forEach(el => el.classList.remove('selected'));
+        event.currentTarget.classList.add('selected');
+        
+        showToast(`${rowNumber}行目のデータを読み込みました`, 'success');
+        
+      } catch (error) {
+        console.error('データ取得エラー:', error);
+        showToast('データの取得に失敗しました', 'error');
+      }
+    }
+    
+    // フォームクリア
+    function clearForm() {
+      document.getElementById('deliveryDate').valueAsDate = new Date();
+      document.getElementById('deliveryType').value = '';
+      document.getElementById('campaignName').value = '';
+      document.getElementById('productName').value = '';
+      document.getElementById('purchaseLink').value = '';
+      document.getElementById('campaignEntryLink').value = '';
+      document.getElementById('pointSiteLink').value = '';
+      document.getElementById('listPrice').value = '';
+      document.getElementById('couponDiscount').value = '';
+      document.getElementById('consignmentPrice').value = '';
+      document.getElementById('remarks').value = '';
+      document.getElementById('editingRowNumber').value = '';
+      document.getElementById('pointsitePercent').value = '1';
+      document.getElementById('othercampaignPercent').value = '1';
+      
+      document.querySelector('[data-campaign="pointsite"]')?.classList.remove('active');
+      document.querySelector('[data-campaign="othercampaign"]')?.classList.remove('active');
+      setAltplan('なし');
+      
+      document.getElementById('newEntryButtons').style.display = 'block';
+      document.getElementById('editButtons').style.display = 'none';
+      
+      document.querySelectorAll('.history-item').forEach(el => el.classList.remove('selected'));
+      
+      updateSidebarProductName();
+      calculatePreview();
+    }
+    
+    // モーダル
+    function closeModal(event) {
+      if (event.target === event.currentTarget) {
+        closeTemplateModal();
+      }
+    }
+    function closeTemplateModal() {
+      document.getElementById('templateModal').classList.remove('show');
+    }
+    function copyTemplate() {
+      const text = document.getElementById('templateText').value;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('コピーしました', 'success');
+      });
+    }
+    function copyEditTemplate() {
+      const text = document.getElementById('templateEditText').value;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('コピーしました', 'success');
+      });
+    }
+    
+    // 投稿モードに切り替え
+    async function switchToPostMode() {
+      document.getElementById('templatePreviewMode').style.display = 'none';
+      document.getElementById('templateEditMode').style.display = 'flex';
+      await loadDiscordChannels();
+    }
+    
+    // Discordチャンネル読み込み
+    async function loadDiscordChannels() {
+      const container = document.getElementById('discordChannelsList');
+      container.innerHTML = '<div class="discord-channels-loading">読み込み中...</div>';
+      
+      try {
+        const response = await fetch(`${API_URL}?action=getDiscordChannels&ecType=${EC_TYPE}`);
+        const channels = await response.json();
+        
+        if (!channels || channels.length === 0) {
+          container.innerHTML = '<div class="discord-channels-loading">投稿先が設定されていません</div>';
+          return;
+        }
+        
+        container.innerHTML = channels.map(ch => `
+          <label class="discord-channel-item ${ch.enabled ? 'checked' : ''}">
+            <input type="checkbox" value="${ch.webhookUrl}" ${ch.enabled ? 'checked' : ''} onchange="this.parentElement.classList.toggle('checked', this.checked)">
+            ${ch.channelName}
+          </label>
+        `).join('');
+        
+      } catch (error) {
+        console.error('チャンネル取得エラー:', error);
+        container.innerHTML = '<div class="discord-channels-loading">読み込みエラー</div>';
+      }
+    }
+    
+    // 予約/即時切り替え
+    function toggleSchedule() {
+      const isSchedule = document.querySelector('input[name="postType"][value="schedule"]').checked;
+      document.getElementById('scheduleDatetime').style.display = isSchedule ? 'flex' : 'none';
+      
+      if (isSchedule) {
+        const now = new Date();
+        now.setHours(now.getHours() + 1);
+        document.getElementById('scheduleDate').value = now.toISOString().split('T')[0];
+        document.getElementById('scheduleTime').value = now.toTimeString().slice(0, 5);
+      }
+    }
+    
+    // Discord投稿
+    async function postToDiscord() {
+      const message = document.getElementById('templateEditText').value;
+      const checkboxes = document.querySelectorAll('#discordChannelsList input[type="checkbox"]:checked');
+      const webhookUrls = Array.from(checkboxes).map(cb => cb.value);
+      
+      if (webhookUrls.length === 0) {
+        showToast('投稿先を選択してください', 'error');
+        return;
+      }
+      
+      const isSchedule = document.querySelector('input[name="postType"][value="schedule"]').checked;
+      
+      const postBtn = document.getElementById('postBtn');
+      postBtn.disabled = true;
+      postBtn.textContent = '処理中...';
+      
+      try {
+        if (isSchedule) {
+          const date = document.getElementById('scheduleDate').value;
+          const time = document.getElementById('scheduleTime').value;
+          
+          if (!date || !time) {
+            showToast('予約日時を入力してください', 'error');
+            return;
+          }
+          
+          const scheduledAt = `${date}T${time}:00`;
+          
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'saveDiscordSchedule',
+              data: {
+                scheduledAt: scheduledAt,
+                message: message,
+                ecType: EC_TYPE,
+                webhookUrls: webhookUrls,
+                status: '予約中'
+              }
+            })
+          });
+          
+          const result = await response.json();
+          if (result.success) {
+            showToast('予約しました', 'success');
+            closeTemplateModal();
+            loadScheduledCount();
+            clearForm();
+          } else {
+            showToast(result.message || '予約に失敗しました', 'error');
+          }
+        } else {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'postToDiscord',
+              message: message,
+              webhookUrls: webhookUrls
+            })
+          });
+          
+          const result = await response.json();
+          if (result.success) {
+            showToast('投稿しました', 'success');
+            closeTemplateModal();
+            clearForm();
+          } else {
+            showToast(result.message || '投稿に失敗しました', 'error');
+          }
+        }
+      } catch (error) {
+        console.error('投稿エラー:', error);
+        showToast('投稿中にエラーが発生しました', 'error');
+      } finally {
+        postBtn.disabled = false;
+        postBtn.textContent = '🚀 投稿する';
+      }
+    }
+    
+    // 予約投稿数読み込み
+    async function loadScheduledCount() {
+      try {
+        const response = await fetch(`${API_URL}?action=getPendingSchedules`);
+        const schedules = await response.json();
+        
+        const otherSchedules = schedules.filter(s => s.ecType === EC_TYPE);
+        const badge = document.getElementById('scheduledCount');
+        
+        if (otherSchedules.length > 0) {
+          badge.textContent = otherSchedules.length;
+          badge.style.display = 'inline';
+        } else {
+          badge.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('予約数取得エラー:', error);
+      }
+    }
+    
+    // 予約一覧モーダル
+    async function openScheduledModal() {
+      document.getElementById('scheduledModal').classList.add('show');
+      await loadScheduledList();
+    }
+    function closeScheduledModal(event) {
+      if (!event || event.target === event.currentTarget) {
+        document.getElementById('scheduledModal').classList.remove('show');
+      }
+    }
+    
+    async function loadScheduledList() {
+      const container = document.getElementById('scheduledModalList');
+      container.innerHTML = '<div class="scheduled-empty">読み込み中...</div>';
+      
+      try {
+        const response = await fetch(`${API_URL}?action=getPendingSchedules`);
+        const schedules = await response.json();
+        
+        const otherSchedules = schedules.filter(s => s.ecType === EC_TYPE);
+        
+        if (otherSchedules.length === 0) {
+          container.innerHTML = '<div class="scheduled-empty">予約中の投稿はありません</div>';
+          return;
+        }
+        
+        container.innerHTML = otherSchedules.map(s => {
+          const dt = new Date(s.scheduledAt);
+          const dateStr = dt.toLocaleString('ja-JP');
+          const preview = s.message.substring(0, 50) + '...';
+          
+          return `
+            <div class="scheduled-modal-item" onclick="openScheduledDetail(${s.rowNumber}, '${dateStr.replace(/'/g, "\\'")}', \`${s.message.replace(/`/g, '\\`')}\`)">
+              <div class="scheduled-modal-item-header">
+                <span class="scheduled-modal-item-datetime">${dateStr}</span>
+                <span class="scheduled-modal-item-ec other">その他EC</span>
+              </div>
+              <div class="scheduled-modal-item-product">${preview}</div>
+            </div>
+          `;
+        }).join('');
+        
+      } catch (error) {
+        console.error('予約一覧取得エラー:', error);
+        container.innerHTML = '<div class="scheduled-empty">読み込みエラー</div>';
+      }
+    }
+    
+    // 予約詳細モーダル
+    function openScheduledDetail(rowNumber, dateStr, message) {
+      selectedScheduleRow = rowNumber;
+      document.getElementById('scheduledDetailInfo').innerHTML = `<strong>予約日時:</strong> ${dateStr}`;
+      document.getElementById('scheduledDetailText').value = message;
+      document.getElementById('scheduledDetailModal').classList.add('show');
+    }
+    function closeScheduledDetailModal(event) {
+      if (!event || event.target === event.currentTarget) {
+        document.getElementById('scheduledDetailModal').classList.remove('show');
+        selectedScheduleRow = null;
+      }
+    }
+    
+    // 予約取り消し
+    async function cancelSchedule() {
+      if (!selectedScheduleRow) return;
+      
+      if (!confirm('この予約を取り消しますか？')) return;
+      
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'cancelDiscordSchedule',
+            rowNumber: selectedScheduleRow
+          })
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+          showToast('予約を取り消しました', 'success');
+          closeScheduledDetailModal();
+          loadScheduledList();
+          loadScheduledCount();
+        } else {
+          showToast(result.message || '取り消しに失敗しました', 'error');
+        }
+      } catch (error) {
+        console.error('取り消しエラー:', error);
+        showToast('取り消し中にエラーが発生しました', 'error');
+      }
+    }
+    
+    // トースト
+    function showToast(message, type) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
     }
   </script>
 </body>
