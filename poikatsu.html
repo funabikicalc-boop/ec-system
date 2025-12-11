@@ -75,7 +75,6 @@
     .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: #f59e0b; background: #fff; }
     .form-input::placeholder, .form-textarea::placeholder { color: #94a3b8; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
     
     /* 配信サイト選択 */
     .site-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -101,17 +100,25 @@
     .site-name { font-size: 12px; font-weight: 600; color: #475569; text-align: center; }
     .site-item.active .site-name { color: #b45309; }
     
-    .preview-section { 
-      background: #fff; 
-      border: 2px solid #10b981;
+    /* 報酬形態選択 */
+    .reward-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+    .reward-item {
+      padding: 10px 20px; background: #f8fafc; border: 2px solid #e2e8f0;
+      border-radius: 10px; cursor: pointer; transition: all 0.2s;
+      font-size: 14px; font-weight: 600; color: #475569;
     }
+    .reward-item:hover { background: #fef3c7; border-color: #fcd34d; }
+    .reward-item.active { background: #fef3c7; border-color: #f59e0b; color: #b45309; }
+    .reward-custom-input { display: none; margin-top: 12px; }
+    .reward-custom-input.show { display: block; }
+    
+    .preview-section { background: #fff; border: 2px solid #10b981; }
     .preview-section .section-title { color: #059669; }
     .preview-section .section-title::before { background: linear-gradient(180deg, #10b981, #34d399); }
     .preview-grid { display: flex; flex-direction: column; gap: 12px; }
     .preview-item { 
       text-align: center; padding: 20px 16px; 
-      background: #f0fdf4; border-radius: 14px; 
-      border: 1px solid #bbf7d0;
+      background: #f0fdf4; border-radius: 14px; border: 1px solid #bbf7d0;
     }
     .preview-label { color: #64748b; font-size: 12px; margin-bottom: 6px; }
     .preview-value { color: #059669; font-size: 28px; font-weight: 700; }
@@ -128,7 +135,6 @@
     }
     .btn-primary { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff; }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(245,158,11,0.4); }
-    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
     .btn-discord { background: linear-gradient(135deg, #5865F2 0%, #4752c4 100%); color: #fff; }
     .btn-discord:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(88,101,242,0.4); }
     .btn-discord:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -143,14 +149,9 @@
     .history-item.selected { border-color: #f59e0b; background: #fef3c7; }
     .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
     .history-date { color: #64748b; font-size: 12px; }
-    .history-site { 
-      font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 600;
-      background: #fef3c7; color: #b45309;
-    }
-    .history-link { 
-      color: #1e293b; font-size: 14px; font-weight: 600; margin-bottom: 8px; 
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
-    }
+    .history-site { font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 600; background: #fef3c7; color: #b45309; }
+    .history-product { color: #1e293b; font-size: 14px; font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .history-reward { font-size: 12px; color: #64748b; margin-bottom: 6px; }
     .history-stats { display: flex; gap: 16px; }
     .history-stat { font-size: 12px; }
     .history-stat-label { color: #64748b; }
@@ -164,13 +165,11 @@
     .modal-overlay.show { display: flex; }
     .modal-content {
       background: #fff; border-radius: 16px; width: 90%; max-width: 700px; max-height: 90vh;
-      display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      overflow: hidden;
+      display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden;
     }
     .modal-header {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 16px 20px; border-bottom: 1px solid #e2e8f0; font-weight: 600; font-size: 16px;
-      flex-shrink: 0;
+      padding: 16px 20px; border-bottom: 1px solid #e2e8f0; font-weight: 600; font-size: 16px; flex-shrink: 0;
     }
     .modal-close {
       background: none; border: none; font-size: 24px; cursor: pointer; color: #718096;
@@ -184,115 +183,57 @@
     }
     .modal-buttons { display: flex; gap: 12px; padding: 16px 20px; border-top: 1px solid #e2e8f0; flex-shrink: 0; }
     .modal-buttons .btn { flex: 1; }
-    #templatePreviewMode, #templateEditMode {
-      display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden;
-    }
-    .discord-channels-section {
-      padding: 12px 16px; background: #f0f9ff; border-top: 1px solid #e2e8f0; flex-shrink: 0;
-    }
-    .discord-channels-header {
-      font-size: 13px; font-weight: 600; color: #1e40af; margin-bottom: 8px;
-    }
-    .discord-channels-list {
-      display: flex; flex-wrap: wrap; gap: 8px;
-    }
-    .discord-channels-loading {
-      font-size: 13px; color: #64748b;
-    }
+    #templatePreviewMode, #templateEditMode { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
+    .discord-channels-section { padding: 12px 16px; background: #f0f9ff; border-top: 1px solid #e2e8f0; flex-shrink: 0; }
+    .discord-channels-header { font-size: 13px; font-weight: 600; color: #1e40af; margin-bottom: 8px; }
+    .discord-channels-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .discord-channels-loading { font-size: 13px; color: #64748b; }
     .discord-channel-item {
       display: flex; align-items: center; gap: 6px;
       padding: 6px 12px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
       font-size: 13px; color: #475569; cursor: pointer; transition: all 0.2s;
     }
-    .discord-channel-item:hover {
-      border-color: #3b82f6; background: #eff6ff;
-    }
-    .discord-channel-item.checked {
-      border-color: #3b82f6; background: #dbeafe; color: #1e40af;
-    }
-    .discord-channel-item input[type="checkbox"] {
-      cursor: pointer;
-    }
+    .discord-channel-item:hover { border-color: #3b82f6; background: #eff6ff; }
+    .discord-channel-item.checked { border-color: #3b82f6; background: #dbeafe; color: #1e40af; }
+    .discord-channel-item input[type="checkbox"] { cursor: pointer; }
     .schedule-options {
       display: flex; align-items: center; gap: 20px; padding: 12px 16px;
       background: #f7fafc; border-top: 1px solid #e2e8f0; flex-shrink: 0;
     }
-    .schedule-label {
-      display: flex; align-items: center; gap: 6px; font-size: 14px; color: #4a5568; cursor: pointer;
-    }
+    .schedule-label { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #4a5568; cursor: pointer; }
     .schedule-label input[type="radio"] { cursor: pointer; }
-    .schedule-datetime {
-      display: flex; gap: 8px; margin-left: auto;
-    }
-    .schedule-input {
-      padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
-      font-size: 14px; background: #fff;
-    }
+    .schedule-datetime { display: flex; gap: 8px; margin-left: auto; }
+    .schedule-input { padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; background: #fff; }
     .sidebar-header {
-      display: flex; align-items: center; gap: 12px;
-      padding: 16px; margin-bottom: 16px;
-      background: #fff; border-radius: 16px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      display: flex; align-items: center; gap: 12px; padding: 16px; margin-bottom: 16px;
+      background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     }
     .sidebar-ec-icon {
-      width: 44px; height: 44px; 
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      border-radius: 12px; 
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px;
-      flex-shrink: 0;
+      width: 44px; height: 44px; background: linear-gradient(135deg, #f59e0b, #d97706);
+      border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;
     }
     .sidebar-ec-info { flex: 1; min-width: 0; }
-    .sidebar-ec-name { 
-      color: #1e293b; font-size: 14px; font-weight: 700; 
-    }
-    .sidebar-site-name {
-      color: #64748b; font-size: 13px; margin-top: 2px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
+    .sidebar-ec-name { color: #1e293b; font-size: 14px; font-weight: 700; }
+    .sidebar-site-name { color: #64748b; font-size: 13px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .btn-scheduled {
       width: 100%; margin-top: 12px; padding: 12px 16px;
       background: #fff; border: 1px solid #e2e8f0; border-radius: 12px;
-      color: #475569; font-size: 13px; font-weight: 600;
-      cursor: pointer; transition: all 0.2s;
+      color: #475569; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
       display: flex; align-items: center; justify-content: center; gap: 8px;
     }
     .btn-scheduled:hover { border-color: #f59e0b; background: #fffbeb; color: #b45309; }
-    .scheduled-badge {
-      background: #f59e0b; color: #fff; font-size: 11px; font-weight: 700;
-      padding: 2px 8px; border-radius: 10px; min-width: 20px; text-align: center;
-    }
-    .scheduled-modal-content {
-      background: #fff; border-radius: 16px; width: 90%; max-width: 500px;
-      max-height: 80vh; overflow: hidden; display: flex; flex-direction: column;
-    }
-    .scheduled-modal-list {
-      flex: 1; overflow-y: auto; padding: 16px;
-    }
-    .scheduled-modal-item {
-      padding: 14px; margin-bottom: 10px; background: #f8fafc;
-      border: 1px solid #e2e8f0; border-radius: 12px;
-      cursor: pointer; transition: all 0.2s;
-    }
+    .scheduled-badge { background: #f59e0b; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; min-width: 20px; text-align: center; }
+    .scheduled-modal-content { background: #fff; border-radius: 16px; width: 90%; max-width: 500px; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column; }
+    .scheduled-modal-list { flex: 1; overflow-y: auto; padding: 16px; }
+    .scheduled-modal-item { padding: 14px; margin-bottom: 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: all 0.2s; }
     .scheduled-modal-item:hover { border-color: #f59e0b; background: #fffbeb; }
-    .scheduled-modal-item-header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;
-    }
+    .scheduled-modal-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
     .scheduled-modal-item-datetime { font-size: 13px; color: #f59e0b; font-weight: 600; }
-    .scheduled-modal-item-ec {
-      font-size: 11px; padding: 2px 8px; border-radius: 6px;
-      font-weight: 600; background: #fef3c7; color: #b45309;
-    }
+    .scheduled-modal-item-ec { font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 600; background: #fef3c7; color: #b45309; }
     .scheduled-modal-item-product { font-size: 14px; color: #1e293b; font-weight: 600; }
-    .scheduled-detail-info {
-      padding: 12px 16px; background: #f8fafc; border-bottom: 1px solid #e2e8f0;
-      font-size: 13px; color: #64748b;
-    }
+    .scheduled-detail-info { padding: 12px 16px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; font-size: 13px; color: #64748b; }
     .scheduled-detail-info strong { color: #1e293b; }
-    .btn-danger {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: #fff; border: none;
-    }
+    .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; border: none; }
     .btn-danger:hover { background: linear-gradient(135deg, #dc2626, #b91c1c); }
     .toast {
       position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
@@ -375,7 +316,24 @@
     </div>
     
     <div class="section">
-      <div class="section-title">詳細情報</div>
+      <div class="section-title">報酬形態</div>
+      <div class="reward-grid" id="rewardGrid">
+        <div class="reward-item" onclick="selectReward(this, '現金')" data-reward="現金">現金</div>
+        <div class="reward-item" onclick="selectReward(this, 'アマギフ')" data-reward="アマギフ">アマギフ</div>
+        <div class="reward-item" onclick="selectReward(this, 'ポイント')" data-reward="ポイント">ポイント</div>
+        <div class="reward-item" onclick="selectReward(this, 'その他')" data-reward="その他">その他</div>
+      </div>
+      <div class="reward-custom-input" id="rewardCustomInput">
+        <input type="text" class="form-input" id="rewardCustomText" placeholder="報酬形態を入力...">
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">案件情報</div>
+      <div class="form-group">
+        <label class="form-label">案件名</label>
+        <input type="text" class="form-input" id="productName" placeholder="案件名を入力...">
+      </div>
       <div class="form-group">
         <label class="form-label">リンク</label>
         <input type="url" class="form-input" id="link" placeholder="https://...">
@@ -388,8 +346,8 @@
     
     <input type="hidden" id="editingRowNumber" value="">
     <input type="hidden" id="selectedSite" value="">
+    <input type="hidden" id="selectedReward" value="">
     
-    <!-- 配信履歴 -->
     <div class="section">
       <div class="section-title">📋 配信履歴（最新20件）</div>
       <div class="history-list" id="historyList">
@@ -397,7 +355,7 @@
       </div>
     </div>
     
-    </div><!-- main-content -->
+    </div>
     
     <div class="sidebar">
       <div class="sidebar-sticky">
@@ -418,29 +376,23 @@
           </div>
         </div>
         <div class="sidebar-buttons">
-          <!-- 新規入力時 -->
           <div id="newEntryButtons">
             <button class="btn btn-discord" id="saveAndPostBtn" onclick="generateTemplate()">📝 記録して投稿</button>
           </div>
-          <!-- 編集時 -->
           <div id="editButtons" style="display:none;">
             <button class="btn btn-secondary" id="updateBtn" onclick="updateOnly()">📝 更新する</button>
             <button class="btn btn-discord" onclick="generateTemplate()">📋 投稿する</button>
           </div>
         </div>
-        
-        <!-- 予約投稿確認ボタン -->
         <button class="btn btn-scheduled" id="scheduledBtn" onclick="openScheduledModal()">
           📅 予約中の投稿を確認 <span class="scheduled-badge" id="scheduledCount" style="display:none;">0</span>
         </button>
       </div>
-    </div><!-- sidebar -->
-  </div><!-- page-wrapper -->
+    </div>
+  </div>
   
-  <!-- テンプレートモーダル -->
   <div class="modal-overlay" id="templateModal" onclick="closeModal(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
-      <!-- 確認画面 -->
       <div id="templatePreviewMode">
         <div class="modal-header">
           <span>📋 Discord配信テンプレート</span>
@@ -453,7 +405,6 @@
           <button class="btn btn-secondary" onclick="closeTemplateModal()">閉じる</button>
         </div>
       </div>
-      <!-- 編集・投稿画面 -->
       <div id="templateEditMode" style="display: none;">
         <div class="modal-header">
           <span>📋 投稿内容を確認・編集</span>
@@ -486,7 +437,6 @@
     </div>
   </div>
   
-  <!-- 予約投稿一覧モーダル -->
   <div class="modal-overlay" id="scheduledModal" onclick="closeScheduledModal(event)">
     <div class="scheduled-modal-content" onclick="event.stopPropagation()">
       <div class="modal-header">
@@ -499,18 +449,17 @@
     </div>
   </div>
   
-  <!-- 予約内容確認モーダル -->
   <div class="modal-overlay" id="scheduledDetailModal" onclick="closeScheduledDetailModal(event)">
-    <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 600px;">
       <div class="modal-header">
-        <span>📝 予約内容</span>
+        <span>📅 予約投稿詳細</span>
         <button class="modal-close" onclick="closeScheduledDetailModal()">×</button>
       </div>
       <div class="scheduled-detail-info" id="scheduledDetailInfo"></div>
       <textarea class="modal-textarea" id="scheduledDetailText" readonly></textarea>
       <div class="modal-buttons">
+        <button class="btn btn-danger" onclick="cancelSchedule()">🗑️ 予約取り消し</button>
         <button class="btn btn-secondary" onclick="closeScheduledDetailModal()">閉じる</button>
-        <button class="btn btn-danger" id="cancelScheduleBtn" onclick="cancelSchedule()">🗑️ 予約を取り消す</button>
       </div>
     </div>
   </div>
@@ -518,37 +467,23 @@
   <div class="toast" id="toast"></div>
   
   <script>
-    // GAS API URL
     const API_URL = 'https://script.google.com/macros/s/AKfycbyXdgehZGBhfWNCRA5uwC1Jr6Kp8lzNy-6mCieFu4HaZBiC2jfPB5BXa7TlhHt_FHHF/exec';
     const EC_TYPE = 'ポイ活';
-    
-    // 状態管理
     let selectedScheduleRow = null;
     
-    // 初期化
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('deliveryDate').valueAsDate = new Date();
       loadHistory();
       loadScheduledCount();
     });
     
-    // メニュー
-    function toggleMenu() {
-      document.getElementById('menuDropdown').classList.toggle('show');
-    }
-    function navigateTo(page) {
-      window.location.href = page + '.html';
-    }
-    function goBack() {
-      window.history.back();
-    }
+    function toggleMenu() { document.getElementById('menuDropdown').classList.toggle('show'); }
+    function navigateTo(page) { window.location.href = page + '.html'; }
+    function goBack() { window.history.back(); }
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('.hamburger-menu')) {
-        document.getElementById('menuDropdown').classList.remove('show');
-      }
+      if (!e.target.closest('.hamburger-menu')) document.getElementById('menuDropdown').classList.remove('show');
     });
     
-    // サイト選択
     function selectSite(el, siteName) {
       document.querySelectorAll('.site-item').forEach(item => item.classList.remove('active'));
       el.classList.add('active');
@@ -556,7 +491,29 @@
       document.getElementById('sidebarSiteName').textContent = siteName;
     }
     
-    // サイドバー見込利益更新
+    function selectReward(el, rewardType) {
+      document.querySelectorAll('.reward-item').forEach(item => item.classList.remove('active'));
+      el.classList.add('active');
+      const customInput = document.getElementById('rewardCustomInput');
+      const customText = document.getElementById('rewardCustomText');
+      if (rewardType === 'その他') {
+        customInput.classList.add('show');
+        customText.focus();
+        document.getElementById('selectedReward').value = '';
+      } else {
+        customInput.classList.remove('show');
+        customText.value = '';
+        document.getElementById('selectedReward').value = rewardType;
+      }
+    }
+    
+    function getRewardType() {
+      const selected = document.getElementById('selectedReward').value;
+      const customText = document.getElementById('rewardCustomText').value.trim();
+      if (!selected && customText) return customText;
+      return selected;
+    }
+    
     function updateSidebarProfit() {
       const profit = Number(document.getElementById('expectedProfit').value) || 0;
       const el = document.getElementById('previewProfit');
@@ -564,144 +521,90 @@
       el.classList.toggle('negative', profit < 0);
     }
     
-    // フォームデータ取得
     function getFormData() {
       return {
         date: document.getElementById('deliveryDate').value,
         site: document.getElementById('selectedSite').value,
+        rewardType: getRewardType(),
+        productName: document.getElementById('productName').value,
         link: document.getElementById('link').value,
         expectedProfit: Number(document.getElementById('expectedProfit').value) || 0,
         notes: document.getElementById('notes').value
       };
     }
     
-    // テンプレート生成
     function generateTemplate() {
       const data = getFormData();
-      if (!data.date || !data.site) {
-        showToast('配信日と配信サイトを選択してください', 'error');
-        return;
-      }
-      
+      if (!data.date || !data.site) { showToast('配信日と配信サイトを選択してください', 'error'); return; }
       const dateFormatted = data.date.replace(/-/g, '/');
-      
       let template = `@everyone
 【ポイ活 見込み利益${data.expectedProfit.toLocaleString()}円】🔥 🔥 🔥
 
 ✅ 配信日：${dateFormatted}
-✅ 配信サイト：${data.site}
+✅ 配信サイト：${data.site}`;
+      if (data.rewardType) template += `\n✅ 報酬形態：${data.rewardType}`;
+      if (data.productName) template += `\n✅ 案件名：${data.productName}`;
+      template += `
 
 📢案件リンク
 ${data.link || '※リンクを入力してください'}
 
 📊利益情報
 💰見込利益：${data.expectedProfit.toLocaleString()}円`;
-
-      if (data.notes) {
-        template += `
-
-⚠️注意点
-${data.notes}`;
-      }
-
+      if (data.notes) template += `\n\n⚠️注意点\n${data.notes}`;
       document.getElementById('templateText').value = template;
       document.getElementById('templateEditText').value = template;
       document.getElementById('templateModal').classList.add('show');
       document.getElementById('templatePreviewMode').style.display = 'flex';
       document.getElementById('templateEditMode').style.display = 'none';
-      
-      // 保存処理
       saveToSheet();
     }
     
-    // シートに保存
     async function saveToSheet() {
       const data = getFormData();
       const editingRow = document.getElementById('editingRowNumber').value;
-      
       try {
         const action = editingRow ? 'updatePoikatsuData' : 'savePoikatsuData';
         const response = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            action: action,
-            rowNumber: editingRow ? Number(editingRow) : null,
-            data: data
-          })
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: action, rowNumber: editingRow ? Number(editingRow) : null, data: data })
         });
-        
         const result = await response.json();
-        if (result.success) {
-          showToast(result.message, 'success');
-          loadHistory();
-        } else {
-          showToast(result.message || '保存に失敗しました', 'error');
-        }
-      } catch (error) {
-        console.error('保存エラー:', error);
-        showToast('保存中にエラーが発生しました', 'error');
-      }
+        if (result.success) { showToast(result.message, 'success'); loadHistory(); }
+        else { showToast(result.message || '保存に失敗しました', 'error'); }
+      } catch (error) { console.error('保存エラー:', error); showToast('保存中にエラーが発生しました', 'error'); }
     }
     
-    // 更新のみ
     async function updateOnly() {
       const editingRow = document.getElementById('editingRowNumber').value;
-      if (!editingRow) {
-        showToast('編集中のデータがありません', 'error');
-        return;
-      }
-      
+      if (!editingRow) { showToast('編集中のデータがありません', 'error'); return; }
       const data = getFormData();
-      if (!data.date || !data.site) {
-        showToast('配信日と配信サイトを選択してください', 'error');
-        return;
-      }
-      
+      if (!data.date || !data.site) { showToast('配信日と配信サイトを選択してください', 'error'); return; }
       try {
         const response = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            action: 'updatePoikatsuData',
-            rowNumber: Number(editingRow),
-            data: data
-          })
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'updatePoikatsuData', rowNumber: Number(editingRow), data: data })
         });
-        
         const result = await response.json();
-        if (result.success) {
-          showToast('更新しました', 'success');
-          loadHistory();
-        } else {
-          showToast(result.message || '更新に失敗しました', 'error');
-        }
-      } catch (error) {
-        console.error('更新エラー:', error);
-        showToast('更新中にエラーが発生しました', 'error');
-      }
+        if (result.success) { showToast('更新しました', 'success'); loadHistory(); }
+        else { showToast(result.message || '更新に失敗しました', 'error'); }
+      } catch (error) { console.error('更新エラー:', error); showToast('更新中にエラーが発生しました', 'error'); }
     }
     
-    // 履歴読み込み
     async function loadHistory() {
       const container = document.getElementById('historyList');
-      
       try {
         const response = await fetch(`${API_URL}?action=getPoikatsuHistory`);
         const history = await response.json();
-        
-        if (!history || history.length === 0) {
-          container.innerHTML = '<div class="history-empty">履歴がありません</div>';
-          return;
-        }
-        
+        if (!history || history.length === 0) { container.innerHTML = '<div class="history-empty">履歴がありません</div>'; return; }
         container.innerHTML = history.map(item => `
           <div class="history-item" onclick="loadHistoryItem(${item.rowNumber})">
             <div class="history-header">
               <span class="history-date">${item.date || ''}</span>
               <span class="history-site">${item.site || ''}</span>
             </div>
-            <div class="history-link">${item.link || '（リンクなし）'}</div>
+            <div class="history-product">${item.productName || '（案件名なし）'}</div>
+            <div class="history-reward">${item.rewardType ? '報酬: ' + item.rewardType : ''}</div>
             <div class="history-stats">
               <div class="history-stat">
                 <span class="history-stat-label">見込利益: </span>
@@ -710,349 +613,194 @@ ${data.notes}`;
             </div>
           </div>
         `).join('');
-        
-      } catch (error) {
-        console.error('履歴取得エラー:', error);
-        container.innerHTML = '<div class="history-empty">読み込みエラー</div>';
-      }
+      } catch (error) { console.error('履歴取得エラー:', error); container.innerHTML = '<div class="history-empty">読み込みエラー</div>'; }
     }
     
-    // 履歴アイテム読み込み
     async function loadHistoryItem(rowNumber) {
       try {
         const response = await fetch(`${API_URL}?action=getPoikatsuDataByRow&rowNumber=${rowNumber}`);
         const data = await response.json();
-        
-        if (!data) {
-          showToast('データの取得に失敗しました', 'error');
-          return;
-        }
-        
-        // フォームに反映
+        if (!data) { showToast('データの取得に失敗しました', 'error'); return; }
         document.getElementById('deliveryDate').value = data.date || '';
+        document.getElementById('productName').value = data.productName || '';
         document.getElementById('link').value = data.link || '';
         document.getElementById('expectedProfit').value = data.expectedProfit || '';
         document.getElementById('notes').value = data.notes || '';
-        
-        // サイト選択
         document.getElementById('selectedSite').value = data.site || '';
-        document.querySelectorAll('.site-item').forEach(item => {
-          item.classList.toggle('active', item.dataset.site === data.site);
-        });
+        document.querySelectorAll('.site-item').forEach(item => { item.classList.toggle('active', item.dataset.site === data.site); });
         document.getElementById('sidebarSiteName').textContent = data.site || 'サイト未選択';
-        
-        // 編集モードに切り替え
+        const rewardType = data.rewardType || '';
+        const presetRewards = ['現金', 'アマギフ', 'ポイント'];
+        document.querySelectorAll('.reward-item').forEach(item => item.classList.remove('active'));
+        document.getElementById('rewardCustomInput').classList.remove('show');
+        document.getElementById('rewardCustomText').value = '';
+        if (presetRewards.includes(rewardType)) {
+          document.getElementById('selectedReward').value = rewardType;
+          document.querySelector(`.reward-item[data-reward="${rewardType}"]`)?.classList.add('active');
+        } else if (rewardType) {
+          document.getElementById('selectedReward').value = '';
+          document.querySelector('.reward-item[data-reward="その他"]')?.classList.add('active');
+          document.getElementById('rewardCustomInput').classList.add('show');
+          document.getElementById('rewardCustomText').value = rewardType;
+        } else { document.getElementById('selectedReward').value = ''; }
         document.getElementById('editingRowNumber').value = rowNumber;
         document.getElementById('newEntryButtons').style.display = 'none';
         document.getElementById('editButtons').style.display = 'flex';
-        
         updateSidebarProfit();
-        
-        // 履歴アイテムの選択状態
         document.querySelectorAll('.history-item').forEach(el => el.classList.remove('selected'));
         event.currentTarget.classList.add('selected');
-        
         showToast(`${rowNumber}行目のデータを読み込みました`, 'success');
-        
-      } catch (error) {
-        console.error('データ取得エラー:', error);
-        showToast('データの取得に失敗しました', 'error');
-      }
+      } catch (error) { console.error('データ取得エラー:', error); showToast('データの取得に失敗しました', 'error'); }
     }
     
-    // フォームクリア
     function clearForm() {
       document.getElementById('deliveryDate').valueAsDate = new Date();
+      document.getElementById('productName').value = '';
       document.getElementById('link').value = '';
       document.getElementById('expectedProfit').value = '';
       document.getElementById('notes').value = '';
       document.getElementById('editingRowNumber').value = '';
       document.getElementById('selectedSite').value = '';
-      
+      document.getElementById('selectedReward').value = '';
+      document.getElementById('rewardCustomText').value = '';
       document.querySelectorAll('.site-item').forEach(item => item.classList.remove('active'));
+      document.querySelectorAll('.reward-item').forEach(item => item.classList.remove('active'));
+      document.getElementById('rewardCustomInput').classList.remove('show');
       document.getElementById('sidebarSiteName').textContent = 'サイト未選択';
-      
       document.getElementById('newEntryButtons').style.display = 'block';
       document.getElementById('editButtons').style.display = 'none';
-      
       document.querySelectorAll('.history-item').forEach(el => el.classList.remove('selected'));
-      
       updateSidebarProfit();
     }
     
-    // モーダル
-    function closeModal(event) {
-      if (event.target === event.currentTarget) {
-        closeTemplateModal();
-      }
-    }
-    function closeTemplateModal() {
-      document.getElementById('templateModal').classList.remove('show');
-    }
-    function copyTemplate() {
-      const text = document.getElementById('templateText').value;
-      navigator.clipboard.writeText(text).then(() => {
-        showToast('コピーしました', 'success');
-      });
-    }
-    function copyEditTemplate() {
-      const text = document.getElementById('templateEditText').value;
-      navigator.clipboard.writeText(text).then(() => {
-        showToast('コピーしました', 'success');
-      });
-    }
+    function closeModal(event) { if (event.target === event.currentTarget) closeTemplateModal(); }
+    function closeTemplateModal() { document.getElementById('templateModal').classList.remove('show'); }
+    function copyTemplate() { navigator.clipboard.writeText(document.getElementById('templateText').value).then(() => showToast('コピーしました', 'success')); }
+    function copyEditTemplate() { navigator.clipboard.writeText(document.getElementById('templateEditText').value).then(() => showToast('コピーしました', 'success')); }
     
-    // 投稿モードに切り替え
     async function switchToPostMode() {
       document.getElementById('templatePreviewMode').style.display = 'none';
       document.getElementById('templateEditMode').style.display = 'flex';
+      const now = new Date(); now.setHours(now.getHours() + 1);
+      document.getElementById('scheduleDate').value = now.toISOString().split('T')[0];
+      document.getElementById('scheduleTime').value = now.toTimeString().slice(0, 5);
       await loadDiscordChannels();
     }
     
-    // Discordチャンネル読み込み
     async function loadDiscordChannels() {
       const container = document.getElementById('discordChannelsList');
       container.innerHTML = '<div class="discord-channels-loading">読み込み中...</div>';
-      
       try {
-        const response = await fetch(`${API_URL}?action=getDiscordChannels&ecType=${EC_TYPE}`);
-        const channels = await response.json();
-        
-        if (!channels || channels.length === 0) {
-          container.innerHTML = '<div class="discord-channels-loading">投稿先が設定されていません</div>';
-          return;
-        }
-        
-        container.innerHTML = channels.map(ch => `
-          <label class="discord-channel-item ${ch.enabled ? 'checked' : ''}">
-            <input type="checkbox" value="${ch.webhookUrl}" ${ch.enabled ? 'checked' : ''} onchange="this.parentElement.classList.toggle('checked', this.checked)">
-            ${ch.channelName}
+        const response = await fetch(`${API_URL}?action=getDiscordSettings`);
+        const settings = await response.json();
+        if (!settings || settings.length === 0) { container.innerHTML = '<div class="discord-channels-loading">投稿先が設定されていません</div>'; return; }
+        const poikatsuChannels = settings.filter(s => s.ecType === 'ポイ活' || s.ecType === '全て' || s.ecType === 'all');
+        if (poikatsuChannels.length === 0) { container.innerHTML = '<div class="discord-channels-loading">ポイ活用の投稿先がありません</div>'; return; }
+        container.innerHTML = poikatsuChannels.map((ch, i) => `
+          <label class="discord-channel-item ${i === 0 ? 'checked' : ''}" onclick="toggleChannel(this)">
+            <input type="checkbox" value="${ch.webhookUrl}" ${i === 0 ? 'checked' : ''}>
+            <span>${ch.channelName || ch.ecType}</span>
           </label>
         `).join('');
-        
-      } catch (error) {
-        console.error('チャンネル取得エラー:', error);
-        container.innerHTML = '<div class="discord-channels-loading">読み込みエラー</div>';
-      }
+      } catch (error) { console.error('Discord設定取得エラー:', error); container.innerHTML = '<div class="discord-channels-loading">読み込みエラー</div>'; }
     }
     
-    // 予約/即時切り替え
-    function toggleSchedule() {
-      const isSchedule = document.querySelector('input[name="postType"][value="schedule"]').checked;
-      document.getElementById('scheduleDatetime').style.display = isSchedule ? 'flex' : 'none';
-      
-      if (isSchedule) {
-        const now = new Date();
-        now.setHours(now.getHours() + 1);
-        document.getElementById('scheduleDate').value = now.toISOString().split('T')[0];
-        document.getElementById('scheduleTime').value = now.toTimeString().slice(0, 5);
-      }
-    }
+    function toggleChannel(el) { const cb = el.querySelector('input[type="checkbox"]'); cb.checked = !cb.checked; el.classList.toggle('checked', cb.checked); }
+    function toggleSchedule() { document.getElementById('scheduleDatetime').style.display = document.querySelector('input[name="postType"]:checked').value === 'schedule' ? 'flex' : 'none'; }
     
-    // Discord投稿
     async function postToDiscord() {
       const message = document.getElementById('templateEditText').value;
+      const postType = document.querySelector('input[name="postType"]:checked').value;
       const checkboxes = document.querySelectorAll('#discordChannelsList input[type="checkbox"]:checked');
       const webhookUrls = Array.from(checkboxes).map(cb => cb.value);
-      
-      if (webhookUrls.length === 0) {
-        showToast('投稿先を選択してください', 'error');
-        return;
-      }
-      
-      const isSchedule = document.querySelector('input[name="postType"][value="schedule"]').checked;
-      
+      if (webhookUrls.length === 0) { showToast('投稿先を選択してください', 'error'); return; }
       const postBtn = document.getElementById('postBtn');
-      postBtn.disabled = true;
-      postBtn.textContent = '処理中...';
-      
+      postBtn.disabled = true; postBtn.textContent = '送信中...';
       try {
-        if (isSchedule) {
+        if (postType === 'schedule') {
           const date = document.getElementById('scheduleDate').value;
           const time = document.getElementById('scheduleTime').value;
-          
-          if (!date || !time) {
-            showToast('予約日時を入力してください', 'error');
-            return;
-          }
-          
-          const scheduledAt = `${date}T${time}:00`;
-          
+          if (!date || !time) { showToast('予約日時を設定してください', 'error'); postBtn.disabled = false; postBtn.textContent = '🚀 投稿する'; return; }
           const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              action: 'saveDiscordSchedule',
-              data: {
-                scheduledAt: scheduledAt,
-                message: message,
-                ecType: EC_TYPE,
-                webhookUrls: webhookUrls,
-                status: '予約中'
-              }
-            })
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'saveDiscordSchedule', data: { scheduledAt: `${date}T${time}:00`, message: message, ecType: EC_TYPE, webhookUrls: webhookUrls, status: '予約中' } })
           });
-          
           const result = await response.json();
-          if (result.success) {
-            showToast('予約しました', 'success');
-            closeTemplateModal();
-            loadScheduledCount();
-            clearForm();
-          } else {
-            showToast(result.message || '予約に失敗しました', 'error');
-          }
+          if (result.success) { showToast('予約しました', 'success'); closeTemplateModal(); loadScheduledCount(); clearForm(); }
+          else { showToast(result.message || '予約に失敗しました', 'error'); }
         } else {
           const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              action: 'postToDiscord',
-              message: message,
-              webhookUrls: webhookUrls
-            })
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'postToDiscord', message: message, webhookUrls: webhookUrls })
           });
-          
           const result = await response.json();
-          if (result.success) {
-            showToast('投稿しました', 'success');
-            closeTemplateModal();
-            clearForm();
-          } else {
-            showToast(result.message || '投稿に失敗しました', 'error');
-          }
+          if (result.success) { showToast('投稿しました', 'success'); closeTemplateModal(); clearForm(); }
+          else { showToast(result.message || '投稿に失敗しました', 'error'); }
         }
-      } catch (error) {
-        console.error('投稿エラー:', error);
-        showToast('投稿中にエラーが発生しました', 'error');
-      } finally {
-        postBtn.disabled = false;
-        postBtn.textContent = '🚀 投稿する';
-      }
+      } catch (error) { console.error('投稿エラー:', error); showToast('投稿中にエラーが発生しました', 'error'); }
+      finally { postBtn.disabled = false; postBtn.textContent = '🚀 投稿する'; }
     }
     
-    // 予約投稿数読み込み
     async function loadScheduledCount() {
       try {
         const response = await fetch(`${API_URL}?action=getPendingSchedules`);
         const schedules = await response.json();
-        
         const poikatsuSchedules = schedules.filter(s => s.ecType === EC_TYPE);
         const badge = document.getElementById('scheduledCount');
-        
-        if (poikatsuSchedules.length > 0) {
-          badge.textContent = poikatsuSchedules.length;
-          badge.style.display = 'inline';
-        } else {
-          badge.style.display = 'none';
-        }
-      } catch (error) {
-        console.error('予約数取得エラー:', error);
-      }
+        if (poikatsuSchedules.length > 0) { badge.textContent = poikatsuSchedules.length; badge.style.display = 'inline'; }
+        else { badge.style.display = 'none'; }
+      } catch (error) { console.error('予約数取得エラー:', error); }
     }
     
-    // 予約一覧モーダル
-    async function openScheduledModal() {
-      document.getElementById('scheduledModal').classList.add('show');
-      await loadScheduledList();
-    }
-    function closeScheduledModal(event) {
-      if (!event || event.target === event.currentTarget) {
-        document.getElementById('scheduledModal').classList.remove('show');
-      }
-    }
+    async function openScheduledModal() { document.getElementById('scheduledModal').classList.add('show'); await loadScheduledList(); }
+    function closeScheduledModal(event) { if (!event || event.target === event.currentTarget) document.getElementById('scheduledModal').classList.remove('show'); }
     
     async function loadScheduledList() {
       const container = document.getElementById('scheduledModalList');
       container.innerHTML = '<div class="scheduled-empty">読み込み中...</div>';
-      
       try {
         const response = await fetch(`${API_URL}?action=getPendingSchedules`);
         const schedules = await response.json();
-        
         const poikatsuSchedules = schedules.filter(s => s.ecType === EC_TYPE);
-        
-        if (poikatsuSchedules.length === 0) {
-          container.innerHTML = '<div class="scheduled-empty">予約中の投稿はありません</div>';
-          return;
-        }
-        
+        if (poikatsuSchedules.length === 0) { container.innerHTML = '<div class="scheduled-empty">予約中の投稿はありません</div>'; return; }
         container.innerHTML = poikatsuSchedules.map(s => {
           const dt = new Date(s.scheduledAt);
           const dateStr = dt.toLocaleString('ja-JP');
           const preview = s.message.substring(0, 50) + '...';
-          
-          return `
-            <div class="scheduled-modal-item" onclick="openScheduledDetail(${s.rowNumber}, '${dateStr.replace(/'/g, "\\'")}', \`${s.message.replace(/`/g, '\\`')}\`)">
-              <div class="scheduled-modal-item-header">
-                <span class="scheduled-modal-item-datetime">${dateStr}</span>
-                <span class="scheduled-modal-item-ec">ポイ活</span>
-              </div>
-              <div class="scheduled-modal-item-product">${preview}</div>
-            </div>
-          `;
+          return `<div class="scheduled-modal-item" onclick="openScheduledDetail(${s.rowNumber}, '${dateStr.replace(/'/g, "\\'")}', \`${s.message.replace(/`/g, '\\`')}\`)">
+            <div class="scheduled-modal-item-header"><span class="scheduled-modal-item-datetime">${dateStr}</span><span class="scheduled-modal-item-ec">ポイ活</span></div>
+            <div class="scheduled-modal-item-product">${preview}</div></div>`;
         }).join('');
-        
-      } catch (error) {
-        console.error('予約一覧取得エラー:', error);
-        container.innerHTML = '<div class="scheduled-empty">読み込みエラー</div>';
-      }
+      } catch (error) { console.error('予約一覧取得エラー:', error); container.innerHTML = '<div class="scheduled-empty">読み込みエラー</div>'; }
     }
     
-    // 予約詳細モーダル
     function openScheduledDetail(rowNumber, dateStr, message) {
       selectedScheduleRow = rowNumber;
       document.getElementById('scheduledDetailInfo').innerHTML = `<strong>予約日時:</strong> ${dateStr}`;
       document.getElementById('scheduledDetailText').value = message;
       document.getElementById('scheduledDetailModal').classList.add('show');
     }
-    function closeScheduledDetailModal(event) {
-      if (!event || event.target === event.currentTarget) {
-        document.getElementById('scheduledDetailModal').classList.remove('show');
-        selectedScheduleRow = null;
-      }
-    }
+    function closeScheduledDetailModal(event) { if (!event || event.target === event.currentTarget) { document.getElementById('scheduledDetailModal').classList.remove('show'); selectedScheduleRow = null; } }
     
-    // 予約取り消し
     async function cancelSchedule() {
       if (!selectedScheduleRow) return;
-      
       if (!confirm('この予約を取り消しますか？')) return;
-      
       try {
         const response = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            action: 'cancelDiscordSchedule',
-            rowNumber: selectedScheduleRow
-          })
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'cancelDiscordSchedule', rowNumber: selectedScheduleRow })
         });
-        
         const result = await response.json();
-        if (result.success) {
-          showToast('予約を取り消しました', 'success');
-          closeScheduledDetailModal();
-          loadScheduledList();
-          loadScheduledCount();
-        } else {
-          showToast(result.message || '取り消しに失敗しました', 'error');
-        }
-      } catch (error) {
-        console.error('取り消しエラー:', error);
-        showToast('取り消し中にエラーが発生しました', 'error');
-      }
+        if (result.success) { showToast('予約を取り消しました', 'success'); closeScheduledDetailModal(); loadScheduledList(); loadScheduledCount(); }
+        else { showToast(result.message || '取り消しに失敗しました', 'error'); }
+      } catch (error) { console.error('取り消しエラー:', error); showToast('取り消し中にエラーが発生しました', 'error'); }
     }
     
-    // トースト
     function showToast(message, type) {
       const toast = document.getElementById('toast');
       toast.textContent = message;
       toast.className = `toast ${type} show`;
-      
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3000);
+      setTimeout(() => toast.classList.remove('show'), 3000);
     }
   </script>
 </body>
