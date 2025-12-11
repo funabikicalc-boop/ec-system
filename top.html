@@ -470,43 +470,112 @@
     
     // 集約を実行
 async function executeAggregate() {
-  const statusEl = document.getElementById('aggregateStatus');
-  const btn = document.querySelector('.aggregate-btn');
-  
+  const btn = document.getElementById('aggregateBtn');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '<span style="animation: spin 1s linear infinite; display: inline-block;">↻</span> 更新中...';
   btn.disabled = true;
-  statusEl.className = 'aggregate-status loading';
-  statusEl.textContent = '⏳ 集約処理中...';
   
   try {
     const response = await fetch(GAS_API_URL, {
       method: 'POST',
-      mode: 'cors',
-      body: JSON.stringify({
-        action: 'updateAggregates'
-      })
-      // Content-Type ヘッダーを削除（これがCORSの原因）
+      body: JSON.stringify({ action: 'updateAggregates' })
     });
     
     const result = await response.json();
     
     if (result.success) {
-      statusEl.className = 'aggregate-status success';
-      statusEl.textContent = '✓ 集約完了！';
+      // 成功モーダルを表示
+      showAggregateSuccessModal(result);
     } else {
-      statusEl.className = 'aggregate-status error';
-      statusEl.textContent = '✕ ' + result.message;
+      alert('エラー: ' + result.message);
     }
   } catch (error) {
-    statusEl.className = 'aggregate-status error';
-    statusEl.textContent = '✕ 通信エラー';
+    alert('通信エラー: ' + error.message);
+  } finally {
+    btn.innerHTML = originalText;
+    btn.disabled = false;
   }
-  
-  btn.disabled = false;
-  
-  setTimeout(() => {
-    statusEl.className = 'aggregate-status';
-  }, 5000);
 }
-  </script>
-</body>
-</html>
+
+function showAggregateSuccessModal(result) {
+  // 既存のモーダルがあれば削除
+  const existing = document.getElementById('aggregateModal');
+  if (existing) existing.remove();
+  
+  const modal = document.createElement('div');
+  modal.id = 'aggregateModal';
+  modal.innerHTML = `
+    <div style="
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    " onclick="if(event.target === this) this.remove()">
+      <div style="
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      ">
+        <div style="text-align: center; margin-bottom: 16px;">
+          <span style="font-size: 48px;">✅</span>
+        </div>
+        <h3 style="margin: 0 0 8px; text-align: center; color: #1a1a2e;">更新完了</h3>
+        <p style="margin: 0 0 20px; text-align: center; color: #666; font-size: 14px;">
+          ${result.details.ec}<br>
+          ${result.details.poikatsu}
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          ${result.urls.ec ? `
+            <a href="${result.urls.ec}" target="_blank" style="
+              display: block;
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              color: white;
+              text-decoration: none;
+              padding: 12px 20px;
+              border-radius: 8px;
+              text-align: center;
+              font-weight: 600;
+              transition: transform 0.2s, box-shadow 0.2s;
+            " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(102,126,234,0.4)'"
+               onmouseout="this.style.transform='';this.style.boxShadow=''">
+              📊 EC配信集約を見る
+            </a>
+          ` : ''}
+          ${result.urls.poikatsu ? `
+            <a href="${result.urls.poikatsu}" target="_blank" style="
+              display: block;
+              background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+              color: white;
+              text-decoration: none;
+              padding: 12px 20px;
+              border-radius: 8px;
+              text-align: center;
+              font-weight: 600;
+              transition: transform 0.2s, box-shadow 0.2s;
+            " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(245,87,108,0.4)'"
+               onmouseout="this.style.transform='';this.style.boxShadow=''">
+              🎯 ポイ活配信集約を見る
+            </a>
+          ` : ''}
+          <button onclick="this.closest('#aggregateModal').remove()" style="
+            background: #e2e8f0;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 14px;
+          ">閉じる</button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+}
