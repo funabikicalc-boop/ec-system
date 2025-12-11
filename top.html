@@ -469,48 +469,44 @@
     }
     
     // 集約を実行
-    async function executeAggregate() {
-      const statusEl = document.getElementById('aggregateStatus');
-      const btn = document.querySelector('.aggregate-btn');
-      
-      // ボタンを無効化
-      btn.disabled = true;
-      
-      // ローディング表示
-      statusEl.className = 'aggregate-status loading';
-      statusEl.textContent = '⏳ 集約処理中...';
-      
-      try {
-        const response = await fetch(GAS_API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            action: 'updateAggregates'
-          })
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-          statusEl.className = 'aggregate-status success';
-          statusEl.textContent = '✓ 集約完了！';
-        } else {
-          statusEl.className = 'aggregate-status error';
-          statusEl.textContent = '✕ ' + result.message;
-        }
-      } catch (error) {
-        statusEl.className = 'aggregate-status error';
-        statusEl.textContent = '✕ 通信エラー';
-      }
-      
-      // ボタンを有効化
-      btn.disabled = false;
-      
-      // 5秒後にステータスを非表示
-      setTimeout(() => {
-        statusEl.className = 'aggregate-status';
-      }, 5000);
+async function executeAggregate() {
+  const statusEl = document.getElementById('aggregateStatus');
+  const btn = document.querySelector('.aggregate-btn');
+  
+  btn.disabled = true;
+  statusEl.className = 'aggregate-status loading';
+  statusEl.textContent = '⏳ 集約処理中...';
+  
+  try {
+    const response = await fetch(GAS_API_URL, {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        action: 'updateAggregates'
+      })
+      // Content-Type ヘッダーを削除（これがCORSの原因）
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      statusEl.className = 'aggregate-status success';
+      statusEl.textContent = '✓ 集約完了！';
+    } else {
+      statusEl.className = 'aggregate-status error';
+      statusEl.textContent = '✕ ' + result.message;
     }
+  } catch (error) {
+    statusEl.className = 'aggregate-status error';
+    statusEl.textContent = '✕ 通信エラー';
+  }
+  
+  btn.disabled = false;
+  
+  setTimeout(() => {
+    statusEl.className = 'aggregate-status';
+  }, 5000);
+}
   </script>
 </body>
 </html>
