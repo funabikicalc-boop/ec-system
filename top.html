@@ -7,100 +7,326 @@
   <title>EC配信システム</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 50%, #ddd6fe 100%);
       min-height: 100vh;
       padding: 40px 20px;
+      position: relative;
+      overflow-x: hidden;
     }
-    .container { max-width: 800px; margin: 0 auto; }
-    .header { text-align: center; margin-bottom: 40px; }
-    .header h1 { 
-      color: #1e293b; font-size: 32px; font-weight: 700; margin-bottom: 8px;
-    }
-    .header p { color: #64748b; font-size: 15px; }
     
+    /* 背景のグラデーションオーブ */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -150px;
+      right: -150px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -150px;
+      left: -150px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    
+    .container { 
+      max-width: 900px; 
+      margin: 0 auto; 
+      position: relative;
+      z-index: 1;
+    }
+    
+    .header { 
+      text-align: center; 
+      margin-bottom: 20px;
+    }
+    .header h1 { 
+      color: #1e293b;
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+    .header p { 
+      color: #64748b;
+      font-size: 15px;
+    }
+    
+    /* 集約セクション */
+    .aggregate-section {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 20px;
+      padding: 20px 28px;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    }
+    
+    .aggregate-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .aggregate-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25);
+    }
+    .aggregate-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    
+    .aggregate-text h2 {
+      color: #1e293b;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .aggregate-text p {
+      color: #64748b;
+      font-size: 13px;
+    }
+    
+    .aggregate-btn {
+      padding: 14px 28px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: #fff;
+      white-space: nowrap;
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    }
+    .aggregate-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .aggregate-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+    }
+    .aggregate-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    
+    .aggregate-status {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      display: none;
+      margin-top: 4px;
+    }
+    .aggregate-status.success {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      color: #059669;
+      display: block;
+    }
+    .aggregate-status.error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: #dc2626;
+      display: block;
+    }
+    .aggregate-status.loading {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      color: #2563eb;
+      display: block;
+    }
+    
+    /* ECカードグリッド */
     .ec-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
+      gap: 16px;
     }
+    
     @media (max-width: 600px) {
       .ec-grid { grid-template-columns: 1fr; }
+      .aggregate-section {
+        flex-direction: column;
+        text-align: center;
+      }
+      .aggregate-info {
+        flex-direction: column;
+      }
     }
     
     .ec-card {
-      background: #fff;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
       border-radius: 20px;
-      padding: 28px 24px;
+      padding: 24px;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       text-decoration: none;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
       position: relative;
       overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
     }
+    
     .ec-card::before {
       content: '';
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 4px;
-    }
-    .ec-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      opacity: 0;
+      transition: opacity 0.3s;
     }
     
-    .ec-card.rakuten::before { background: linear-gradient(90deg, #bf0000, #e60012); }
-    .ec-card.yahoo::before { background: linear-gradient(90deg, #ff0033, #ff6666); }
-    .ec-card.dshopping::before { background: linear-gradient(90deg, #c00, #ff3366); }
-    .ec-card.amazon::before { background: linear-gradient(90deg, #ff9900, #ffb84d); }
-    .ec-card.qoo10::before { background: linear-gradient(90deg, #e31c5f, #ff6b8a); }
-    .ec-card.other::before { background: linear-gradient(90deg, #6366f1, #a78bfa); }
-    .ec-card.poikatsu::before { background: linear-gradient(90deg, #10b981, #6ee7b7); }
+    .ec-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      background: rgba(255, 255, 255, 0.95);
+    }
+    .ec-card:hover::before {
+      opacity: 1;
+    }
+    
+    /* カード別カラー */
+    .ec-card.rakuten::before { background: linear-gradient(90deg, #ef4444, #f87171); }
+    .ec-card.rakuten:hover { box-shadow: 0 20px 40px rgba(239, 68, 68, 0.15); }
+    
+    .ec-card.yahoo::before { background: linear-gradient(90deg, #f43f5e, #fb7185); }
+    .ec-card.yahoo:hover { box-shadow: 0 20px 40px rgba(244, 63, 94, 0.15); }
+    
+    .ec-card.dshopping::before { background: linear-gradient(90deg, #ec4899, #f472b6); }
+    .ec-card.dshopping:hover { box-shadow: 0 20px 40px rgba(236, 72, 153, 0.15); }
+    
+    .ec-card.amazon::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+    .ec-card.amazon:hover { box-shadow: 0 20px 40px rgba(245, 158, 11, 0.15); }
+    
+    .ec-card.qoo10::before { background: linear-gradient(90deg, #e11d48, #fb7185); }
+    .ec-card.qoo10:hover { box-shadow: 0 20px 40px rgba(225, 29, 72, 0.15); }
+    
+    .ec-card.other::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+    .ec-card.other:hover { box-shadow: 0 20px 40px rgba(139, 92, 246, 0.15); }
+    
+    .ec-card.poikatsu::before { background: linear-gradient(90deg, #10b981, #34d399); }
+    .ec-card.poikatsu:hover { box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15); }
+    
+    .ec-card-inner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
     
     .ec-icon {
-      width: 56px; height: 56px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px; font-weight: 800; margin-bottom: 16px;
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 800;
       color: #fff;
       letter-spacing: -1px;
+      flex-shrink: 0;
     }
-    .ec-card.rakuten .ec-icon { background: linear-gradient(135deg, #bf0000, #e60012); }
-    .ec-card.yahoo .ec-icon { background: linear-gradient(135deg, #ff0033, #ff4466); }
-    .ec-card.dshopping .ec-icon { background: linear-gradient(135deg, #c00, #ff3366); }
-    .ec-card.amazon .ec-icon { background: linear-gradient(135deg, #ff9900, #ffb84d); }
-    .ec-card.qoo10 .ec-icon { background: linear-gradient(135deg, #e31c5f, #ff6b8a); }
-    .ec-card.other .ec-icon { background: linear-gradient(135deg, #6366f1, #a78bfa); }
-    .ec-card.poikatsu .ec-icon { background: linear-gradient(135deg, #10b981, #34d399); }
+    
+    .ec-card.rakuten .ec-icon { background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3); }
+    .ec-card.yahoo .ec-icon { background: linear-gradient(135deg, #f43f5e, #e11d48); box-shadow: 0 6px 16px rgba(244, 63, 94, 0.3); }
+    .ec-card.dshopping .ec-icon { background: linear-gradient(135deg, #ec4899, #db2777); box-shadow: 0 6px 16px rgba(236, 72, 153, 0.3); }
+    .ec-card.amazon .ec-icon { background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 6px 16px rgba(245, 158, 11, 0.3); }
+    .ec-card.qoo10 .ec-icon { background: linear-gradient(135deg, #e11d48, #be123c); box-shadow: 0 6px 16px rgba(225, 29, 72, 0.3); }
+    .ec-card.other .ec-icon { background: linear-gradient(135deg, #8b5cf6, #7c3aed); box-shadow: 0 6px 16px rgba(139, 92, 246, 0.3); }
+    .ec-card.poikatsu .ec-icon { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3); }
+    
+    .ec-content {
+      flex: 1;
+      min-width: 0;
+    }
     
     .ec-name { 
-      color: #1e293b; font-size: 18px; font-weight: 700; margin-bottom: 6px;
+      color: #1e293b;
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 4px;
     }
     .ec-description { 
-      color: #64748b; font-size: 13px; line-height: 1.5;
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.4;
     }
     
     .ec-arrow {
-      position: absolute;
-      right: 20px; top: 50%;
-      transform: translateY(-50%);
-      width: 36px; height: 36px;
+      width: 32px;
+      height: 32px;
       background: #f1f5f9;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      color: #94a3b8; font-size: 18px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      flex-shrink: 0;
+    }
+    .ec-arrow svg {
+      width: 18px;
+      height: 18px;
+      stroke: #94a3b8;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
       transition: all 0.3s;
     }
     .ec-card:hover .ec-arrow {
       background: #e2e8f0;
-      color: #475569;
-      transform: translateY(-50%) translateX(4px);
+      transform: translateX(4px);
+    }
+    .ec-card:hover .ec-arrow svg {
+      stroke: #475569;
     }
     
     .footer { 
-      text-align: center; margin-top: 50px; 
-      color: #94a3b8; font-size: 12px; 
+      text-align: center;
+      margin-top: 50px;
+      color: #94a3b8;
+      font-size: 12px;
     }
   </style>
 </head>
@@ -111,65 +337,179 @@
       <p>配信するECサイトを選択してください</p>
     </div>
     
+    <!-- 集約セクション -->
+    <div class="aggregate-section">
+      <div class="aggregate-info">
+        <div class="aggregate-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 3v18h18"/>
+            <path d="M18 17V9"/>
+            <path d="M13 17V5"/>
+            <path d="M8 17v-3"/>
+          </svg>
+        </div>
+        <div class="aggregate-text">
+          <h2>配信データ集約</h2>
+          <p>EC・ポイ活の配信データを集約シートに統合</p>
+        </div>
+      </div>
+      <button class="aggregate-btn" onclick="executeAggregate()">
+        <svg viewBox="0 0 24 24">
+          <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
+          <path d="M21 3v5h-5"/>
+        </svg>
+        集約シートを更新
+      </button>
+      <div id="aggregateStatus" class="aggregate-status"></div>
+    </div>
+    
     <div class="ec-grid">
       <a class="ec-card rakuten" onclick="navigateTo('rakuten')">
-        <div class="ec-icon">R</div>
-        <div class="ec-name">楽天配信</div>
-        <div class="ec-description">楽天市場の商品を配信</div>
-        <div class="ec-arrow">→</div>
+        <div class="ec-card-inner">
+          <div class="ec-icon">R</div>
+          <div class="ec-content">
+            <div class="ec-name">楽天配信</div>
+            <div class="ec-description">楽天市場の商品を配信</div>
+          </div>
+          <div class="ec-arrow">
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
       </a>
       
       <a class="ec-card yahoo" onclick="navigateTo('yahoo')">
-        <div class="ec-icon">Y!</div>
-        <div class="ec-name">Yahooショッピング</div>
-        <div class="ec-description">Yahoo!ショッピングの商品を配信</div>
-        <div class="ec-arrow">→</div>
+        <div class="ec-card-inner">
+          <div class="ec-icon">Y!</div>
+          <div class="ec-content">
+            <div class="ec-name">Yahooショッピング</div>
+            <div class="ec-description">Yahoo!ショッピングの商品を配信</div>
+          </div>
+          <div class="ec-arrow">
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
       </a>
       
       <a class="ec-card dshopping" onclick="navigateTo('dshopping')">
-        <div class="ec-icon">d</div>
-        <div class="ec-name">dショッピング</div>
-        <div class="ec-description">dショッピングの商品を配信</div>
-        <div class="ec-arrow">→</div>
+        <div class="ec-card-inner">
+          <div class="ec-icon">d</div>
+          <div class="ec-content">
+            <div class="ec-name">dショッピング</div>
+            <div class="ec-description">dショッピングの商品を配信</div>
+          </div>
+          <div class="ec-arrow">
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
       </a>
       
       <a class="ec-card amazon" onclick="navigateTo('amazon')">
-        <div class="ec-icon">a</div>
-        <div class="ec-name">Amazon配信</div>
-        <div class="ec-description">Amazonの商品を配信</div>
-        <div class="ec-arrow">→</div>
+        <div class="ec-card-inner">
+          <div class="ec-icon">a</div>
+          <div class="ec-content">
+            <div class="ec-name">Amazon配信</div>
+            <div class="ec-description">Amazonの商品を配信</div>
+          </div>
+          <div class="ec-arrow">
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
       </a>
       
       <a class="ec-card qoo10" onclick="navigateTo('qoo10')">
-        <div class="ec-icon">Q</div>
-        <div class="ec-name">Qoo10配信</div>
-        <div class="ec-description">Qoo10の商品を配信</div>
-        <div class="ec-arrow">→</div>
+        <div class="ec-card-inner">
+          <div class="ec-icon">Q</div>
+          <div class="ec-content">
+            <div class="ec-name">Qoo10配信</div>
+            <div class="ec-description">Qoo10の商品を配信</div>
+          </div>
+          <div class="ec-arrow">
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
       </a>
       
       <a class="ec-card other" onclick="navigateTo('other')">
-        <div class="ec-icon">+</div>
-        <div class="ec-name">その他EC</div>
-        <div class="ec-description">その他ECサイトの商品を配信</div>
-        <div class="ec-arrow">→</div>
+        <div class="ec-card-inner">
+          <div class="ec-icon">+</div>
+          <div class="ec-content">
+            <div class="ec-name">その他EC</div>
+            <div class="ec-description">その他ECサイトの商品を配信</div>
+          </div>
+          <div class="ec-arrow">
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
       </a>
       
       <a class="ec-card poikatsu" onclick="navigateTo('poikatsu')">
-        <div class="ec-icon">¥</div>
-        <div class="ec-name">ポイ活配信</div>
-        <div class="ec-description">ポイントサイト案件を配信</div>
-        <div class="ec-arrow">→</div>
+        <div class="ec-card-inner">
+          <div class="ec-icon">¥</div>
+          <div class="ec-content">
+            <div class="ec-name">ポイ活配信</div>
+            <div class="ec-description">ポイントサイト案件を配信</div>
+          </div>
+          <div class="ec-arrow">
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
       </a>
     </div>
     
     <div class="footer">
-      EC Distribution System v1.0
+      EC Distribution System v1.1
     </div>
   </div>
   
   <script>
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyXdgehZGBhfWNCRA5uwC1Jr6Kp8lzNy-6mCieFu4HaZBiC2jfPB5BXa7TlhHt_FHHF/exec';
+    
     function navigateTo(page) {
       window.location.href = page + '.html';
+    }
+    
+    // 集約を実行
+    async function executeAggregate() {
+      const statusEl = document.getElementById('aggregateStatus');
+      const btn = document.querySelector('.aggregate-btn');
+      
+      // ボタンを無効化
+      btn.disabled = true;
+      
+      // ローディング表示
+      statusEl.className = 'aggregate-status loading';
+      statusEl.textContent = '⏳ 集約処理中...';
+      
+      try {
+        const response = await fetch(GAS_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'updateAggregates'
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          statusEl.className = 'aggregate-status success';
+          statusEl.textContent = '✓ 集約完了！';
+        } else {
+          statusEl.className = 'aggregate-status error';
+          statusEl.textContent = '✕ ' + result.message;
+        }
+      } catch (error) {
+        statusEl.className = 'aggregate-status error';
+        statusEl.textContent = '✕ 通信エラー';
+      }
+      
+      // ボタンを有効化
+      btn.disabled = false;
+      
+      // 5秒後にステータスを非表示
+      setTimeout(() => {
+        statusEl.className = 'aggregate-status';
+      }, 5000);
     }
   </script>
 </body>
