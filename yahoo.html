@@ -108,6 +108,10 @@
       padding: 4px 8px; font-size: 12px; border-radius: 6px; border: 1px solid #cbd5e1;
       background: #fff; cursor: pointer;
     }
+    .campaign-input {
+      width: 70px; padding: 4px 8px; font-size: 12px; border-radius: 6px; border: 1px solid #cbd5e1;
+      background: #fff; text-align: right;
+    }
     .campaign-item.has-select { flex-wrap: wrap; }
     .fixed-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
     .fixed-item {
@@ -191,7 +195,6 @@
       color: #64748b; font-size: 13px; margin-top: 2px;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    /* 予約投稿ボタン */
     .btn-scheduled {
       width: 100%; margin-top: 12px; padding: 12px 16px;
       background: #fff; border: 1px solid #e2e8f0; border-radius: 12px;
@@ -204,7 +207,6 @@
       background: #6366f1; color: #fff; font-size: 11px; font-weight: 700;
       padding: 2px 8px; border-radius: 10px; min-width: 20px; text-align: center;
     }
-    /* モーダル共通 */
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.5); z-index: 100;
@@ -226,27 +228,20 @@
       width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
     }
     .modal-close:hover { color: #e53e3e; }
-    /* 予約モーダル */
     .scheduled-modal-content {
       background: #fff; border-radius: 16px; width: 90%; max-width: 500px;
       max-height: 80vh; overflow: hidden; display: flex; flex-direction: column;
     }
-    .scheduled-modal-list {
-      flex: 1; overflow-y: auto; padding: 16px;
-    }
+    .scheduled-modal-list { flex: 1; overflow-y: auto; padding: 16px; }
     .scheduled-modal-item {
       padding: 14px; margin-bottom: 10px; background: #f8fafc;
       border: 1px solid #e2e8f0; border-radius: 12px;
       cursor: pointer; transition: all 0.2s;
     }
     .scheduled-modal-item:hover { border-color: #818cf8; background: #f5f3ff; }
-    .scheduled-modal-item-header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;
-    }
+    .scheduled-modal-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
     .scheduled-modal-item-datetime { font-size: 13px; color: #6366f1; font-weight: 600; }
-    .scheduled-modal-item-ec {
-      font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 600;
-    }
+    .scheduled-modal-item-ec { font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 600; }
     .scheduled-modal-item-ec.rakuten { background: #fef2f2; color: #dc2626; }
     .scheduled-modal-item-ec.yahoo { background: #fef2f2; color: #ff0033; }
     .scheduled-modal-item-product { font-size: 14px; color: #1e293b; font-weight: 600; }
@@ -256,10 +251,7 @@
     }
     .scheduled-detail-info strong { color: #1e293b; }
     .scheduled-empty { text-align: center; padding: 40px 20px; color: #64748b; }
-    .btn-danger {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: #fff; border: none;
-    }
+    .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; border: none; }
     .btn-danger:hover { background: linear-gradient(135deg, #dc2626, #b91c1c); }
     .modal-textarea {
       flex: 1; margin: 16px; padding: 16px; border: 1px solid #e2e8f0; border-radius: 10px;
@@ -274,44 +266,25 @@
     .discord-channels-section {
       padding: 12px 16px; background: #f0f9ff; border-top: 1px solid #e2e8f0; flex-shrink: 0;
     }
-    .discord-channels-header {
-      font-size: 13px; font-weight: 600; color: #1e40af; margin-bottom: 8px;
-    }
-    .discord-channels-list {
-      display: flex; flex-wrap: wrap; gap: 8px;
-    }
-    .discord-channels-loading {
-      font-size: 13px; color: #64748b;
-    }
+    .discord-channels-header { font-size: 13px; font-weight: 600; color: #1e40af; margin-bottom: 8px; }
+    .discord-channels-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .discord-channels-loading { font-size: 13px; color: #64748b; }
     .discord-channel-item {
       display: flex; align-items: center; gap: 6px;
       padding: 6px 12px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
       font-size: 13px; color: #475569; cursor: pointer; transition: all 0.2s;
     }
-    .discord-channel-item:hover {
-      border-color: #3b82f6; background: #eff6ff;
-    }
-    .discord-channel-item.checked {
-      border-color: #3b82f6; background: #dbeafe; color: #1e40af;
-    }
-    .discord-channel-item input[type="checkbox"] {
-      cursor: pointer;
-    }
+    .discord-channel-item:hover { border-color: #3b82f6; background: #eff6ff; }
+    .discord-channel-item.checked { border-color: #3b82f6; background: #dbeafe; color: #1e40af; }
+    .discord-channel-item input[type="checkbox"] { cursor: pointer; }
     .schedule-options {
       display: flex; align-items: center; gap: 20px; padding: 12px 16px;
       background: #f7fafc; border-top: 1px solid #e2e8f0; flex-shrink: 0;
     }
-    .schedule-label {
-      display: flex; align-items: center; gap: 6px; font-size: 14px; color: #4a5568; cursor: pointer;
-    }
+    .schedule-label { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #4a5568; cursor: pointer; }
     .schedule-label input[type="radio"] { cursor: pointer; }
-    .schedule-datetime {
-      display: flex; gap: 8px; margin-left: auto;
-    }
-    .schedule-input {
-      padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
-      font-size: 14px; background: #fff;
-    }
+    .schedule-datetime { display: flex; gap: 8px; margin-left: auto; }
+    .schedule-input { padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; background: #fff; }
     .toast {
       position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
       padding: 14px 24px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
@@ -490,14 +463,18 @@
           <div class="campaign-label">ハッピーアワー<br><small style="color:#718096">税抜4% 上限3,000P</small></div>
           <div class="campaign-points" id="points-happyhour"></div>
         </div>
-        <div class="campaign-item" onclick="toggleCampaign(this)" data-campaign="paypay6">
+        <div class="campaign-item has-select" onclick="toggleCampaign(this)" data-campaign="paypay6">
           <div class="campaign-checkbox"></div>
-          <div class="campaign-label">超PayPayまつり<br><small style="color:#718096">税抜6% 上限2,000P</small></div>
+          <div class="campaign-label">超PayPayまつり<br><small style="color:#718096">税抜6%</small></div>
+          <span style="font-size:11px;color:#718096;">上限</span>
+          <input type="number" class="campaign-input" id="paypay6Cap" value="2000" placeholder="上限P" onclick="event.stopPropagation()">
           <div class="campaign-points" id="points-paypay6"></div>
         </div>
-        <div class="campaign-item" onclick="toggleCampaign(this)" data-campaign="paypay2">
+        <div class="campaign-item has-select" onclick="toggleCampaign(this)" data-campaign="paypay2">
           <div class="campaign-checkbox"></div>
-          <div class="campaign-label">超PayPayまつり<br><small style="color:#718096">税抜2% 上限2,000P</small></div>
+          <div class="campaign-label">超PayPayまつり<br><small style="color:#718096">税抜2%</small></div>
+          <span style="font-size:11px;color:#718096;">上限</span>
+          <input type="number" class="campaign-input" id="paypay2Cap" value="2000" placeholder="上限P" onclick="event.stopPropagation()">
           <div class="campaign-points" id="points-paypay2"></div>
         </div>
         <div class="campaign-item" onclick="toggleCampaign(this)" data-campaign="firstday">
@@ -520,7 +497,6 @@
     
     <input type="hidden" id="editingRowNumber" value="">
     
-    <!-- 配信履歴 -->
     <div class="section">
       <div class="section-title">📋 配信履歴（最新20件）</div>
       <div class="history-list" id="historyList">
@@ -528,7 +504,7 @@
       </div>
     </div>
     
-    </div><!-- main-content -->
+    </div>
     
     <div class="sidebar">
       <div class="sidebar-sticky">
@@ -554,18 +530,15 @@
         </div>
         
         <div class="sidebar-buttons">
-          <!-- 新規入力時 -->
           <div id="newEntryButtons">
             <button class="btn btn-discord" id="saveAndPostBtn" onclick="generateTemplate()">📝 記録して投稿</button>
           </div>
-          <!-- 編集時 -->
           <div id="editButtons" style="display:none;">
             <button class="btn btn-secondary" id="updateBtn" onclick="updateOnly()">📝 更新する</button>
             <button class="btn btn-discord" onclick="generateTemplate()">📋 投稿する</button>
           </div>
         </div>
         
-        <!-- 予約投稿確認ボタン -->
         <button class="btn btn-scheduled" id="scheduledBtn" onclick="openScheduledModal()">
           📅 予約中の投稿を確認 <span class="scheduled-badge" id="scheduledCount" style="display:none;">0</span>
         </button>
@@ -573,7 +546,6 @@
     </div>
   </div>
   
-  <!-- 予約投稿一覧モーダル -->
   <div class="modal-overlay" id="scheduledModal" onclick="closeScheduledModal(event)">
     <div class="scheduled-modal-content" onclick="event.stopPropagation()">
       <div class="modal-header">
@@ -586,7 +558,6 @@
     </div>
   </div>
   
-  <!-- 予約内容確認モーダル -->
   <div class="modal-overlay" id="scheduledDetailModal" onclick="closeScheduledDetailModal(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
       <div class="modal-header">
@@ -602,10 +573,8 @@
     </div>
   </div>
   
-  <!-- テンプレートモーダル -->
   <div class="modal-overlay" id="templateModal" onclick="closeModal(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
-      <!-- 確認画面 -->
       <div id="templatePreviewMode">
         <div class="modal-header">
           <span>📋 Discord配信テンプレート</span>
@@ -618,7 +587,6 @@
           <button class="btn btn-secondary" onclick="closeTemplateModal()">閉じる</button>
         </div>
       </div>
-      <!-- 編集・投稿画面 -->
       <div id="templateEditMode" style="display: none;">
         <div class="modal-header">
           <span>📋 投稿内容を確認・編集</span>
@@ -654,14 +622,18 @@
   <div class="toast" id="toast"></div>
   
   <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyXdgehZGBhfWNCRA5uwC1Jr6Kp8lzNy-6mCieFu4HaZBiC2jfPB5BXa7TlhHt_FHHF/exec';
+    var scheduledPosts = [];
+    var currentScheduleRowNumber = null;
+    
     document.getElementById('deliveryDate').valueAsDate = new Date();
     
     document.addEventListener('DOMContentLoaded', function() {
       loadHistory();
       setupRealtimeCalc();
+      loadScheduledPosts();
     });
     
-    // サイドバーの商品名を更新
     function updateSidebarProductName() {
       var productName = document.getElementById('productName').value;
       document.getElementById('sidebarProductName').textContent = productName || '商品未入力';
@@ -677,6 +649,8 @@
       document.getElementById('coupon').addEventListener('input', calculatePreview);
       document.getElementById('consignmentPrice').addEventListener('input', calculatePreview);
       document.getElementById('storeBonusPercent').addEventListener('change', calculatePreview);
+      document.getElementById('paypay6Cap').addEventListener('input', calculatePreview);
+      document.getElementById('paypay2Cap').addEventListener('input', calculatePreview);
     }
     
     function calculatePreview() {
@@ -699,7 +673,6 @@
       var priceWithoutTax = Math.floor(priceWithTax / 1.1);
       var totalPoints = 0;
       
-      // 固定ポイント
       var paypayCardPts = Math.floor(priceWithTax * 0.01);
       var cardPts = Math.floor(priceWithoutTax * 0.03);
       var powlPts = Math.floor(priceWithoutTax * 0.013);
@@ -712,62 +685,52 @@
       updateFixedPoints('powl', powlPts);
       updateFixedPoints('lyp', lypPts);
       
-      // キャンペーンポイント
       var campaigns = getActiveCampaigns();
       var pts;
       
-      // ストアポイント（税抜1% 上限1,000P）
       pts = Math.min(Math.floor(priceWithoutTax * 0.01), 1000);
       updateCampaignPoints('storepoint', campaigns.includes('storepoint') ? pts : 0);
       if (campaigns.includes('storepoint')) totalPoints += pts;
       
-      // ストア上乗せ分（税抜 選択%）
       var storeBonusPercent = Number(document.getElementById('storeBonusPercent').value) || 4;
       pts = Math.floor(priceWithoutTax * (storeBonusPercent / 100));
       updateCampaignPoints('storebonus', campaigns.includes('storebonus') ? pts : 0);
       if (campaigns.includes('storebonus')) totalPoints += pts;
       
-      // 5の付く日（税抜4% 上限1,000P）
       pts = Math.min(Math.floor(priceWithoutTax * 0.04), 1000);
       updateCampaignPoints('5day', campaigns.includes('5day') ? pts : 0);
       if (campaigns.includes('5day')) totalPoints += pts;
       
-      // プレミアムな日曜日（税抜5% 上限2,000P）
       pts = Math.min(Math.floor(priceWithoutTax * 0.05), 2000);
       updateCampaignPoints('premiumsunday', campaigns.includes('premiumsunday') ? pts : 0);
       if (campaigns.includes('premiumsunday')) totalPoints += pts;
       
-      // ハッピーアワー（税抜4% 上限3,000P）
       pts = Math.min(Math.floor(priceWithoutTax * 0.04), 3000);
       updateCampaignPoints('happyhour', campaigns.includes('happyhour') ? pts : 0);
       if (campaigns.includes('happyhour')) totalPoints += pts;
       
-      // 超PayPayまつり 6%（税抜6% 上限2,000P）
-      pts = Math.min(Math.floor(priceWithoutTax * 0.06), 2000);
+      var paypay6Cap = Number(document.getElementById('paypay6Cap').value) || 2000;
+      pts = Math.min(Math.floor(priceWithoutTax * 0.06), paypay6Cap);
       updateCampaignPoints('paypay6', campaigns.includes('paypay6') ? pts : 0);
       if (campaigns.includes('paypay6')) totalPoints += pts;
       
-      // 超PayPayまつり 2%（税抜2% 上限2,000P）
-      pts = Math.min(Math.floor(priceWithoutTax * 0.02), 2000);
+      var paypay2Cap = Number(document.getElementById('paypay2Cap').value) || 2000;
+      pts = Math.min(Math.floor(priceWithoutTax * 0.02), paypay2Cap);
       updateCampaignPoints('paypay2', campaigns.includes('paypay2') ? pts : 0);
       if (campaigns.includes('paypay2')) totalPoints += pts;
       
-      // ファーストDAY（税抜3% 上限2,000P）
       pts = Math.min(Math.floor(priceWithoutTax * 0.03), 2000);
       updateCampaignPoints('firstday', campaigns.includes('firstday') ? pts : 0);
       if (campaigns.includes('firstday')) totalPoints += pts;
       
-      // ボーナスストア 5%（税抜5% 上限なし）
       pts = Math.floor(priceWithoutTax * 0.05);
       updateCampaignPoints('bonus5', campaigns.includes('bonus5') ? pts : 0);
       if (campaigns.includes('bonus5')) totalPoints += pts;
       
-      // ボーナスストア 10%（税抜10% 上限なし）
       pts = Math.floor(priceWithoutTax * 0.10);
       updateCampaignPoints('bonus10', campaigns.includes('bonus10') ? pts : 0);
       if (campaigns.includes('bonus10')) totalPoints += pts;
       
-      // 表示更新
       document.getElementById('totalPoints').innerHTML = formatNumber(totalPoints) + '<span class="preview-unit">pt</span>';
       
       var expectedProfit = totalPoints + consignmentPrice - priceWithTax;
@@ -811,69 +774,58 @@
       var coupon = Number(document.getElementById('coupon').value) || 0;
       var consignmentPrice = Number(document.getElementById('consignmentPrice').value) || 0;
       var storeBonusPercent = Number(document.getElementById('storeBonusPercent').value) || 4;
+      var paypay6Cap = Number(document.getElementById('paypay6Cap').value) || 2000;
+      var paypay2Cap = Number(document.getElementById('paypay2Cap').value) || 2000;
       var campaigns = getActiveCampaigns();
       
-      // 計算
       var priceWithTax = listPrice - coupon;
       var priceWithoutTax = Math.floor(priceWithTax / 1.1);
       
-      // 固定ポイント
       var paypayCardPts = Math.floor(priceWithTax * 0.01);
       var cardPts = Math.floor(priceWithoutTax * 0.03);
       var powlPts = Math.floor(priceWithoutTax * 0.013);
       var lypPts = Math.floor(priceWithoutTax * 0.02);
       var fixedTotal = paypayCardPts + cardPts + powlPts + lypPts;
       
-      // キャンペーンポイント
       var campaignTotal = 0;
       var campaignPoints = {};
       
-      // ストアポイント（税抜1% 上限1,000P）
       var pts = Math.min(Math.floor(priceWithoutTax * 0.01), 1000);
       campaignPoints.storepoint = campaigns.includes('storepoint') ? pts : 0;
       if (campaigns.includes('storepoint')) campaignTotal += pts;
       
-      // ストア上乗せ分（税抜 選択%）
       pts = Math.floor(priceWithoutTax * (storeBonusPercent / 100));
       campaignPoints.storebonus = campaigns.includes('storebonus') ? pts : 0;
       if (campaigns.includes('storebonus')) campaignTotal += pts;
       
-      // 5の付く日（税抜4% 上限1,000P）
       pts = Math.min(Math.floor(priceWithoutTax * 0.04), 1000);
       campaignPoints['5day'] = campaigns.includes('5day') ? pts : 0;
       if (campaigns.includes('5day')) campaignTotal += pts;
       
-      // プレミアムな日曜日（税抜5% 上限2,000P）
       pts = Math.min(Math.floor(priceWithoutTax * 0.05), 2000);
       campaignPoints.premiumsunday = campaigns.includes('premiumsunday') ? pts : 0;
       if (campaigns.includes('premiumsunday')) campaignTotal += pts;
       
-      // ハッピーアワー（税抜4% 上限3,000P）
       pts = Math.min(Math.floor(priceWithoutTax * 0.04), 3000);
       campaignPoints.happyhour = campaigns.includes('happyhour') ? pts : 0;
       if (campaigns.includes('happyhour')) campaignTotal += pts;
       
-      // 超PayPayまつり 6%（税抜6% 上限2,000P）
-      pts = Math.min(Math.floor(priceWithoutTax * 0.06), 2000);
+      pts = Math.min(Math.floor(priceWithoutTax * 0.06), paypay6Cap);
       campaignPoints.paypay6 = campaigns.includes('paypay6') ? pts : 0;
       if (campaigns.includes('paypay6')) campaignTotal += pts;
       
-      // 超PayPayまつり 2%（税抜2% 上限2,000P）
-      pts = Math.min(Math.floor(priceWithoutTax * 0.02), 2000);
+      pts = Math.min(Math.floor(priceWithoutTax * 0.02), paypay2Cap);
       campaignPoints.paypay2 = campaigns.includes('paypay2') ? pts : 0;
       if (campaigns.includes('paypay2')) campaignTotal += pts;
       
-      // ファーストDAY（税抜3% 上限2,000P）
       pts = Math.min(Math.floor(priceWithoutTax * 0.03), 2000);
       campaignPoints.firstday = campaigns.includes('firstday') ? pts : 0;
       if (campaigns.includes('firstday')) campaignTotal += pts;
       
-      // ボーナスストア 5%（税抜5% 上限なし）
       pts = Math.floor(priceWithoutTax * 0.05);
       campaignPoints.bonus5 = campaigns.includes('bonus5') ? pts : 0;
       if (campaigns.includes('bonus5')) campaignTotal += pts;
       
-      // ボーナスストア 10%（税抜10% 上限なし）
       pts = Math.floor(priceWithoutTax * 0.10);
       campaignPoints.bonus10 = campaigns.includes('bonus10') ? pts : 0;
       if (campaigns.includes('bonus10')) campaignTotal += pts;
@@ -898,13 +850,9 @@
         remarks: document.getElementById('remarks').value,
         campaigns: campaigns,
         storeBonusPercent: storeBonusPercent,
-        // 計算済みポイント
-        fixedPoints: {
-          paypayCard: paypayCardPts,
-          card: cardPts,
-          powl: powlPts,
-          lyp: lypPts
-        },
+        paypay6Cap: paypay6Cap,
+        paypay2Cap: paypay2Cap,
+        fixedPoints: { paypayCard: paypayCardPts, card: cardPts, powl: powlPts, lyp: lypPts },
         campaignPoints: campaignPoints,
         totalPoints: totalPoints,
         expectedProfit: expectedProfit
@@ -915,56 +863,6 @@
       var data = getFormData();
       if (!data.date) { showToast('配信日を入力してください', 'error'); return false; }
       return true;
-    }
-    
-    function saveToSheet() {
-      if (!validateForm()) return;
-      
-      var btn = document.getElementById('saveBtn');
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '⏳ 保存中...';
-      }
-      
-      var data = getFormData();
-      var editingRow = document.getElementById('editingRowNumber').value;
-      var requestBody = editingRow 
-        ? { action: 'updateYahooData', rowNumber: parseInt(editingRow), data: data }
-        : { action: 'saveYahooData', data: data };
-      
-      fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(requestBody)
-      })
-      .then(function(response) { return response.json(); })
-      .then(function(result) { onSaveSuccess(result); })
-      .catch(function(error) { onSaveError(error); });
-    }
-    
-    function onSaveSuccess(result) {
-      var btn = document.getElementById('saveBtn');
-      if (btn) {
-        btn.disabled = false;
-        btn.innerHTML = '📝 記録する';
-      }
-      
-      if (result.success) {
-        showToast(result.message, 'success');
-        clearForm();
-        loadHistory();
-      } else {
-        showToast(result.message, 'error');
-      }
-    }
-    
-    function onSaveError(error) {
-      var btn = document.getElementById('saveBtn');
-      if (btn) {
-        btn.disabled = false;
-        btn.innerHTML = '📝 記録する';
-      }
-      showToast('保存に失敗しました', 'error');
     }
     
     function clearForm() {
@@ -983,14 +881,14 @@
       document.getElementById('editingRowNumber').value = '';
       document.getElementById('priceWithTaxDisplay').textContent = '0';
       document.getElementById('storeBonusPercent').value = '4';
+      document.getElementById('paypay6Cap').value = '2000';
+      document.getElementById('paypay2Cap').value = '2000';
       document.querySelectorAll('.campaign-item.active').forEach(function(item) { item.classList.remove('active'); });
       document.querySelectorAll('.history-item.selected').forEach(function(item) { item.classList.remove('selected'); });
       clearFixedPoints();
       clearCampaignPoints();
       document.getElementById('totalPoints').innerHTML = '0<span class="preview-unit">pt</span>';
       document.getElementById('expectedProfit').innerHTML = '0<span class="preview-unit">円</span>';
-      
-      // 新規モードに切り替え
       switchToNewMode();
       updateSidebarProductName();
     }
@@ -1010,20 +908,14 @@
         container.innerHTML = '<div class="history-empty">配信履歴がありません</div>';
         return;
       }
-      
       var html = '';
       history.forEach(function(item) {
         var profitClass = item.expectedProfit < 0 ? 'negative' : '';
         html += '<div class="history-item" onclick="loadHistoryItem(' + item.rowNumber + ')" data-row="' + item.rowNumber + '">' +
-          '<div class="history-header">' +
-          '<span class="history-date">' + formatDisplayDate(item.date) + '</span>' +
-          '<span class="history-type">' + (item.type || '') + '</span>' +
-          '</div>' +
+          '<div class="history-header"><span class="history-date">' + formatDisplayDate(item.date) + '</span><span class="history-type">' + (item.type || '') + '</span></div>' +
           '<div class="history-product">' + (item.productName || '') + '</div>' +
-          '<div class="history-stats">' +
-          '<div class="history-stat"><span class="history-stat-label">獲得: </span><span class="history-stat-value">' + formatNumber(item.totalPoints) + 'pt</span></div>' +
-          '<div class="history-stat"><span class="history-stat-label">利益: </span><span class="history-stat-value ' + profitClass + '">' + formatNumber(item.expectedProfit) + '円</span></div>' +
-          '</div></div>';
+          '<div class="history-stats"><div class="history-stat"><span class="history-stat-label">獲得: </span><span class="history-stat-value">' + formatNumber(item.totalPoints) + 'pt</span></div>' +
+          '<div class="history-stat"><span class="history-stat-label">利益: </span><span class="history-stat-value ' + profitClass + '">' + formatNumber(item.expectedProfit) + '円</span></div></div></div>';
       });
       container.innerHTML = html;
     }
@@ -1042,9 +934,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }
         })
-        .catch(function(error) {
-          showToast('データの読み込みに失敗しました', 'error');
-        });
+        .catch(function(error) { showToast('データの読み込みに失敗しました', 'error'); });
     }
     
     function fillForm(data) {
@@ -1061,11 +951,9 @@
       document.getElementById('consignmentPrice').value = data.consignmentPrice || '';
       document.getElementById('remarks').value = data.remarks || '';
       document.getElementById('editingRowNumber').value = data.rowNumber;
-      
-      // ストア上乗せ分のパーセント設定
-      if (data.storeBonusPercent) {
-        document.getElementById('storeBonusPercent').value = data.storeBonusPercent;
-      }
+      if (data.storeBonusPercent) document.getElementById('storeBonusPercent').value = data.storeBonusPercent;
+      if (data.paypay6Cap) document.getElementById('paypay6Cap').value = data.paypay6Cap;
+      if (data.paypay2Cap) document.getElementById('paypay2Cap').value = data.paypay2Cap;
       
       document.querySelectorAll('.campaign-item').forEach(function(item) { item.classList.remove('active'); });
       if (data.campaigns) {
@@ -1074,15 +962,11 @@
           if (item) item.classList.add('active');
         });
       }
-      
-      // 編集モードに切り替え
       switchToEditMode();
-      
       calculatePreview();
       updateSidebarProductName();
     }
     
-    // ボタン表示切り替え
     function switchToEditMode() {
       document.getElementById('newEntryButtons').style.display = 'none';
       document.getElementById('editButtons').style.display = 'flex';
@@ -1093,24 +977,19 @@
       document.getElementById('editButtons').style.display = 'none';
     }
     
-    // 更新のみ（編集時）
     function updateOnly() {
       if (!validateForm()) return;
-      
       var btn = document.getElementById('updateBtn');
       btn.disabled = true;
       btn.innerHTML = '⏳ 更新中...';
-      
       var data = getFormData();
       var editingRow = document.getElementById('editingRowNumber').value;
-      
       if (!editingRow) {
         showToast('更新対象がありません', 'error');
         btn.disabled = false;
         btn.innerHTML = '📝 更新する';
         return;
       }
-      
       fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
@@ -1120,12 +999,8 @@
       .then(function(result) {
         btn.disabled = false;
         btn.innerHTML = '📝 更新する';
-        if (result.success) {
-          showToast('更新しました', 'success');
-          loadHistory();
-        } else {
-          showToast(result.message, 'error');
-        }
+        if (result.success) { showToast('更新しました', 'success'); loadHistory(); }
+        else { showToast(result.message, 'error'); }
       })
       .catch(function(error) {
         btn.disabled = false;
@@ -1134,39 +1009,23 @@
       });
     }
     
-    // 保存処理（投稿時に呼ばれる）
     function saveToSheetForPost(callback) {
       var data = getFormData();
       var editingRow = document.getElementById('editingRowNumber').value;
       var requestBody = editingRow 
         ? { action: 'updateYahooData', rowNumber: parseInt(editingRow), data: data }
         : { action: 'saveYahooData', data: data };
-      
-      fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(requestBody)
-      })
+      fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(requestBody) })
       .then(function(response) { return response.json(); })
       .then(function(result) {
-        if (result.success) {
-          loadHistory();
-          if (callback) callback(true);
-        } else {
-          showToast(result.message, 'error');
-          if (callback) callback(false);
-        }
+        if (result.success) { loadHistory(); if (callback) callback(true); }
+        else { showToast(result.message, 'error'); if (callback) callback(false); }
       })
-      .catch(function(error) {
-        showToast('保存に失敗しました', 'error');
-        if (callback) callback(false);
-      });
+      .catch(function(error) { showToast('保存に失敗しました', 'error'); if (callback) callback(false); });
     }
     
-    // テンプレート生成
     function generateTemplate() {
       if (!validateForm()) return;
-      
       var data = getFormData();
       var listPrice = Number(data.listPrice) || 0;
       var coupon = Number(data.coupon) || 0;
@@ -1174,7 +1033,6 @@
       var priceWithoutTax = Math.floor(priceWithTax / 1.1);
       var consignmentPrice = Number(data.consignmentPrice) || 0;
       
-      // 固定ポイント計算
       var fixedPts = {
         paypayCard: Math.floor(priceWithTax * 0.01),
         card: Math.floor(priceWithoutTax * 0.03),
@@ -1182,18 +1040,12 @@
         lyp: Math.floor(priceWithoutTax * 0.02)
       };
       var fixedTotal = fixedPts.paypayCard + fixedPts.card + fixedPts.powl + fixedPts.lyp;
-      
-      // キャンペーンポイント計算
       var campaigns = getActiveCampaigns();
       var campaignPts = calculateCampaignPointsForTemplate(priceWithoutTax, campaigns, data);
-      
       var totalPoints = fixedTotal + campaignPts.total;
       var expectedProfit = consignmentPrice - priceWithTax + totalPoints;
-      
-      // 日付フォーマット
       var dateFormatted = data.date ? data.date.replace(/-/g, '/') : '';
       
-      // テンプレート生成
       var lines = [];
       lines.push('@everyone');
       lines.push('【Yahoo 見込み利益' + formatNumber(expectedProfit) + '円】🔥 🔥 🔥');
@@ -1208,25 +1060,9 @@
       if (data.requiredCondition) lines.push('🔹必須条件：' + data.requiredCondition);
       lines.push('🔹経由するポイントサイト：POWL');
       lines.push('');
-      
-      if (coupon > 0) {
-        lines.push('✅クーポン利用：【' + formatNumber(coupon) + '円】引クーポンを利用必須！');
-        lines.push('');
-      }
-      
-      if (data.entryUrl) {
-        lines.push('📢キャンペーンエントリー＆クーポン取得リンク');
-        if (data.campaignName) lines.push(data.campaignName);
-        lines.push(data.entryUrl);
-        lines.push('');
-      }
-      
-      if (data.couponUrl) {
-        lines.push('📢クーポン取得');
-        lines.push(data.couponUrl);
-        lines.push('');
-      }
-      
+      if (coupon > 0) { lines.push('✅クーポン利用：【' + formatNumber(coupon) + '円】引クーポンを利用必須！'); lines.push(''); }
+      if (data.entryUrl) { lines.push('📢キャンペーンエントリー＆クーポン取得リンク'); lines.push(data.entryUrl); lines.push(''); }
+      if (data.couponUrl) { lines.push('📢クーポン取得'); lines.push(data.couponUrl); lines.push(''); }
       lines.push('🎯経由するポイントサイト');
       lines.push('🔗POWL https://web.powl.jp/reward/1794/?invite_code=PU6DYEJLHAH');
       lines.push('');
@@ -1247,12 +1083,7 @@
       lines.push('カード利用税抜3% ' + fixedPts.card + 'pt');
       lines.push('POWL税抜1.3% ' + fixedPts.powl + 'pt');
       lines.push('LYP会員税抜2% ' + fixedPts.lyp + 'pt');
-      
-      // 選択されたキャンペーンのポイント
-      campaignPts.lines.forEach(function(line) {
-        lines.push(line);
-      });
-      
+      campaignPts.lines.forEach(function(line) { lines.push(line); });
       lines.push('');
       if (data.remarks) lines.push('※備考：' + data.remarks);
       
@@ -1260,18 +1091,17 @@
       document.getElementById('templateText').value = template;
       document.getElementById('templateEditText').value = template;
       document.getElementById('templateModal').classList.add('show');
-      // 直接編集モードを表示
       document.getElementById('templatePreviewMode').style.display = 'none';
       document.getElementById('templateEditMode').style.display = 'flex';
-      // Discordチャンネルを読み込み
       loadDiscordChannels();
     }
     
     function calculateCampaignPointsForTemplate(priceWithoutTax, campaigns, data) {
       var total = 0;
       var lines = [];
-      
       var storeBonusPercent = Number(data.storeBonusPercent) || 4;
+      var paypay6Cap = Number(data.paypay6Cap) || 2000;
+      var paypay2Cap = Number(data.paypay2Cap) || 2000;
       
       var campaignConfig = {
         'storepoint': { name: 'ストアポイント', rate: 0.01, cap: 1000, desc: '税抜1%' },
@@ -1279,8 +1109,8 @@
         '5day': { name: '5の付く日', rate: 0.04, cap: 1000, desc: '税抜4%' },
         'premiumsunday': { name: 'プレミアムな日曜日', rate: 0.05, cap: 2000, desc: '税抜5%' },
         'happyhour': { name: 'ハッピーアワー', rate: 0.04, cap: 3000, desc: '税抜4%' },
-        'paypay6': { name: '超PayPayまつり6%', rate: 0.06, cap: 2000, desc: '税抜6%' },
-        'paypay2': { name: '超PayPayまつり2%', rate: 0.02, cap: 2000, desc: '税抜2%' },
+        'paypay6': { name: '超PayPayまつり6%', rate: 0.06, cap: paypay6Cap, desc: '税抜6%' },
+        'paypay2': { name: '超PayPayまつり2%', rate: 0.02, cap: paypay2Cap, desc: '税抜2%' },
         'firstday': { name: 'ファーストDAY', rate: 0.03, cap: 2000, desc: '税抜3%' },
         'bonus5': { name: 'ボーナスストア5%', rate: 0.05, cap: null, desc: '税抜5%' },
         'bonus10': { name: 'ボーナスストア10%', rate: 0.10, cap: null, desc: '税抜10%' }
@@ -1292,47 +1122,30 @@
           var pts = Math.floor(priceWithoutTax * config.rate);
           if (config.cap !== null && pts > config.cap) pts = config.cap;
           total += pts;
-          var capText = config.cap ? '(上限' + config.cap + 'pt)' : '';
+          var capText = config.cap ? '(上限' + formatNumber(config.cap) + 'pt)' : '';
           lines.push(config.name + config.desc + capText + ' ' + pts + 'pt');
         }
       });
-      
       return { total: total, lines: lines };
     }
     
-    function closeTemplateModal() {
-      document.getElementById('templateModal').classList.remove('show');
-    }
-    
-    function closeModal(event) {
-      if (event.target === event.currentTarget) {
-        closeTemplateModal();
-      }
-    }
-    
+    function closeTemplateModal() { document.getElementById('templateModal').classList.remove('show'); }
+    function closeModal(event) { if (event.target === event.currentTarget) closeTemplateModal(); }
     function switchToPostMode() {
       document.getElementById('templateEditText').value = document.getElementById('templateText').value;
       document.getElementById('templatePreviewMode').style.display = 'none';
       document.getElementById('templateEditMode').style.display = 'block';
     }
-    
-    function switchToPreviewMode() {
-      document.getElementById('templatePreviewMode').style.display = 'block';
-      document.getElementById('templateEditMode').style.display = 'none';
-    }
-    
     function toggleSchedule() {
       var postType = document.querySelector('input[name="postType"]:checked').value;
       document.getElementById('scheduleDatetime').style.display = postType === 'schedule' ? 'flex' : 'none';
     }
-    
     function copyTemplate() {
       var textarea = document.getElementById('templateText');
       textarea.select();
       document.execCommand('copy');
       showToast('テンプレートをコピーしました', 'success');
     }
-    
     function copyEditTemplate() {
       var textarea = document.getElementById('templateEditText');
       textarea.select();
@@ -1343,181 +1156,76 @@
     function postToDiscord() {
       var postType = document.querySelector('input[name="postType"]:checked').value;
       var message = document.getElementById('templateEditText').value;
-      
-      if (!message.trim()) {
-        showToast('投稿内容が空です', 'error');
-        return;
-      }
-      
-      // 選択されたチャンネルのWebhook URLを取得
+      if (!message.trim()) { showToast('投稿内容が空です', 'error'); return; }
       var selectedUrls = [];
-      document.querySelectorAll('.discord-channel-item input:checked').forEach(function(checkbox) {
-        selectedUrls.push(checkbox.dataset.url);
-      });
-      
-      if (postType === 'now' && selectedUrls.length === 0) {
-        showToast('投稿先を選択してください', 'error');
-        return;
-      }
-      
+      document.querySelectorAll('.discord-channel-item input:checked').forEach(function(checkbox) { selectedUrls.push(checkbox.dataset.url); });
+      if (postType === 'now' && selectedUrls.length === 0) { showToast('投稿先を選択してください', 'error'); return; }
       var productName = document.getElementById('productName').value;
-      
       var btn = document.getElementById('postBtn');
       btn.disabled = true;
       btn.textContent = '⏳ 処理中...';
       
-      // まずシートに保存
       saveToSheetForPost(function(saveSuccess) {
-        if (!saveSuccess) {
-          btn.disabled = false;
-          btn.textContent = '🚀 投稿する';
-          return;
-        }
-        
+        if (!saveSuccess) { btn.disabled = false; btn.textContent = '🚀 投稿する'; return; }
         if (postType === 'schedule') {
-          // 予約投稿
           var scheduleDate = document.getElementById('scheduleDate').value;
           var scheduleTime = document.getElementById('scheduleTime').value;
-          
-          if (!scheduleDate || !scheduleTime) {
-            showToast('予約日時を設定してください', 'error');
-            btn.disabled = false;
-            btn.textContent = '🚀 投稿する';
-            return;
-          }
-          
+          if (!scheduleDate || !scheduleTime) { showToast('予約日時を設定してください', 'error'); btn.disabled = false; btn.textContent = '🚀 投稿する'; return; }
           var scheduledAt = scheduleDate + 'T' + scheduleTime + ':00';
-          var scheduledDateTime = new Date(scheduledAt);
-          
-          if (scheduledDateTime <= new Date()) {
-            showToast('予約日時は現在より後に設定してください', 'error');
-            btn.disabled = false;
-            btn.textContent = '🚀 投稿する';
-            return;
-          }
-          
-          fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify({
-              action: 'saveDiscordSchedule',
-              data: {
-                message: message,
-                scheduledAt: scheduledAt,
-                ecType: 'Yahoo',
-                productName: productName,
-                tabType: 'normal',
-                webhookUrls: selectedUrls,
-                status: '予約中'
-              }
-            })
+          if (new Date(scheduledAt) <= new Date()) { showToast('予約日時は現在より後に設定してください', 'error'); btn.disabled = false; btn.textContent = '🚀 投稿する'; return; }
+          fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ action: 'saveDiscordSchedule', data: { message: message, scheduledAt: scheduledAt, ecType: 'Yahoo', productName: productName, tabType: 'normal', webhookUrls: selectedUrls, status: '予約中' } })
           })
           .then(function(response) { return response.json(); })
           .then(function(result) {
-            btn.disabled = false;
-            btn.textContent = '🚀 投稿する';
-            if (result.success) {
-              showToast('記録＆予約しました: ' + scheduleDate + ' ' + scheduleTime, 'success');
-              closeTemplateModal();
-              clearForm();
-              loadScheduledPosts();
-            } else {
-              showToast(result.message || '予約に失敗しました', 'error');
-            }
+            btn.disabled = false; btn.textContent = '🚀 投稿する';
+            if (result.success) { showToast('記録＆予約しました', 'success'); closeTemplateModal(); clearForm(); loadScheduledPosts(); }
+            else { showToast(result.message || '予約に失敗しました', 'error'); }
           })
-          .catch(function(error) {
-            btn.disabled = false;
-            btn.textContent = '🚀 投稿する';
-            showToast('予約に失敗しました', 'error');
-          });
-          
+          .catch(function(error) { btn.disabled = false; btn.textContent = '🚀 投稿する'; showToast('予約に失敗しました', 'error'); });
         } else {
-          // 今すぐ投稿
-          fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify({
-              action: 'postToDiscord',
-              message: message,
-              webhookUrls: selectedUrls
-            })
+          fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ action: 'postToDiscord', message: message, webhookUrls: selectedUrls })
           })
           .then(function(response) { return response.json(); })
           .then(function(result) {
-            btn.disabled = false;
-            btn.textContent = '🚀 投稿する';
-            if (result.success) {
-              showToast('記録＆投稿しました！' + result.message, 'success');
-              closeTemplateModal();
-              clearForm();
-            } else {
-              showToast(result.message || '投稿に失敗しました', 'error');
-            }
+            btn.disabled = false; btn.textContent = '🚀 投稿する';
+            if (result.success) { showToast('記録＆投稿しました！' + result.message, 'success'); closeTemplateModal(); clearForm(); }
+            else { showToast(result.message || '投稿に失敗しました', 'error'); }
           })
-          .catch(function(error) {
-            btn.disabled = false;
-            btn.textContent = '🚀 投稿する';
-            showToast('投稿に失敗しました', 'error');
-          });
+          .catch(function(error) { btn.disabled = false; btn.textContent = '🚀 投稿する'; showToast('投稿に失敗しました', 'error'); });
         }
       });
     }
     
-    // Discordチャンネル一覧を読み込み
     function loadDiscordChannels() {
       var container = document.getElementById('discordChannelsList');
       container.innerHTML = '<div class="discord-channels-loading">読み込み中...</div>';
-      
       fetch(API_URL + '?action=getDiscordChannels&ecType=Yahoo')
         .then(function(response) { return response.json(); })
         .then(function(channels) {
-          if (!channels || channels.length === 0) {
-            container.innerHTML = '<div class="discord-channels-loading">投稿先がありません（Discord設定シートを確認してください）</div>';
-            return;
-          }
-          
+          if (!channels || channels.length === 0) { container.innerHTML = '<div class="discord-channels-loading">投稿先がありません</div>'; return; }
           var html = '';
           channels.forEach(function(ch) {
             var checkedAttr = ch.enabled ? 'checked' : '';
             var checkedClass = ch.enabled ? 'checked' : '';
-            html += '<label class="discord-channel-item ' + checkedClass + '">' +
-              '<input type="checkbox" ' + checkedAttr + ' data-url="' + ch.webhookUrl + '" onchange="toggleChannelItem(this)">' +
-              ch.channelName +
-              '</label>';
+            html += '<label class="discord-channel-item ' + checkedClass + '"><input type="checkbox" ' + checkedAttr + ' data-url="' + ch.webhookUrl + '" onchange="toggleChannelItem(this)">' + ch.channelName + '</label>';
           });
           container.innerHTML = html;
         })
-        .catch(function(error) {
-          container.innerHTML = '<div class="discord-channels-loading">読み込みに失敗しました</div>';
-        });
+        .catch(function(error) { container.innerHTML = '<div class="discord-channels-loading">読み込みに失敗しました</div>'; });
     }
     
     function toggleChannelItem(checkbox) {
       var label = checkbox.parentElement;
-      if (checkbox.checked) {
-        label.classList.add('checked');
-      } else {
-        label.classList.remove('checked');
-      }
+      if (checkbox.checked) label.classList.add('checked');
+      else label.classList.remove('checked');
     }
     
-    function goBack() {
-      window.location.href = 'index.html';
-    }
-    
-    function toggleMenu() {
-      document.getElementById('menuDropdown').classList.toggle('show');
-    }
-    
-    function navigateTo(page) {
-      window.location.href = page + '.html';
-    }
-    
-    document.addEventListener('click', function(e) {
-      if (!e.target.closest('.hamburger-menu')) {
-        document.getElementById('menuDropdown').classList.remove('show');
-      }
-    });
+    function goBack() { window.location.href = 'index.html'; }
+    function toggleMenu() { document.getElementById('menuDropdown').classList.toggle('show'); }
+    function navigateTo(page) { window.location.href = page + '.html'; }
+    document.addEventListener('click', function(e) { if (!e.target.closest('.hamburger-menu')) document.getElementById('menuDropdown').classList.remove('show'); });
     
     function showToast(message, type) {
       var toast = document.getElementById('toast');
@@ -1538,66 +1246,31 @@
       return Number(num).toLocaleString();
     }
     
-    // ========== 予約投稿関連 ==========
-    var scheduledPosts = [];
-    var currentScheduleRowNumber = null;
-    const API_URL = 'https://script.google.com/macros/s/AKfycbyXdgehZGBhfWNCRA5uwC1Jr6Kp8lzNy-6mCieFu4HaZBiC2jfPB5BXa7TlhHt_FHHF/exec';
-    
     function loadScheduledPosts() {
-      fetch(API_URL + '?action=getScheduledPosts')
+      fetch(API_URL + '?action=getPendingSchedules')
         .then(function(res) { return res.json(); })
-        .then(function(data) {
-          if (data.success) {
-            scheduledPosts = data.data || [];
-            renderScheduledSidebar();
-          }
-        })
-        .catch(function(err) {
-          console.error('予約投稿読み込みエラー:', err);
-        });
+        .then(function(data) { scheduledPosts = Array.isArray(data) ? data : []; renderScheduledSidebar(); })
+        .catch(function(err) { console.error('予約投稿読み込みエラー:', err); });
     }
     
     function renderScheduledSidebar() {
       var pendingPosts = scheduledPosts.filter(function(p) { return p.status === '予約中'; });
       var countEl = document.getElementById('scheduledCount');
-      
-      if (pendingPosts.length > 0) {
-        countEl.textContent = pendingPosts.length;
-        countEl.style.display = 'inline-block';
-      } else {
-        countEl.style.display = 'none';
-      }
+      if (pendingPosts.length > 0) { countEl.textContent = pendingPosts.length; countEl.style.display = 'inline-block'; }
+      else { countEl.style.display = 'none'; }
     }
     
-    function openScheduledModal() {
-      document.getElementById('scheduledModal').classList.add('show');
-      renderScheduledModal();
-    }
-    
-    function closeScheduledModal(event) {
-      if (event && event.target !== event.currentTarget) return;
-      document.getElementById('scheduledModal').classList.remove('show');
-    }
+    function openScheduledModal() { document.getElementById('scheduledModal').classList.add('show'); renderScheduledModal(); }
+    function closeScheduledModal(event) { if (event && event.target !== event.currentTarget) return; document.getElementById('scheduledModal').classList.remove('show'); }
     
     function renderScheduledModal() {
       var pendingPosts = scheduledPosts.filter(function(p) { return p.status === '予約中'; });
       var listEl = document.getElementById('scheduledModalList');
-      
-      if (pendingPosts.length === 0) {
-        listEl.innerHTML = '<div class="scheduled-empty">予約中の投稿はありません</div>';
-        return;
-      }
-      
+      if (pendingPosts.length === 0) { listEl.innerHTML = '<div class="scheduled-empty">予約中の投稿はありません</div>'; return; }
       var html = '';
       pendingPosts.forEach(function(post) {
         var ecClass = post.ecType === '楽天' ? 'rakuten' : 'yahoo';
-        html += '<div class="scheduled-modal-item" onclick="openScheduledDetail(' + post.rowNumber + ')">' +
-          '<div class="scheduled-modal-item-header">' +
-          '<span class="scheduled-modal-item-datetime">' + formatScheduleDateTime(post.scheduledTime) + '</span>' +
-          '<span class="scheduled-modal-item-ec ' + ecClass + '">' + post.ecType + '</span>' +
-          '</div>' +
-          '<div class="scheduled-modal-item-product">' + (post.productName || '商品名なし') + '</div>' +
-          '</div>';
+        html += '<div class="scheduled-modal-item" onclick="openScheduledDetail(' + post.rowNumber + ')"><div class="scheduled-modal-item-header"><span class="scheduled-modal-item-datetime">' + formatScheduleDateTime(post.scheduledAt) + '</span><span class="scheduled-modal-item-ec ' + ecClass + '">' + post.ecType + '</span></div><div class="scheduled-modal-item-product">' + (post.productName || '商品名なし') + '</div></div>';
       });
       listEl.innerHTML = html;
     }
@@ -1605,74 +1278,35 @@
     function formatScheduleDateTime(dateTimeStr) {
       if (!dateTimeStr) return '';
       var dt = new Date(dateTimeStr);
-      var month = dt.getMonth() + 1;
-      var day = dt.getDate();
-      var hours = ('0' + dt.getHours()).slice(-2);
-      var minutes = ('0' + dt.getMinutes()).slice(-2);
-      return month + '/' + day + ' ' + hours + ':' + minutes;
+      return (dt.getMonth() + 1) + '/' + dt.getDate() + ' ' + ('0' + dt.getHours()).slice(-2) + ':' + ('0' + dt.getMinutes()).slice(-2);
     }
     
     function openScheduledDetail(rowNumber) {
       var post = scheduledPosts.find(function(p) { return p.rowNumber === rowNumber; });
       if (!post) return;
-      
       currentScheduleRowNumber = rowNumber;
-      
-      var infoHtml = '<strong>' + post.ecType + '</strong> / ' + (post.productName || '商品名なし') + '<br>' +
-        '予約日時: ' + formatScheduleDateTime(post.scheduledTime);
-      document.getElementById('scheduledDetailInfo').innerHTML = infoHtml;
-      document.getElementById('scheduledDetailText').value = post.content || '';
-      
+      document.getElementById('scheduledDetailInfo').innerHTML = '<strong>' + post.ecType + '</strong> / ' + (post.productName || '商品名なし') + '<br>予約日時: ' + formatScheduleDateTime(post.scheduledAt);
+      document.getElementById('scheduledDetailText').value = post.message || '';
       document.getElementById('scheduledDetailModal').classList.add('show');
     }
     
-    function closeScheduledDetailModal(event) {
-      if (event && event.target !== event.currentTarget) return;
-      document.getElementById('scheduledDetailModal').classList.remove('show');
-      currentScheduleRowNumber = null;
-    }
+    function closeScheduledDetailModal(event) { if (event && event.target !== event.currentTarget) return; document.getElementById('scheduledDetailModal').classList.remove('show'); currentScheduleRowNumber = null; }
     
     function cancelSchedule() {
       if (!currentScheduleRowNumber) return;
       if (!confirm('この予約を取り消しますか？')) return;
-      
       var btn = document.getElementById('cancelScheduleBtn');
       btn.disabled = true;
       btn.textContent = '取り消し中...';
-      
-      fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({
-          action: 'cancelScheduledPost',
-          rowNumber: currentScheduleRowNumber
-        })
-      })
+      fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: 'cancelDiscordSchedule', rowNumber: currentScheduleRowNumber }) })
       .then(function(res) { return res.json(); })
       .then(function(data) {
-        btn.disabled = false;
-        btn.innerHTML = '🗑️ 予約を取り消す';
-        
-        if (data.success) {
-          showToast('予約を取り消しました', 'success');
-          closeScheduledDetailModal();
-          loadScheduledPosts();
-          renderScheduledModal();
-        } else {
-          showToast('取り消しに失敗しました', 'error');
-        }
+        btn.disabled = false; btn.innerHTML = '🗑️ 予約を取り消す';
+        if (data.success) { showToast('予約を取り消しました', 'success'); closeScheduledDetailModal(); loadScheduledPosts(); renderScheduledModal(); }
+        else { showToast('取り消しに失敗しました', 'error'); }
       })
-      .catch(function(err) {
-        btn.disabled = false;
-        btn.innerHTML = '🗑️ 予約を取り消す';
-        showToast('エラーが発生しました', 'error');
-      });
+      .catch(function(err) { btn.disabled = false; btn.innerHTML = '🗑️ 予約を取り消す'; showToast('エラーが発生しました', 'error'); });
     }
-    
-    // ページ読み込み時に予約投稿も読み込む
-    document.addEventListener('DOMContentLoaded', function() {
-      loadScheduledPosts();
-    });
   </script>
 </body>
 </html>
