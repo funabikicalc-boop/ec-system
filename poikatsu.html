@@ -761,13 +761,14 @@ ${data.link || '※リンクを入力してください'}
       try {
         const response = await fetch(`${API_URL}?action=getPendingSchedules`);
         const schedules = await response.json();
-        const poikatsuSchedules = schedules.filter(s => s.ecType === EC_TYPE);
+        const poikatsuSchedules = (Array.isArray(schedules) ? schedules : []).filter(s => s.ecType === EC_TYPE && s.status === '予約中');
         if (poikatsuSchedules.length === 0) { container.innerHTML = '<div class="scheduled-empty">予約中の投稿はありません</div>'; return; }
         container.innerHTML = poikatsuSchedules.map(s => {
           const dt = new Date(s.scheduledAt);
           const dateStr = dt.toLocaleString('ja-JP');
-          const preview = s.message.substring(0, 50) + '...';
-          return `<div class="scheduled-modal-item" onclick="openScheduledDetail(${s.rowNumber}, '${dateStr.replace(/'/g, "\\'")}', \`${s.message.replace(/`/g, '\\`')}\`)">
+          const msg = s.message || '';
+          const preview = msg.substring(0, 50) + (msg.length > 50 ? '...' : '');
+          return `<div class="scheduled-modal-item" onclick="openScheduledDetail(${s.rowNumber}, '${dateStr.replace(/'/g, "\\'")}', \`${msg.replace(/`/g, '\\`')}\`)">
             <div class="scheduled-modal-item-header"><span class="scheduled-modal-item-datetime">${dateStr}</span><span class="scheduled-modal-item-ec">ポイ活</span></div>
             <div class="scheduled-modal-item-product">${preview}</div></div>`;
         }).join('');

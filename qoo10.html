@@ -1260,7 +1260,7 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
         const response = await fetch(`${API_URL}?action=getPendingSchedules`);
         const schedules = await response.json();
         
-        const qoo10Schedules = schedules.filter(s => s.ecType === EC_TYPE);
+        const qoo10Schedules = (Array.isArray(schedules) ? schedules : []).filter(s => s.ecType === EC_TYPE && s.status === '予約中');
         
         if (qoo10Schedules.length === 0) {
           container.innerHTML = '<div class="scheduled-empty">予約中の投稿はありません</div>';
@@ -1270,10 +1270,11 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
         container.innerHTML = qoo10Schedules.map(s => {
           const dt = new Date(s.scheduledAt);
           const dateStr = dt.toLocaleString('ja-JP');
-          const preview = s.message.substring(0, 50) + '...';
+          const msg = s.message || '';
+          const preview = msg.substring(0, 50) + (msg.length > 50 ? '...' : '');
           
           return `
-            <div class="scheduled-modal-item" onclick="openScheduledDetail(${s.rowNumber}, '${dateStr.replace(/'/g, "\\'")}', \`${s.message.replace(/`/g, '\\`')}\`)">
+            <div class="scheduled-modal-item" onclick="openScheduledDetail(${s.rowNumber}, '${dateStr.replace(/'/g, "\\'")}', \`${msg.replace(/`/g, '\\`')}\`)">
               <div class="scheduled-modal-item-header">
                 <span class="scheduled-modal-item-datetime">${dateStr}</span>
                 <span class="scheduled-modal-item-ec qoo10">Qoo10</span>
