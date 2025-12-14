@@ -2129,13 +2129,11 @@
     var currentScheduleRowNumber = null;
     
     function loadScheduledPosts() {
-      fetch(API_URL + '?action=getScheduledPosts')
+      fetch(API_URL + '?action=getPendingSchedules')
         .then(function(res) { return res.json(); })
         .then(function(data) {
-          if (data.success) {
-            scheduledPosts = data.data || [];
-            renderScheduledSidebar();
-          }
+          scheduledPosts = Array.isArray(data) ? data : [];
+          renderScheduledSidebar();
         })
         .catch(function(err) {
           console.error('予約投稿読み込みエラー:', err);
@@ -2178,7 +2176,7 @@
         var ecClass = post.ecType === '楽天' ? 'rakuten' : 'yahoo';
         html += '<div class="scheduled-modal-item" onclick="openScheduledDetail(' + post.rowNumber + ')">' +
           '<div class="scheduled-modal-item-header">' +
-          '<span class="scheduled-modal-item-datetime">' + formatScheduleDateTime(post.scheduledTime) + '</span>' +
+          '<span class="scheduled-modal-item-datetime">' + formatScheduleDateTime(post.scheduledAt) + '</span>' +
           '<span class="scheduled-modal-item-ec ' + ecClass + '">' + post.ecType + '</span>' +
           '</div>' +
           '<div class="scheduled-modal-item-product">' + (post.productName || '商品名なし') + '</div>' +
@@ -2204,9 +2202,9 @@
       currentScheduleRowNumber = rowNumber;
       
       var infoHtml = '<strong>' + post.ecType + '</strong> / ' + (post.productName || '商品名なし') + '<br>' +
-        '予約日時: ' + formatScheduleDateTime(post.scheduledTime);
+        '予約日時: ' + formatScheduleDateTime(post.scheduledAt);
       document.getElementById('scheduledDetailInfo').innerHTML = infoHtml;
-      document.getElementById('scheduledDetailText').value = post.content || '';
+      document.getElementById('scheduledDetailText').value = post.message || '';
       
       document.getElementById('scheduledDetailModal').classList.add('show');
     }
@@ -2229,7 +2227,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({
-          action: 'cancelScheduledPost',
+          action: 'cancelDiscordSchedule',
           rowNumber: currentScheduleRowNumber
         })
       })
