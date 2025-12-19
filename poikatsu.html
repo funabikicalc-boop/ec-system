@@ -566,7 +566,7 @@ ${data.link || '※リンクを入力してください'}
       try {
         const action = editingRow ? 'updatePoikatsuData' : 'savePoikatsuData';
         const response = await fetch(API_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          method: 'POST',
           body: JSON.stringify({ action: action, rowNumber: editingRow ? Number(editingRow) : null, data: data })
         });
         const result = await response.json();
@@ -582,7 +582,7 @@ ${data.link || '※リンクを入力してください'}
       if (!data.date || !data.site) { showToast('配信日と配信サイトを選択してください', 'error'); return; }
       try {
         const response = await fetch(API_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          method: 'POST',
           body: JSON.stringify({ action: 'updatePoikatsuData', rowNumber: Number(editingRow), data: data })
         });
         const result = await response.json();
@@ -722,7 +722,7 @@ ${data.link || '※リンクを入力してください'}
           const time = document.getElementById('scheduleTime').value;
           if (!date || !time) { showToast('予約日時を設定してください', 'error'); postBtn.disabled = false; postBtn.textContent = '🚀 投稿する'; return; }
           const response = await fetch(API_URL, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            method: 'POST',
             body: JSON.stringify({ action: 'saveDiscordSchedule', data: { scheduledAt: `${date}T${time}:00`, message: message, ecType: EC_TYPE, webhookUrls: webhookUrls, status: '予約中' } })
           });
           const result = await response.json();
@@ -730,7 +730,7 @@ ${data.link || '※リンクを入力してください'}
           else { showToast(result.message || '予約に失敗しました', 'error'); }
         } else {
           const response = await fetch(API_URL, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            method: 'POST',
             body: JSON.stringify({ action: 'postToDiscord', message: message, webhookUrls: webhookUrls })
           });
           const result = await response.json();
@@ -788,7 +788,7 @@ ${data.link || '※リンクを入力してください'}
       if (!confirm('この予約を取り消しますか？')) return;
       try {
         const response = await fetch(API_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          method: 'POST',
           body: JSON.stringify({ action: 'cancelDiscordSchedule', rowNumber: selectedScheduleRow })
         });
         const result = await response.json();
