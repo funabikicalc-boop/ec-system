@@ -1,338 +1,1039 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Qoo10配信 - EC配信システム</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
       background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-      min-height: 100vh; padding: 16px; padding-bottom: 100px;
+      min-height: 100vh;
+      padding: 16px;
+      padding-bottom: 100px;
     }
-    .page-wrapper { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; }
-    .main-content { flex: 1; max-width: 900px; }
-    .sidebar { width: 280px; flex-shrink: 0; }
-    .sidebar-sticky { position: sticky; top: 140px; }
-    .hamburger-menu { position: relative; margin-bottom: 8px; }
-    .hamburger-btn {
-      width: 44px; height: 44px; border-radius: 10px; background: #fff;
-      border: 1px solid #e2e8f0; color: #475569; font-size: 24px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+    .page-wrapper {
+      display: flex;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
-    .hamburger-btn:hover { background: #f8fafc; }
-    .menu-dropdown {
-      display: none; position: absolute; top: 50px; left: 0; background: #fff;
-      border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-      min-width: 200px; z-index: 1000; overflow: hidden;
+
+    .main-content {
+      flex: 1;
+      max-width: 900px;
     }
-    .menu-dropdown.show { display: block; }
-    .menu-dropdown a {
-      display: block; padding: 12px 16px; color: #1e293b; text-decoration: none;
-      font-size: 14px; border-bottom: 1px solid #f1f5f9;
-    }
-    .menu-dropdown a:last-child { border-bottom: none; }
-    .menu-dropdown a:hover { background: #f8fafc; }
-    .header { 
-      display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 16px 20px;
-      background: #fff; border-radius: 16px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    }
-    .back-btn {
-      width: 40px; height: 40px; border-radius: 10px; background: #f8fafc;
-      border: 1px solid #e2e8f0; color: #475569; font-size: 20px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .back-btn:hover { background: #f1f5f9; }
-    .header-title { display: flex; align-items: center; gap: 12px; }
-    .header-icon {
-      width: 44px; height: 44px; background: linear-gradient(135deg, #e91e8c, #ff6699);
-      border-radius: 12px; display: flex; align-items: center; justify-content: center;
-      font-size: 22px; font-weight: 800; color: #fff;
-    }
-    .header h1 { color: #1e293b; font-size: 22px; font-weight: 700; }
-    .section {
-      background: #fff; border-radius: 20px;
-      padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    }
-    .section-title {
-      color: #1e293b; font-size: 15px; font-weight: 700; margin-bottom: 18px;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .section-title::before { content: ''; width: 4px; height: 18px; background: linear-gradient(180deg, #e91e8c, #ff6699); border-radius: 2px; }
-    .form-group { margin-bottom: 16px; }
-    .form-group:last-child { margin-bottom: 0; }
-    .form-label { display: block; color: #64748b; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
-    .form-input, .form-select, .form-textarea {
-      width: 100%; padding: 12px 14px; background: #f8fafc;
-      border: 2px solid #e2e8f0; border-radius: 10px; color: #1e293b; font-size: 15px;
-      transition: all 0.2s;
-    }
-    .form-textarea { min-height: 80px; resize: vertical; font-family: inherit; }
-    .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: #e91e8c; background: #fff; }
-    .form-input::placeholder, .form-textarea::placeholder { color: #94a3b8; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-    .form-row-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
-    .calc-display {
-      background: #f1f5f9; border: 2px solid #e2e8f0; border-radius: 10px;
-      padding: 12px 14px; color: #1e293b; font-size: 15px; font-weight: 600;
-    }
-    .campaign-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .campaign-item {
-      display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px;
-      background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer;
-      transition: all 0.2s;
-    }
-    .campaign-item:hover { background: #f1f5f9; border-color: #cbd5e1; }
-    .campaign-item.active { background: #fdf2f8; border-color: #e91e8c; }
-    .campaign-checkbox {
-      width: 20px; height: 20px; border-radius: 6px; border: 2px solid #cbd5e1;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-      transition: all 0.2s;
-    }
-    .campaign-item.active .campaign-checkbox { background: #e91e8c; border-color: #e91e8c; }
-    .campaign-checkbox::after { content: '✓'; color: #fff; font-size: 12px; opacity: 0; }
-    .campaign-item.active .campaign-checkbox::after { opacity: 1; }
-    .campaign-label { color: #475569; font-size: 13px; line-height: 1.3; flex: 1; }
-    .campaign-item.active .campaign-label { color: #1e293b; font-weight: 500; }
-    .campaign-points {
-      width: 100%; margin-top: 4px; font-size: 12px; font-weight: 600; color: #e91e8c;
-      display: none;
-    }
-    .campaign-item.active .campaign-points { display: block; }
-    .fixed-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 8px; }
-    .fixed-item {
-      display: flex; flex-direction: column; align-items: center; gap: 4px;
-      padding: 12px 8px; background: #fdf2f8; border: 1px solid #fbcfe8; border-radius: 10px;
-    }
-    .fixed-label { color: #1e293b; font-size: 12px; font-weight: 600; }
-    .fixed-rate { color: #64748b; font-size: 10px; }
-    .fixed-points { color: #e91e8c; font-size: 14px; font-weight: 700; }
-    .pointsite-section {
-      background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px;
-      padding: 16px; margin-bottom: 16px;
-    }
-    .pointsite-header {
-      display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
-      color: #475569; font-size: 13px; font-weight: 600;
-    }
-    .pointsite-result {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px; background: #fdf2f8; border-radius: 10px; margin-top: 12px;
-    }
-    .pointsite-result-label { color: #64748b; font-size: 13px; }
-    .pointsite-result-value { color: #e91e8c; font-size: 18px; font-weight: 700; }
-    .preview-section { 
-      background: #fff; 
-      border: 2px solid #10b981;
-    }
-    .preview-section .section-title { color: #059669; }
-    .preview-section .section-title::before { background: linear-gradient(180deg, #10b981, #34d399); }
-    .preview-grid { display: flex; flex-direction: column; gap: 12px; }
-    .preview-item { 
-      text-align: center; padding: 20px 16px; 
-      background: #f0fdf4; border-radius: 14px; 
-      border: 1px solid #bbf7d0;
-    }
-    .preview-label { color: #64748b; font-size: 12px; margin-bottom: 6px; }
-    .preview-value { color: #059669; font-size: 28px; font-weight: 700; }
-    .preview-value.negative { color: #dc2626; }
-    .preview-unit { font-size: 14px; font-weight: 400; }
-    .sidebar-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
-    .sidebar-buttons .btn { width: 100%; }
-    .sidebar-buttons #editButtons { display: flex; gap: 8px; }
-    .sidebar-buttons #editButtons .btn { flex: 1; padding: 14px 12px; font-size: 13px; }
-    .btn {
-      padding: 16px 24px; border-radius: 12px; font-size: 15px; font-weight: 600;
-      border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-      transition: all 0.2s;
-    }
-    .btn-primary { background: linear-gradient(135deg, #e91e8c 0%, #c91a76 100%); color: #fff; }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(233,30,140,0.4); }
-    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-    .btn-discord { background: linear-gradient(135deg, #5865F2 0%, #4752c4 100%); color: #fff; }
-    .btn-discord:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(88,101,242,0.4); }
-    .btn-discord:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-secondary { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #fff; }
-    .btn-secondary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(249,115,22,0.4); }
-    .history-list { display: flex; flex-direction: column; gap: 8px; }
-    .history-item {
-      padding: 14px 16px; background: #f8fafc; border: 2px solid #e2e8f0;
-      border-radius: 12px; cursor: pointer; transition: all 0.2s;
-    }
-    .history-item:hover { background: #f1f5f9; border-color: #cbd5e1; }
-    .history-item.selected { border-color: #e91e8c; background: #fdf2f8; }
-    .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .history-date { color: #64748b; font-size: 12px; }
-    .history-type { color: #e91e8c; font-size: 11px; padding: 2px 8px; background: #fdf2f8; border-radius: 6px; font-weight: 500; }
-    .history-product { color: #1e293b; font-size: 14px; font-weight: 600; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .history-stats { display: flex; gap: 16px; }
-    .history-stat { font-size: 12px; }
-    .history-stat-label { color: #64748b; }
-    .history-stat-value { color: #10b981; font-weight: 600; }
-    .history-stat-value.negative { color: #ef4444; }
-    .history-empty { text-align: center; padding: 40px 20px; color: #64748b; }
-    .toggle-group { display: flex; gap: 8px; }
-    .toggle-btn {
-      flex: 1; padding: 12px 20px; border: 2px solid #e2e8f0; border-radius: 10px;
-      background: #f8fafc; color: #64748b; font-size: 14px; font-weight: 600;
-      cursor: pointer; transition: all 0.2s;
-    }
-    .toggle-btn:hover { background: #f1f5f9; }
-    .toggle-btn.active { background: #fdf2f8; border-color: #e91e8c; color: #e91e8c; }
-    .modal-overlay {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;
-    }
-    .modal-overlay.show { display: flex; }
-    .modal-content {
-      background: #fff; border-radius: 16px; width: 90%; max-width: 700px; max-height: 90vh;
-      display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      overflow: hidden;
-    }
-    .modal-header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 16px 20px; border-bottom: 1px solid #e2e8f0; font-weight: 600; font-size: 16px;
+
+    .sidebar {
+      width: 280px;
       flex-shrink: 0;
     }
+
+    .sidebar-sticky {
+      position: sticky;
+      top: 140px;
+    }
+
+    .hamburger-menu {
+      position: relative;
+      margin-bottom: 8px;
+    }
+
+    .hamburger-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .hamburger-btn:hover {
+      background: #f8fafc;
+    }
+
+    .menu-dropdown {
+      display: none;
+      position: absolute;
+      top: 50px;
+      left: 0;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+      min-width: 200px;
+      z-index: 1000;
+      overflow: hidden;
+    }
+
+    .menu-dropdown.show {
+      display: block;
+    }
+
+    .menu-dropdown a {
+      display: block;
+      padding: 12px 16px;
+      color: #1e293b;
+      text-decoration: none;
+      font-size: 14px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .menu-dropdown a:last-child {
+      border-bottom: none;
+    }
+
+    .menu-dropdown a:hover {
+      background: #f8fafc;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 16px 20px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .back-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-btn:hover {
+      background: #f1f5f9;
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #e91e8c, #ff6699);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .header h1 {
+      color: #1e293b;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .section {
+      background: #fff;
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .section-title {
+      color: #1e293b;
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 18px;
+      background: linear-gradient(180deg, #e91e8c, #ff6699);
+      border-radius: 2px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      display: block;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 12px 14px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      color: #1e293b;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+
+    .form-textarea {
+      min-height: 80px;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: #e91e8c;
+      background: #fff;
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: #94a3b8;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-row-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .calc-display {
+      background: #f1f5f9;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #1e293b;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .campaign-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .campaign-item {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .campaign-item:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .campaign-item.active {
+      background: #fdf2f8;
+      border-color: #e91e8c;
+    }
+
+    .campaign-checkbox {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: 2px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .campaign-item.active .campaign-checkbox {
+      background: #e91e8c;
+      border-color: #e91e8c;
+    }
+
+    .campaign-checkbox::after {
+      content: '✓';
+      color: #fff;
+      font-size: 12px;
+      opacity: 0;
+    }
+
+    .campaign-item.active .campaign-checkbox::after {
+      opacity: 1;
+    }
+
+    .campaign-label {
+      color: #475569;
+      font-size: 13px;
+      line-height: 1.3;
+      flex: 1;
+    }
+
+    .campaign-item.active .campaign-label {
+      color: #1e293b;
+      font-weight: 500;
+    }
+
+    .campaign-points {
+      margin-left: auto;
+      font-size: 12px;
+      font-weight: 600;
+      color: #e91e8c;
+      display: none;
+    }
+
+    .campaign-item.active .campaign-points {
+      display: block;
+    }
+
+    .fixed-grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 8px;
+    }
+
+    .fixed-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 8px;
+      background: #fdf2f8;
+      border: 1px solid #fbcfe8;
+      border-radius: 10px;
+    }
+
+    .fixed-label {
+      color: #1e293b;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .fixed-rate {
+      color: #64748b;
+      font-size: 10px;
+    }
+
+    .fixed-points {
+      color: #e91e8c;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .pointsite-section {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .pointsite-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      color: #475569;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .pointsite-result {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      background: #fdf2f8;
+      border-radius: 10px;
+      margin-top: 12px;
+    }
+
+    .pointsite-result-label {
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    .pointsite-result-value {
+      color: #e91e8c;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .preview-section {
+      background: #fff;
+      border: 2px solid #10b981;
+    }
+
+    .preview-section .section-title {
+      color: #059669;
+    }
+
+    .preview-section .section-title::before {
+      background: linear-gradient(180deg, #10b981, #34d399);
+    }
+
+    .preview-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .preview-item {
+      text-align: center;
+      padding: 20px 16px;
+      background: #f0fdf4;
+      border-radius: 14px;
+      border: 1px solid #bbf7d0;
+    }
+
+    .preview-label {
+      color: #64748b;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .preview-value {
+      color: #059669;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .preview-value.negative {
+      color: #dc2626;
+    }
+
+    .preview-unit {
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .sidebar-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .sidebar-buttons .btn {
+      width: 100%;
+    }
+
+    .sidebar-buttons #editButtons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .sidebar-buttons #editButtons .btn {
+      flex: 1;
+      padding: 14px 12px;
+      font-size: 13px;
+    }
+
+    .btn {
+      padding: 16px 24px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #e91e8c 0%, #c91a76 100%);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(233, 30, 140, 0.4);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-discord {
+      background: linear-gradient(135deg, #5865F2 0%, #4752c4 100%);
+      color: #fff;
+    }
+
+    .btn-discord:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(88, 101, 242, 0.4);
+    }
+
+    .btn-discord:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      color: #fff;
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .history-item {
+      padding: 14px 16px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .history-item:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .history-item.selected {
+      border-color: #e91e8c;
+      background: #fdf2f8;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .history-date {
+      color: #64748b;
+      font-size: 12px;
+    }
+
+    .history-type {
+      color: #e91e8c;
+      font-size: 11px;
+      padding: 2px 8px;
+      background: #fdf2f8;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    .history-product {
+      color: #1e293b;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-stats {
+      display: flex;
+      gap: 16px;
+    }
+
+    .history-stat {
+      font-size: 12px;
+    }
+
+    .history-stat-label {
+      color: #64748b;
+    }
+
+    .history-stat-value {
+      color: #10b981;
+      font-weight: 600;
+    }
+
+    .history-stat-value.negative {
+      color: #ef4444;
+    }
+
+    .history-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: #64748b;
+    }
+
+    .toggle-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      padding: 12px 20px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      background: #f8fafc;
+      color: #64748b;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .toggle-btn:hover {
+      background: #f1f5f9;
+    }
+
+    .toggle-btn.active {
+      background: #fdf2f8;
+      border-color: #e91e8c;
+      color: #e91e8c;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #fff;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 700px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      font-weight: 600;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
     .modal-close {
-      background: none; border: none; font-size: 24px; cursor: pointer; color: #718096;
-      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #718096;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .modal-close:hover { color: #e91e8c; }
+
+    .modal-close:hover {
+      color: #e91e8c;
+    }
+
     .modal-textarea {
-      flex: 1; margin: 16px; padding: 16px; border: 1px solid #e2e8f0; border-radius: 10px;
-      font-family: monospace; font-size: 13px; line-height: 1.6; resize: none;
-      background: #f7fafc; min-height: 350px; overflow-y: auto;
+      flex: 1;
+      margin: 16px;
+      padding: 16px;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      font-family: monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      resize: none;
+      background: #f7fafc;
+      min-height: 350px;
+      overflow-y: auto;
     }
-    .modal-buttons { display: flex; gap: 12px; padding: 16px 20px; border-top: 1px solid #e2e8f0; flex-shrink: 0; }
-    .modal-buttons .btn { flex: 1; }
-    #templatePreviewMode, #templateEditMode {
-      display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden;
+
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+      padding: 16px 20px;
+      border-top: 1px solid #e2e8f0;
+      flex-shrink: 0;
     }
+
+    .modal-buttons .btn {
+      flex: 1;
+    }
+
+    #templatePreviewMode,
+    #templateEditMode {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
     .discord-channels-section {
-      padding: 12px 16px; background: #f0f9ff; border-top: 1px solid #e2e8f0; flex-shrink: 0;
+      padding: 12px 16px;
+      background: #f0f9ff;
+      border-top: 1px solid #e2e8f0;
+      flex-shrink: 0;
     }
+
     .discord-channels-header {
-      font-size: 13px; font-weight: 600; color: #1e40af; margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1e40af;
+      margin-bottom: 8px;
     }
+
     .discord-channels-list {
-      display: flex; flex-wrap: wrap; gap: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
     }
+
     .discord-channels-loading {
-      font-size: 13px; color: #64748b;
+      font-size: 13px;
+      color: #64748b;
     }
+
     .discord-channel-item {
-      display: flex; align-items: center; gap: 6px;
-      padding: 6px 12px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
-      font-size: 13px; color: #475569; cursor: pointer; transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.2s;
     }
+
     .discord-channel-item:hover {
-      border-color: #3b82f6; background: #eff6ff;
+      border-color: #3b82f6;
+      background: #eff6ff;
     }
+
     .discord-channel-item.checked {
-      border-color: #3b82f6; background: #dbeafe; color: #1e40af;
+      border-color: #3b82f6;
+      background: #dbeafe;
+      color: #1e40af;
     }
+
     .discord-channel-item input[type="checkbox"] {
       cursor: pointer;
     }
+
     .schedule-options {
-      display: flex; align-items: center; gap: 20px; padding: 12px 16px;
-      background: #f7fafc; border-top: 1px solid #e2e8f0; flex-shrink: 0;
-    }
-    .schedule-label {
-      display: flex; align-items: center; gap: 6px; font-size: 14px; color: #4a5568; cursor: pointer;
-    }
-    .schedule-label input[type="radio"] { cursor: pointer; }
-    .schedule-datetime {
-      display: flex; gap: 8px; margin-left: auto;
-    }
-    .schedule-input {
-      padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
-      font-size: 14px; background: #fff;
-    }
-    .sidebar-header {
-      display: flex; align-items: center; gap: 12px;
-      padding: 16px; margin-bottom: 16px;
-      background: #fff; border-radius: 16px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    }
-    .sidebar-ec-icon {
-      width: 44px; height: 44px; 
-      background: linear-gradient(135deg, #e91e8c, #ff6699);
-      border-radius: 12px; 
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px; font-weight: 800; color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 12px 16px;
+      background: #f7fafc;
+      border-top: 1px solid #e2e8f0;
       flex-shrink: 0;
     }
-    .sidebar-ec-info { flex: 1; min-width: 0; }
-    .sidebar-ec-name { 
-      color: #1e293b; font-size: 14px; font-weight: 700; 
+
+    .schedule-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: #4a5568;
+      cursor: pointer;
     }
+
+    .schedule-label input[type="radio"] {
+      cursor: pointer;
+    }
+
+    .schedule-datetime {
+      display: flex;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .schedule-input {
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .sidebar-ec-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #e91e8c, #ff6699);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .sidebar-ec-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .sidebar-ec-name {
+      color: #1e293b;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
     .sidebar-product-name {
-      color: #64748b; font-size: 13px; margin-top: 2px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      color: #64748b;
+      font-size: 13px;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
+
     .btn-scheduled {
-      width: 100%; margin-top: 12px; padding: 12px 16px;
-      background: #fff; border: 1px solid #e2e8f0; border-radius: 12px;
-      color: #475569; font-size: 13px; font-weight: 600;
-      cursor: pointer; transition: all 0.2s;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%;
+      margin-top: 12px;
+      padding: 12px 16px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      color: #475569;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
-    .btn-scheduled:hover { border-color: #818cf8; background: #f5f3ff; color: #6366f1; }
+
+    .btn-scheduled:hover {
+      border-color: #818cf8;
+      background: #f5f3ff;
+      color: #6366f1;
+    }
+
     .scheduled-badge {
-      background: #6366f1; color: #fff; font-size: 11px; font-weight: 700;
-      padding: 2px 8px; border-radius: 10px; min-width: 20px; text-align: center;
+      background: #6366f1;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      min-width: 20px;
+      text-align: center;
     }
+
     .scheduled-modal-content {
-      background: #fff; border-radius: 16px; width: 90%; max-width: 500px;
-      max-height: 80vh; overflow: hidden; display: flex; flex-direction: column;
+      background: #fff;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
+
     .scheduled-modal-list {
-      flex: 1; overflow-y: auto; padding: 16px;
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
     }
+
     .scheduled-modal-item {
-      padding: 14px; margin-bottom: 10px; background: #f8fafc;
-      border: 1px solid #e2e8f0; border-radius: 12px;
-      cursor: pointer; transition: all 0.2s;
+      padding: 14px;
+      margin-bottom: 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
     }
-    .scheduled-modal-item:hover { border-color: #818cf8; background: #f5f3ff; }
+
+    .scheduled-modal-item:hover {
+      border-color: #818cf8;
+      background: #f5f3ff;
+    }
+
     .scheduled-modal-item-header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
     }
-    .scheduled-modal-item-datetime { font-size: 13px; color: #6366f1; font-weight: 600; }
-    .scheduled-modal-item-ec {
-      font-size: 11px; padding: 2px 8px; border-radius: 6px;
+
+    .scheduled-modal-item-datetime {
+      font-size: 13px;
+      color: #6366f1;
       font-weight: 600;
     }
-    .scheduled-modal-item-ec.qoo10 { background: #fdf2f8; color: #e91e8c; }
-    .scheduled-modal-item-product { font-size: 14px; color: #1e293b; font-weight: 600; }
-    .scheduled-detail-info {
-      padding: 12px 16px; background: #f8fafc; border-bottom: 1px solid #e2e8f0;
-      font-size: 13px; color: #64748b;
+
+    .scheduled-modal-item-ec {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 600;
     }
-    .scheduled-detail-info strong { color: #1e293b; }
+
+    .scheduled-modal-item-ec.qoo10 {
+      background: #fdf2f8;
+      color: #e91e8c;
+    }
+
+    .scheduled-modal-item-product {
+      font-size: 14px;
+      color: #1e293b;
+      font-weight: 600;
+    }
+
+    .scheduled-detail-info {
+      padding: 12px 16px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .scheduled-detail-info strong {
+      color: #1e293b;
+    }
+
     .btn-danger {
       background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: #fff; border: none;
+      color: #fff;
+      border: none;
     }
-    .btn-danger:hover { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+
+    .btn-danger:hover {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+    }
+
     .toast {
-      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
-      padding: 14px 24px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
-      color: #2d3748; font-size: 14px; opacity: 0; transition: all 0.3s ease; z-index: 1000;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      padding: 14px 24px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      color: #2d3748;
+      font-size: 14px;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
-    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-    .toast.success { border-color: #9ae6b4; background: #f0fff4; color: #276749; }
-    .toast.error { border-color: #feb2b2; background: #fff5f5; color: #c53030; }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success {
+      border-color: #9ae6b4;
+      background: #f0fff4;
+      color: #276749;
+    }
+
+    .toast.error {
+      border-color: #feb2b2;
+      background: #fff5f5;
+      color: #c53030;
+    }
   </style>
 </head>
+
 <body>
   <div class="page-wrapper">
     <div class="main-content">
@@ -349,7 +1050,7 @@
           <a href="#" onclick="event.preventDefault();navigateTo('poikatsu')">💰 ポイ活</a>
         </div>
       </div>
-      
+
       <div class="header">
         <button class="back-btn" onclick="goBack()">←</button>
         <div class="header-title">
@@ -357,170 +1058,171 @@
           <h1>Qoo10配信</h1>
         </div>
       </div>
-    
-    <div class="section">
-      <div class="section-title">基本情報</div>
-      <div class="form-row-3">
-        <div class="form-group">
-          <label class="form-label">配信日</label>
-          <input type="date" class="form-input" id="deliveryDate">
-        </div>
-        <div class="form-group">
-          <label class="form-label">キャンペーン名</label>
-          <select class="form-select" id="campaignName">
-            <option value="">選択してください</option>
-            <option value="メガ割セール">メガ割セール</option>
-            <option value="メガポイント">メガポイント</option>
-            <option value="メガ割セール+メガポイント">メガ割セール+メガポイント</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">配信商品</label>
-          <select class="form-select" id="deliveryType">
-            <option value="">選択してください</option>
-            <option value="本配信">本配信</option>
-            <option value="本配信②">本配信②</option>
-            <option value="代替商品配信①">代替商品配信①</option>
-            <option value="代替商品配信②">代替商品配信②</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">商品名</label>
-          <input type="text" class="form-input" id="productName" placeholder="例: 商品名" oninput="updateSidebarProductName()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">購入リンク</label>
-          <input type="url" class="form-input" id="purchaseLink" placeholder="https://www.qoo10.jp/...">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">クーポン取得リンク</label>
-        <input type="url" class="form-input" id="couponLink" placeholder="https://...">
-      </div>
-    </div>
-    
-    <div class="section">
-      <div class="section-title">金額入力</div>
-      <div class="form-row-4">
-        <div class="form-group">
-          <label class="form-label">定価（税込）</label>
-          <input type="number" class="form-input" id="listPrice" placeholder="0">
-        </div>
-        <div class="form-group">
-          <label class="form-label">クーポン割引額</label>
-          <input type="number" class="form-input" id="couponDiscount" placeholder="0">
-        </div>
-        <div class="form-group">
-          <label class="form-label">購入金額（税込）</label>
-          <div class="calc-display" id="priceWithTaxDisplay">0</div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">購入金額（税抜）</label>
-          <div class="calc-display" id="priceWithoutTaxDisplay">0</div>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">見込委託販売額</label>
-          <input type="number" class="form-input" id="consignmentPrice" placeholder="0">
-        </div>
-        <div class="form-group">
-          <label class="form-label">備考</label>
-          <input type="text" class="form-input" id="remarks" placeholder="備考があれば入力...">
-        </div>
-      </div>
-    </div>
-    
-    <div class="section">
-      <div class="section-title">固定ポイント（常に適用）</div>
-      <div class="fixed-grid">
-        <div class="fixed-item">
-          <span class="fixed-label">クレカ</span>
-          <span class="fixed-rate">税込1%</span>
-          <span class="fixed-points" id="points-card">-</span>
-        </div>
-      </div>
-    </div>
-    
-    <div class="section">
-      <div class="section-title">ポイントサイト還元</div>
-      <div class="pointsite-section">
-        <div class="pointsite-header">📱 ポイントサイト（段階式対応）</div>
+
+      <div class="section">
+        <div class="section-title">基本情報</div>
         <div class="form-row-3">
           <div class="form-group">
-            <label class="form-label">基準額（空欄=一律）</label>
-            <input type="number" class="form-input" id="pointSiteThreshold" placeholder="例: 10000">
+            <label class="form-label">配信日</label>
+            <input type="date" class="form-input" id="deliveryDate">
           </div>
           <div class="form-group">
-            <label class="form-label">基準以下 %</label>
-            <select class="form-select" id="pointSiteBaseRate">
-              <option value="0">0%</option>
-              <option value="4">4%</option>
-              <option value="5">5%</option>
-              <option value="6">6%</option>
-              <option value="8">8%</option>
-              <option value="10">10%</option>
-              <option value="12" selected>12%</option>
-              <option value="15">15%</option>
+            <label class="form-label">キャンペーン名</label>
+            <select class="form-select" id="campaignName">
+              <option value="">選択してください</option>
+              <option value="メガ割セール">メガ割セール</option>
+              <option value="メガポイント">メガポイント</option>
+              <option value="メガ割セール+メガポイント">メガ割セール+メガポイント</option>
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">超過分 %（空欄=一律）</label>
-            <select class="form-select" id="pointSiteOverRate">
-              <option value="">なし</option>
-              <option value="0">0%</option>
-              <option value="1">1%</option>
-              <option value="2">2%</option>
-              <option value="3">3%</option>
-              <option value="4">4%</option>
-              <option value="5">5%</option>
+            <label class="form-label">配信商品</label>
+            <select class="form-select" id="deliveryType">
+              <option value="">選択してください</option>
+              <option value="本配信">本配信</option>
+              <option value="本配信②">本配信②</option>
+              <option value="代替商品配信①">代替商品配信①</option>
+              <option value="代替商品配信②">代替商品配信②</option>
             </select>
           </div>
         </div>
-        <div class="pointsite-result">
-          <span class="pointsite-result-label">ポイントサイト還元</span>
-          <span class="pointsite-result-value" id="points-pointsite">0pt</span>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">商品名</label>
+            <input type="text" class="form-input" id="productName" placeholder="例: 商品名"
+              oninput="updateSidebarProductName()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">購入リンク</label>
+            <input type="url" class="form-input" id="purchaseLink" placeholder="https://www.qoo10.jp/...">
+          </div>
         </div>
-        <div style="font-size: 11px; color: #94a3b8; margin-top: 8px;">
-          ※一律の場合は基準額を空欄にして基準以下%のみ設定
-        </div>
-      </div>
-    </div>
-    
-    <div class="section">
-      <div class="section-title">キャンペーン選択</div>
-      <div class="campaign-grid">
-        <div class="campaign-item" onclick="toggleCampaign(this)" data-campaign="megapoint">
-          <div class="campaign-checkbox"></div>
-          <div class="campaign-label">メガポイント<br><small style="color:#718096">税込20%</small></div>
-          <div class="campaign-points" id="points-megapoint"></div>
-        </div>
-      </div>
-      <div class="form-row" style="margin-top:16px;">
         <div class="form-group">
-          <label class="form-label">代替商品配信予定</label>
-          <div class="toggle-group" id="altplanToggle">
-            <button type="button" class="toggle-btn" data-value="あり" onclick="setAltplan('あり')">あり</button>
-            <button type="button" class="toggle-btn active" data-value="なし" onclick="setAltplan('なし')">なし</button>
+          <label class="form-label">クーポン取得リンク</label>
+          <input type="url" class="form-input" id="couponLink" placeholder="https://...">
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">金額入力</div>
+        <div class="form-row-4">
+          <div class="form-group">
+            <label class="form-label">定価（税込）</label>
+            <input type="number" class="form-input" id="listPrice" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">クーポン割引額</label>
+            <input type="number" class="form-input" id="couponDiscount" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">購入金額（税込）</label>
+            <div class="calc-display" id="priceWithTaxDisplay">0</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">購入金額（税抜）</label>
+            <div class="calc-display" id="priceWithoutTaxDisplay">0</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">見込委託販売額</label>
+            <input type="number" class="form-input" id="consignmentPrice" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">備考</label>
+            <input type="text" class="form-input" id="remarks" placeholder="備考があれば入力...">
           </div>
         </div>
       </div>
-    </div>
-    
-    <input type="hidden" id="editingRowNumber" value="">
-    
-    <!-- 配信履歴 -->
-    <div class="section">
-      <div class="section-title">📋 配信履歴（最新20件）</div>
-      <div class="history-list" id="historyList">
-        <div class="history-empty">読み込み中...</div>
+
+      <div class="section">
+        <div class="section-title">固定ポイント（常に適用）</div>
+        <div class="fixed-grid">
+          <div class="fixed-item">
+            <span class="fixed-label">クレカ</span>
+            <span class="fixed-rate">税込1%</span>
+            <span class="fixed-points" id="points-card">-</span>
+          </div>
+        </div>
       </div>
-    </div>
-    
+
+      <div class="section">
+        <div class="section-title">ポイントサイト還元</div>
+        <div class="pointsite-section">
+          <div class="pointsite-header">📱 ポイントサイト（段階式対応）</div>
+          <div class="form-row-3">
+            <div class="form-group">
+              <label class="form-label">基準額（空欄=一律）</label>
+              <input type="number" class="form-input" id="pointSiteThreshold" placeholder="例: 10000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">基準以下 %</label>
+              <select class="form-select" id="pointSiteBaseRate">
+                <option value="0">0%</option>
+                <option value="4">4%</option>
+                <option value="5">5%</option>
+                <option value="6">6%</option>
+                <option value="8">8%</option>
+                <option value="10">10%</option>
+                <option value="12" selected>12%</option>
+                <option value="15">15%</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">超過分 %（空欄=一律）</label>
+              <select class="form-select" id="pointSiteOverRate">
+                <option value="">なし</option>
+                <option value="0">0%</option>
+                <option value="1">1%</option>
+                <option value="2">2%</option>
+                <option value="3">3%</option>
+                <option value="4">4%</option>
+                <option value="5">5%</option>
+              </select>
+            </div>
+          </div>
+          <div class="pointsite-result">
+            <span class="pointsite-result-label">ポイントサイト還元</span>
+            <span class="pointsite-result-value" id="points-pointsite">0pt</span>
+          </div>
+          <div style="font-size: 11px; color: #94a3b8; margin-top: 8px;">
+            ※一律の場合は基準額を空欄にして基準以下%のみ設定
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">キャンペーン選択</div>
+        <div class="campaign-grid">
+          <div class="campaign-item" onclick="toggleCampaign(this)" data-campaign="megapoint">
+            <div class="campaign-checkbox"></div>
+            <div class="campaign-label">メガポイント<br><small style="color:#718096">税込20%</small></div>
+            <div class="campaign-points" id="points-megapoint"></div>
+          </div>
+        </div>
+        <div class="form-row" style="margin-top:16px;">
+          <div class="form-group">
+            <label class="form-label">代替商品配信予定</label>
+            <div class="toggle-group" id="altplanToggle">
+              <button type="button" class="toggle-btn" data-value="あり" onclick="setAltplan('あり')">あり</button>
+              <button type="button" class="toggle-btn active" data-value="なし" onclick="setAltplan('なし')">なし</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <input type="hidden" id="editingRowNumber" value="">
+
+      <!-- 配信履歴 -->
+      <div class="section">
+        <div class="section-title">📋 配信履歴（最新20件）</div>
+        <div class="history-list" id="historyList">
+          <div class="history-empty">読み込み中...</div>
+        </div>
+      </div>
+
     </div><!-- main-content -->
-    
+
     <div class="sidebar">
       <div class="sidebar-sticky">
         <div class="sidebar-header">
@@ -554,7 +1256,7 @@
             <button class="btn btn-discord" onclick="generateTemplate()">📋 投稿する</button>
           </div>
         </div>
-        
+
         <!-- 予約投稿確認ボタン -->
         <button class="btn btn-scheduled" id="scheduledBtn" onclick="openScheduledModal()">
           📅 予約中の投稿を確認 <span class="scheduled-badge" id="scheduledCount" style="display:none;">0</span>
@@ -562,7 +1264,7 @@
       </div>
     </div><!-- sidebar -->
   </div><!-- page-wrapper -->
-  
+
   <!-- テンプレートモーダル -->
   <div class="modal-overlay" id="templateModal" onclick="closeModal(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
@@ -611,7 +1313,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- 予約投稿一覧モーダル -->
   <div class="modal-overlay" id="scheduledModal" onclick="closeScheduledModal(event)">
     <div class="scheduled-modal-content" onclick="event.stopPropagation()">
@@ -624,7 +1326,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- 予約内容確認モーダル -->
   <div class="modal-overlay" id="scheduledDetailModal" onclick="closeScheduledDetailModal(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
@@ -640,33 +1342,33 @@
       </div>
     </div>
   </div>
-  
+
   <div class="toast" id="toast"></div>
-  
+
   <script>
     // GAS API URL
     const API_URL = 'https://script.google.com/macros/s/AKfycbyXdgehZGBhfWNCRA5uwC1Jr6Kp8lzNy-6mCieFu4HaZBiC2jfPB5BXa7TlhHt_FHHF/exec';
     const EC_TYPE = 'Qoo10';
-    
+
     // 状態管理
     let currentAltplan = 'なし';
     let selectedScheduleRow = null;
-    
+
     // 初期化
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('deliveryDate').valueAsDate = new Date();
       loadHistory();
       loadScheduledCount();
-      
+
       // イベントリスナー
       ['listPrice', 'couponDiscount', 'consignmentPrice', 'pointSiteThreshold', 'pointSiteBaseRate', 'pointSiteOverRate'].forEach(id => {
         document.getElementById(id).addEventListener('input', calculatePreview);
         document.getElementById(id).addEventListener('change', calculatePreview);
       });
-      
+
       calculatePreview();
     });
-    
+
     // メニュー
     function toggleMenu() {
       document.getElementById('menuDropdown').classList.toggle('show');
@@ -682,13 +1384,13 @@
         document.getElementById('menuDropdown').classList.remove('show');
       }
     });
-    
+
     // サイドバー商品名更新
     function updateSidebarProductName() {
       const name = document.getElementById('productName').value || '商品未入力';
       document.getElementById('sidebarProductName').textContent = name;
     }
-    
+
     // プレビュー計算
     function calculatePreview() {
       const listPrice = Number(document.getElementById('listPrice').value) || 0;
@@ -696,19 +1398,19 @@
       const priceWithTax = listPrice - couponDiscount;
       const priceWithoutTax = Math.floor(priceWithTax / 1.1);
       const consignmentPrice = Number(document.getElementById('consignmentPrice').value) || 0;
-      
+
       document.getElementById('priceWithTaxDisplay').textContent = priceWithTax.toLocaleString();
       document.getElementById('priceWithoutTaxDisplay').textContent = priceWithoutTax.toLocaleString();
-      
+
       // クレカ（税込1%）
       const cardPoints = Math.floor(priceWithTax * 0.01);
       document.getElementById('points-card').textContent = cardPoints.toLocaleString() + 'pt';
-      
+
       // ポイントサイト（段階式）
       const threshold = Number(document.getElementById('pointSiteThreshold').value) || 0;
       const baseRate = Number(document.getElementById('pointSiteBaseRate').value) || 0;
       const overRateStr = document.getElementById('pointSiteOverRate').value;
-      
+
       let pointSitePoints = 0;
       if (threshold > 0 && overRateStr !== '') {
         const overRate = Number(overRateStr) || 0;
@@ -719,7 +1421,7 @@
         pointSitePoints = Math.floor(priceWithTax * baseRate / 100);
       }
       document.getElementById('points-pointsite').textContent = pointSitePoints.toLocaleString() + 'pt';
-      
+
       // メガポイント（税込20%）
       let megaPoints = 0;
       const megaItem = document.querySelector('[data-campaign="megapoint"]');
@@ -727,24 +1429,24 @@
         megaPoints = Math.floor(priceWithTax * 0.20);
       }
       document.getElementById('points-megapoint').textContent = megaPoints.toLocaleString() + 'pt';
-      
+
       // 合計
       const totalPoints = cardPoints + pointSitePoints + megaPoints;
       const profit = consignmentPrice - priceWithTax + totalPoints;
-      
+
       document.getElementById('totalPoints').innerHTML = totalPoints.toLocaleString() + '<span class="preview-unit">pt</span>';
-      
+
       const profitEl = document.getElementById('expectedProfit');
       profitEl.innerHTML = profit.toLocaleString() + '<span class="preview-unit">円</span>';
       profitEl.classList.toggle('negative', profit < 0);
     }
-    
+
     // キャンペーントグル
     function toggleCampaign(el) {
       el.classList.toggle('active');
       calculatePreview();
     }
-    
+
     // 代替商品配信予定
     function setAltplan(value) {
       currentAltplan = value;
@@ -752,15 +1454,15 @@
         btn.classList.toggle('active', btn.dataset.value === value);
       });
     }
-    
+
     // フォームデータ取得
     function getFormData() {
       const listPrice = Number(document.getElementById('listPrice').value) || 0;
       const couponDiscount = Number(document.getElementById('couponDiscount').value) || 0;
       const priceWithTax = listPrice - couponDiscount;
-      
+
       const megaActive = document.querySelector('[data-campaign="megapoint"]')?.classList.contains('active') || false;
-      
+
       return {
         date: document.getElementById('deliveryDate').value,
         campaignName: document.getElementById('campaignName').value,
@@ -780,7 +1482,7 @@
         remarks: document.getElementById('remarks').value
       };
     }
-    
+
     // テンプレート生成
     function generateTemplate() {
       const data = getFormData();
@@ -788,17 +1490,17 @@
         showToast('配信日と商品名を入力してください', 'error');
         return;
       }
-      
+
       const priceWithTax = data.priceWithTax;
       const priceWithoutTax = Math.floor(priceWithTax / 1.1);
-      
+
       // ポイント計算
       const cardPoints = Math.floor(priceWithTax * 0.01);
-      
+
       const threshold = Number(data.pointSiteThreshold) || 0;
       const baseRate = Number(data.pointSiteBaseRate) || 0;
       const overRateStr = data.pointSiteOverRate;
-      
+
       let pointSitePoints = 0;
       let pointSiteDesc = '';
       if (threshold > 0 && overRateStr !== '') {
@@ -811,17 +1513,17 @@
         pointSitePoints = Math.floor(priceWithTax * baseRate / 100);
         pointSiteDesc = `ポイントサイト(税込${baseRate}%)`;
       }
-      
+
       let megaPoints = 0;
       if (data.megaPoint) {
         megaPoints = Math.floor(priceWithTax * 0.20);
       }
-      
+
       const totalPoints = cardPoints + pointSitePoints + megaPoints;
       const profit = data.consignmentPrice - priceWithTax + totalPoints;
-      
+
       const dateFormatted = data.date.replace(/-/g, '/');
-      
+
       let template = `@everyone
 【Qoo10 見込み利益${profit.toLocaleString()}円】🔥 🔥 🔥
 
@@ -874,16 +1576,16 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
       document.getElementById('templateModal').classList.add('show');
       document.getElementById('templatePreviewMode').style.display = 'flex';
       document.getElementById('templateEditMode').style.display = 'none';
-      
+
       // 保存処理
       saveToSheet();
     }
-    
+
     // シートに保存
     async function saveToSheet() {
       const data = getFormData();
       const editingRow = document.getElementById('editingRowNumber').value;
-      
+
       try {
         const action = editingRow ? 'updateQoo10Data' : 'saveQoo10Data';
         const response = await fetch(API_URL, {
@@ -895,7 +1597,7 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
             data: data
           })
         });
-        
+
         const result = await response.json();
         if (result.success) {
           showToast(result.message, 'success');
@@ -908,7 +1610,7 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
         showToast('保存中にエラーが発生しました', 'error');
       }
     }
-    
+
     // 更新のみ
     async function updateOnly() {
       const editingRow = document.getElementById('editingRowNumber').value;
@@ -916,13 +1618,13 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
         showToast('編集中のデータがありません', 'error');
         return;
       }
-      
+
       const data = getFormData();
       if (!data.date || !data.productName) {
         showToast('配信日と商品名を入力してください', 'error');
         return;
       }
-      
+
       try {
         const response = await fetch(API_URL, {
           method: 'POST',
@@ -933,7 +1635,7 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
             data: data
           })
         });
-        
+
         const result = await response.json();
         if (result.success) {
           showToast('更新しました', 'success');
@@ -946,20 +1648,20 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
         showToast('更新中にエラーが発生しました', 'error');
       }
     }
-    
+
     // 履歴読み込み
     async function loadHistory() {
       const container = document.getElementById('historyList');
-      
+
       try {
         const response = await fetch(`${API_URL}?action=getQoo10History`);
         const history = await response.json();
-        
+
         if (!history || history.length === 0) {
           container.innerHTML = '<div class="history-empty">履歴がありません</div>';
           return;
         }
-        
+
         container.innerHTML = history.map(item => `
           <div class="history-item" onclick="loadHistoryItem(${item.rowNumber})">
             <div class="history-header">
@@ -979,24 +1681,24 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
             </div>
           </div>
         `).join('');
-        
+
       } catch (error) {
         console.error('履歴取得エラー:', error);
         container.innerHTML = '<div class="history-empty">読み込みエラー</div>';
       }
     }
-    
+
     // 履歴アイテム読み込み
     async function loadHistoryItem(rowNumber) {
       try {
         const response = await fetch(`${API_URL}?action=getQoo10DataByRow&rowNumber=${rowNumber}`);
         const data = await response.json();
-        
+
         if (!data) {
           showToast('データの取得に失敗しました', 'error');
           return;
         }
-        
+
         // フォームに反映
         document.getElementById('deliveryDate').value = data.date || '';
         document.getElementById('campaignName').value = data.campaignName || '';
@@ -1011,36 +1713,36 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
         document.getElementById('pointSiteBaseRate').value = data.pointSiteBaseRate || '12';
         document.getElementById('pointSiteOverRate').value = data.pointSiteOverRate || '';
         document.getElementById('remarks').value = data.remarks || '';
-        
+
         // メガポイント
         const megaItem = document.querySelector('[data-campaign="megapoint"]');
         if (megaItem) {
           megaItem.classList.toggle('active', data.megaPoint === true);
         }
-        
+
         // 代替商品配信予定
         setAltplan(data.altDelivery || 'なし');
-        
+
         // 編集モードに切り替え
         document.getElementById('editingRowNumber').value = rowNumber;
         document.getElementById('newEntryButtons').style.display = 'none';
         document.getElementById('editButtons').style.display = 'flex';
-        
+
         updateSidebarProductName();
         calculatePreview();
-        
+
         // 履歴アイテムの選択状態
         document.querySelectorAll('.history-item').forEach(el => el.classList.remove('selected'));
         event.currentTarget.classList.add('selected');
-        
+
         showToast(`${rowNumber}行目のデータを読み込みました`, 'success');
-        
+
       } catch (error) {
         console.error('データ取得エラー:', error);
         showToast('データの取得に失敗しました', 'error');
       }
     }
-    
+
     // フォームクリア
     function clearForm() {
       document.getElementById('deliveryDate').valueAsDate = new Date();
@@ -1057,19 +1759,19 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
       document.getElementById('pointSiteOverRate').value = '';
       document.getElementById('remarks').value = '';
       document.getElementById('editingRowNumber').value = '';
-      
+
       document.querySelector('[data-campaign="megapoint"]')?.classList.remove('active');
       setAltplan('なし');
-      
+
       document.getElementById('newEntryButtons').style.display = 'block';
       document.getElementById('editButtons').style.display = 'none';
-      
+
       document.querySelectorAll('.history-item').forEach(el => el.classList.remove('selected'));
-      
+
       updateSidebarProductName();
       calculatePreview();
     }
-    
+
     // モーダル
     function closeModal(event) {
       if (event.target === event.currentTarget) {
@@ -1091,46 +1793,46 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
         showToast('コピーしました', 'success');
       });
     }
-    
+
     // 投稿モードに切り替え
     async function switchToPostMode() {
       document.getElementById('templatePreviewMode').style.display = 'none';
       document.getElementById('templateEditMode').style.display = 'flex';
       await loadDiscordChannels();
     }
-    
+
     // Discordチャンネル読み込み
     async function loadDiscordChannels() {
       const container = document.getElementById('discordChannelsList');
       container.innerHTML = '<div class="discord-channels-loading">読み込み中...</div>';
-      
+
       try {
         const response = await fetch(`${API_URL}?action=getDiscordChannels&ecType=${EC_TYPE}`);
         const channels = await response.json();
-        
+
         if (!channels || channels.length === 0) {
           container.innerHTML = '<div class="discord-channels-loading">投稿先が設定されていません</div>';
           return;
         }
-        
+
         container.innerHTML = channels.map(ch => `
           <label class="discord-channel-item ${ch.enabled ? 'checked' : ''}">
             <input type="checkbox" value="${ch.webhookUrl}" ${ch.enabled ? 'checked' : ''} onchange="this.parentElement.classList.toggle('checked', this.checked)">
             ${ch.channelName}
           </label>
         `).join('');
-        
+
       } catch (error) {
         console.error('チャンネル取得エラー:', error);
         container.innerHTML = '<div class="discord-channels-loading">読み込みエラー</div>';
       }
     }
-    
+
     // 予約/即時切り替え
     function toggleSchedule() {
       const isSchedule = document.querySelector('input[name="postType"][value="schedule"]').checked;
       document.getElementById('scheduleDatetime').style.display = isSchedule ? 'flex' : 'none';
-      
+
       if (isSchedule) {
         const now = new Date();
         now.setHours(now.getHours() + 1);
@@ -1138,36 +1840,36 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
         document.getElementById('scheduleTime').value = now.toTimeString().slice(0, 5);
       }
     }
-    
+
     // Discord投稿
     async function postToDiscord() {
       const message = document.getElementById('templateEditText').value;
       const checkboxes = document.querySelectorAll('#discordChannelsList input[type="checkbox"]:checked');
       const webhookUrls = Array.from(checkboxes).map(cb => cb.value);
-      
+
       if (webhookUrls.length === 0) {
         showToast('投稿先を選択してください', 'error');
         return;
       }
-      
+
       const isSchedule = document.querySelector('input[name="postType"][value="schedule"]').checked;
-      
+
       const postBtn = document.getElementById('postBtn');
       postBtn.disabled = true;
       postBtn.textContent = '処理中...';
-      
+
       try {
         if (isSchedule) {
           const date = document.getElementById('scheduleDate').value;
           const time = document.getElementById('scheduleTime').value;
-          
+
           if (!date || !time) {
             showToast('予約日時を入力してください', 'error');
             return;
           }
-          
+
           const scheduledAt = `${date}T${time}:00`;
-          
+
           const response = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1182,7 +1884,7 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
               }
             })
           });
-          
+
           const result = await response.json();
           if (result.success) {
             showToast('予約しました', 'success');
@@ -1202,7 +1904,7 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
               webhookUrls: webhookUrls
             })
           });
-          
+
           const result = await response.json();
           if (result.success) {
             showToast('投稿しました', 'success');
@@ -1220,16 +1922,16 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
         postBtn.textContent = '🚀 投稿する';
       }
     }
-    
+
     // 予約投稿数読み込み
     async function loadScheduledCount() {
       try {
         const response = await fetch(`${API_URL}?action=getPendingSchedules`);
         const schedules = await response.json();
-        
+
         const qoo10Schedules = schedules.filter(s => s.ecType === EC_TYPE);
         const badge = document.getElementById('scheduledCount');
-        
+
         if (qoo10Schedules.length > 0) {
           badge.textContent = qoo10Schedules.length;
           badge.style.display = 'inline';
@@ -1240,7 +1942,7 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
         console.error('予約数取得エラー:', error);
       }
     }
-    
+
     // 予約一覧モーダル
     async function openScheduledModal() {
       document.getElementById('scheduledModal').classList.add('show');
@@ -1251,28 +1953,28 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
         document.getElementById('scheduledModal').classList.remove('show');
       }
     }
-    
+
     async function loadScheduledList() {
       const container = document.getElementById('scheduledModalList');
       container.innerHTML = '<div class="scheduled-empty">読み込み中...</div>';
-      
+
       try {
         const response = await fetch(`${API_URL}?action=getPendingSchedules`);
         const schedules = await response.json();
-        
+
         const qoo10Schedules = (Array.isArray(schedules) ? schedules : []).filter(s => s.ecType === EC_TYPE && s.status === '予約中');
-        
+
         if (qoo10Schedules.length === 0) {
           container.innerHTML = '<div class="scheduled-empty">予約中の投稿はありません</div>';
           return;
         }
-        
+
         container.innerHTML = qoo10Schedules.map(s => {
           const dt = new Date(s.scheduledAt);
           const dateStr = dt.toLocaleString('ja-JP');
           const msg = s.message || '';
           const preview = msg.substring(0, 50) + (msg.length > 50 ? '...' : '');
-          
+
           return `
             <div class="scheduled-modal-item" onclick="openScheduledDetail(${s.rowNumber}, '${dateStr.replace(/'/g, "\\'")}', \`${msg.replace(/`/g, '\\`')}\`)">
               <div class="scheduled-modal-item-header">
@@ -1283,13 +1985,13 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
             </div>
           `;
         }).join('');
-        
+
       } catch (error) {
         console.error('予約一覧取得エラー:', error);
         container.innerHTML = '<div class="scheduled-empty">読み込みエラー</div>';
       }
     }
-    
+
     // 予約詳細モーダル
     function openScheduledDetail(rowNumber, dateStr, message) {
       selectedScheduleRow = rowNumber;
@@ -1303,13 +2005,13 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
         selectedScheduleRow = null;
       }
     }
-    
+
     // 予約取り消し
     async function cancelSchedule() {
       if (!selectedScheduleRow) return;
-      
+
       if (!confirm('この予約を取り消しますか？')) return;
-      
+
       try {
         const response = await fetch(API_URL, {
           method: 'POST',
@@ -1319,7 +2021,7 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
             rowNumber: selectedScheduleRow
           })
         });
-        
+
         const result = await response.json();
         if (result.success) {
           showToast('予約を取り消しました', 'success');
@@ -1334,17 +2036,18 @@ ${pointSiteDesc} ${pointSitePoints.toLocaleString()}pt`;
         showToast('取り消し中にエラーが発生しました', 'error');
       }
     }
-    
+
     // トースト
     function showToast(message, type) {
       const toast = document.getElementById('toast');
       toast.textContent = message;
       toast.className = `toast ${type} show`;
-      
+
       setTimeout(() => {
         toast.classList.remove('show');
       }, 3000);
     }
   </script>
 </body>
+
 </html>

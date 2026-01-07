@@ -1,329 +1,1013 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Amazon配信 - EC配信システム</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
       background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-      min-height: 100vh; padding: 16px; padding-bottom: 100px;
+      min-height: 100vh;
+      padding: 16px;
+      padding-bottom: 100px;
     }
-    .page-wrapper { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; }
-    .main-content { flex: 1; max-width: 900px; }
-    .sidebar { width: 280px; flex-shrink: 0; }
-    .sidebar-sticky { position: sticky; top: 140px; }
-    .hamburger-menu { position: relative; margin-bottom: 8px; }
-    .hamburger-btn {
-      width: 44px; height: 44px; border-radius: 10px; background: #fff;
-      border: 1px solid #e2e8f0; color: #475569; font-size: 24px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+    .page-wrapper {
+      display: flex;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
-    .hamburger-btn:hover { background: #f8fafc; }
-    .menu-dropdown {
-      display: none; position: absolute; top: 50px; left: 0; background: #fff;
-      border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-      min-width: 200px; z-index: 1000; overflow: hidden;
+
+    .main-content {
+      flex: 1;
+      max-width: 900px;
     }
-    .menu-dropdown.show { display: block; }
-    .menu-dropdown a {
-      display: block; padding: 12px 16px; color: #1e293b; text-decoration: none;
-      font-size: 14px; border-bottom: 1px solid #f1f5f9;
-    }
-    .menu-dropdown a:last-child { border-bottom: none; }
-    .menu-dropdown a:hover { background: #f8fafc; }
-    .header { 
-      display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 16px 20px;
-      background: #fff; border-radius: 16px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    }
-    .back-btn {
-      width: 40px; height: 40px; border-radius: 10px; background: #f8fafc;
-      border: 1px solid #e2e8f0; color: #475569; font-size: 20px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .back-btn:hover { background: #f1f5f9; }
-    .header-title { display: flex; align-items: center; gap: 12px; }
-    .header-icon {
-      width: 44px; height: 44px; background: linear-gradient(135deg, #ff9900, #ffad33);
-      border-radius: 12px; display: flex; align-items: center; justify-content: center;
-      font-size: 22px; font-weight: 800; color: #232f3e;
-    }
-    .header h1 { color: #1e293b; font-size: 22px; font-weight: 700; }
-    .section {
-      background: #fff; border-radius: 20px;
-      padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    }
-    .section-title {
-      color: #1e293b; font-size: 15px; font-weight: 700; margin-bottom: 18px;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .section-title::before { content: ''; width: 4px; height: 18px; background: linear-gradient(180deg, #ff9900, #ffad33); border-radius: 2px; }
-    .form-group { margin-bottom: 16px; }
-    .form-group:last-child { margin-bottom: 0; }
-    .form-label { display: block; color: #64748b; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
-    .form-input, .form-select, .form-textarea {
-      width: 100%; padding: 12px 14px; background: #f8fafc;
-      border: 2px solid #e2e8f0; border-radius: 10px; color: #1e293b; font-size: 15px;
-      transition: all 0.2s;
-    }
-    .form-textarea { min-height: 80px; resize: vertical; font-family: inherit; }
-    .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: #ff9900; background: #fff; }
-    .form-input::placeholder, .form-textarea::placeholder { color: #94a3b8; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-    .form-row-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
-    .calc-display {
-      background: #f1f5f9; border: 2px solid #e2e8f0; border-radius: 10px;
-      padding: 12px 14px; color: #1e293b; font-size: 15px; font-weight: 600;
-    }
-    .campaign-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .campaign-item {
-      display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px;
-      background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer;
-      transition: all 0.2s;
-    }
-    .campaign-item:hover { background: #f1f5f9; border-color: #cbd5e1; }
-    .campaign-item.active { background: #fffbeb; border-color: #ff9900; }
-    .campaign-checkbox {
-      width: 20px; height: 20px; border-radius: 6px; border: 2px solid #cbd5e1;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-      transition: all 0.2s;
-    }
-    .campaign-item.active .campaign-checkbox { background: #ff9900; border-color: #ff9900; }
-    .campaign-checkbox::after { content: '✓'; color: #fff; font-size: 12px; opacity: 0; }
-    .campaign-item.active .campaign-checkbox::after { opacity: 1; }
-    .campaign-label { color: #475569; font-size: 13px; line-height: 1.3; flex: 1; }
-    .campaign-item.active .campaign-label { color: #1e293b; font-weight: 500; }
-    .campaign-points {
-      width: 100%; margin-top: 4px; font-size: 12px; font-weight: 600; color: #d97706;
-      display: none;
-    }
-    .campaign-item.active .campaign-points { display: block; }
-    .campaign-select {
-      padding: 4px 8px; font-size: 12px; border-radius: 6px; border: 1px solid #cbd5e1;
-      background: #fff; cursor: pointer;
-    }
-    .campaign-item.has-select { flex-wrap: wrap; }
-    .fixed-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .fixed-item {
-      display: flex; flex-direction: column; align-items: center; gap: 4px;
-      padding: 12px 8px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px;
-    }
-    .fixed-label { color: #1e293b; font-size: 12px; font-weight: 600; }
-    .fixed-rate { color: #64748b; font-size: 10px; }
-    .fixed-points { color: #d97706; font-size: 14px; font-weight: 700; }
-    .preview-section { 
-      background: #fff; 
-      border: 2px solid #10b981;
-    }
-    .preview-section .section-title { color: #059669; }
-    .preview-section .section-title::before { background: linear-gradient(180deg, #10b981, #34d399); }
-    .preview-grid { display: flex; flex-direction: column; gap: 12px; }
-    .preview-item { 
-      text-align: center; padding: 20px 16px; 
-      background: #f0fdf4; border-radius: 14px; 
-      border: 1px solid #bbf7d0;
-    }
-    .preview-label { color: #64748b; font-size: 12px; margin-bottom: 6px; }
-    .preview-value { color: #059669; font-size: 28px; font-weight: 700; }
-    .preview-value.negative { color: #dc2626; }
-    .preview-unit { font-size: 14px; font-weight: 400; }
-    .sidebar-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
-    .sidebar-buttons .btn { width: 100%; }
-    .sidebar-buttons #editButtons { display: flex; gap: 8px; }
-    .sidebar-buttons #editButtons .btn { flex: 1; padding: 14px 12px; font-size: 13px; }
-    .btn {
-      padding: 16px 24px; border-radius: 12px; font-size: 15px; font-weight: 600;
-      border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-      transition: all 0.2s;
-    }
-    .btn-primary { background: linear-gradient(135deg, #ff9900 0%, #e68a00 100%); color: #232f3e; }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,153,0,0.4); }
-    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-    .btn-discord { background: linear-gradient(135deg, #5865F2 0%, #4752c4 100%); color: #fff; }
-    .btn-discord:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(88,101,242,0.4); }
-    .btn-discord:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-secondary { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #fff; }
-    .btn-secondary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(249,115,22,0.4); }
-    .history-list { display: flex; flex-direction: column; gap: 8px; }
-    .history-item {
-      padding: 14px 16px; background: #f8fafc; border: 2px solid #e2e8f0;
-      border-radius: 12px; cursor: pointer; transition: all 0.2s;
-    }
-    .history-item:hover { background: #f1f5f9; border-color: #cbd5e1; }
-    .history-item.selected { border-color: #ff9900; background: #fffbeb; }
-    .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .history-date { color: #64748b; font-size: 12px; }
-    .history-type { color: #d97706; font-size: 11px; padding: 2px 8px; background: #fffbeb; border-radius: 6px; font-weight: 500; }
-    .history-product { color: #1e293b; font-size: 14px; font-weight: 600; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .history-stats { display: flex; gap: 16px; }
-    .history-stat { font-size: 12px; }
-    .history-stat-label { color: #64748b; }
-    .history-stat-value { color: #10b981; font-weight: 600; }
-    .history-stat-value.negative { color: #ef4444; }
-    .history-empty { text-align: center; padding: 40px 20px; color: #64748b; }
-    .toggle-group { display: flex; gap: 8px; }
-    .toggle-btn {
-      flex: 1; padding: 12px 20px; border: 2px solid #e2e8f0; border-radius: 10px;
-      background: #f8fafc; color: #64748b; font-size: 14px; font-weight: 600;
-      cursor: pointer; transition: all 0.2s;
-    }
-    .toggle-btn:hover { background: #f1f5f9; }
-    .toggle-btn.active { background: #fffbeb; border-color: #ff9900; color: #d97706; }
-    .modal-overlay {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;
-    }
-    .modal-overlay.show { display: flex; }
-    .modal-content {
-      background: #fff; border-radius: 16px; width: 90%; max-width: 700px; max-height: 90vh;
-      display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      overflow: hidden;
-    }
-    .modal-header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 16px 20px; border-bottom: 1px solid #e2e8f0; font-weight: 600; font-size: 16px;
+
+    .sidebar {
+      width: 280px;
       flex-shrink: 0;
     }
+
+    .sidebar-sticky {
+      position: sticky;
+      top: 140px;
+    }
+
+    .hamburger-menu {
+      position: relative;
+      margin-bottom: 8px;
+    }
+
+    .hamburger-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .hamburger-btn:hover {
+      background: #f8fafc;
+    }
+
+    .menu-dropdown {
+      display: none;
+      position: absolute;
+      top: 50px;
+      left: 0;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+      min-width: 200px;
+      z-index: 1000;
+      overflow: hidden;
+    }
+
+    .menu-dropdown.show {
+      display: block;
+    }
+
+    .menu-dropdown a {
+      display: block;
+      padding: 12px 16px;
+      color: #1e293b;
+      text-decoration: none;
+      font-size: 14px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .menu-dropdown a:last-child {
+      border-bottom: none;
+    }
+
+    .menu-dropdown a:hover {
+      background: #f8fafc;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 16px 20px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .back-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-btn:hover {
+      background: #f1f5f9;
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #ff9900, #ffad33);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 800;
+      color: #232f3e;
+    }
+
+    .header h1 {
+      color: #1e293b;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .section {
+      background: #fff;
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .section-title {
+      color: #1e293b;
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 18px;
+      background: linear-gradient(180deg, #ff9900, #ffad33);
+      border-radius: 2px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      display: block;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 12px 14px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      color: #1e293b;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+
+    .form-textarea {
+      min-height: 80px;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: #ff9900;
+      background: #fff;
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: #94a3b8;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-row-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .calc-display {
+      background: #f1f5f9;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #1e293b;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .campaign-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .campaign-item {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .campaign-item:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .campaign-item.active {
+      background: #fffbeb;
+      border-color: #ff9900;
+    }
+
+    .campaign-checkbox {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: 2px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .campaign-item.active .campaign-checkbox {
+      background: #ff9900;
+      border-color: #ff9900;
+    }
+
+    .campaign-checkbox::after {
+      content: '✓';
+      color: #fff;
+      font-size: 12px;
+      opacity: 0;
+    }
+
+    .campaign-item.active .campaign-checkbox::after {
+      opacity: 1;
+    }
+
+    .campaign-label {
+      color: #475569;
+      font-size: 13px;
+      line-height: 1.3;
+      flex: 1;
+    }
+
+    .campaign-item.active .campaign-label {
+      color: #1e293b;
+      font-weight: 500;
+    }
+
+    .campaign-points {
+      margin-left: auto;
+      font-size: 12px;
+      font-weight: 600;
+      color: #d97706;
+      display: none;
+    }
+
+    .campaign-item.active .campaign-points {
+      display: block;
+    }
+
+    .campaign-select {
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .campaign-item.has-select {
+      flex-wrap: wrap;
+    }
+
+    .fixed-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .fixed-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 8px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 10px;
+    }
+
+    .fixed-label {
+      color: #1e293b;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .fixed-rate {
+      color: #64748b;
+      font-size: 10px;
+    }
+
+    .fixed-points {
+      color: #d97706;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .preview-section {
+      background: #fff;
+      border: 2px solid #10b981;
+    }
+
+    .preview-section .section-title {
+      color: #059669;
+    }
+
+    .preview-section .section-title::before {
+      background: linear-gradient(180deg, #10b981, #34d399);
+    }
+
+    .preview-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .preview-item {
+      text-align: center;
+      padding: 20px 16px;
+      background: #f0fdf4;
+      border-radius: 14px;
+      border: 1px solid #bbf7d0;
+    }
+
+    .preview-label {
+      color: #64748b;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .preview-value {
+      color: #059669;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .preview-value.negative {
+      color: #dc2626;
+    }
+
+    .preview-unit {
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .sidebar-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .sidebar-buttons .btn {
+      width: 100%;
+    }
+
+    .sidebar-buttons #editButtons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .sidebar-buttons #editButtons .btn {
+      flex: 1;
+      padding: 14px 12px;
+      font-size: 13px;
+    }
+
+    .btn {
+      padding: 16px 24px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff9900 0%, #e68a00 100%);
+      color: #232f3e;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 153, 0, 0.4);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-discord {
+      background: linear-gradient(135deg, #5865F2 0%, #4752c4 100%);
+      color: #fff;
+    }
+
+    .btn-discord:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(88, 101, 242, 0.4);
+    }
+
+    .btn-discord:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      color: #fff;
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .history-item {
+      padding: 14px 16px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .history-item:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .history-item.selected {
+      border-color: #ff9900;
+      background: #fffbeb;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .history-date {
+      color: #64748b;
+      font-size: 12px;
+    }
+
+    .history-type {
+      color: #d97706;
+      font-size: 11px;
+      padding: 2px 8px;
+      background: #fffbeb;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    .history-product {
+      color: #1e293b;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-stats {
+      display: flex;
+      gap: 16px;
+    }
+
+    .history-stat {
+      font-size: 12px;
+    }
+
+    .history-stat-label {
+      color: #64748b;
+    }
+
+    .history-stat-value {
+      color: #10b981;
+      font-weight: 600;
+    }
+
+    .history-stat-value.negative {
+      color: #ef4444;
+    }
+
+    .history-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: #64748b;
+    }
+
+    .toggle-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      padding: 12px 20px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      background: #f8fafc;
+      color: #64748b;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .toggle-btn:hover {
+      background: #f1f5f9;
+    }
+
+    .toggle-btn.active {
+      background: #fffbeb;
+      border-color: #ff9900;
+      color: #d97706;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #fff;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 700px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      font-weight: 600;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
     .modal-close {
-      background: none; border: none; font-size: 24px; cursor: pointer; color: #718096;
-      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #718096;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .modal-close:hover { color: #ff9900; }
+
+    .modal-close:hover {
+      color: #ff9900;
+    }
+
     .modal-textarea {
-      flex: 1; margin: 16px; padding: 16px; border: 1px solid #e2e8f0; border-radius: 10px;
-      font-family: monospace; font-size: 13px; line-height: 1.6; resize: none;
-      background: #f7fafc; min-height: 350px; overflow-y: auto;
+      flex: 1;
+      margin: 16px;
+      padding: 16px;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      font-family: monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      resize: none;
+      background: #f7fafc;
+      min-height: 350px;
+      overflow-y: auto;
     }
-    .modal-buttons { display: flex; gap: 12px; padding: 16px 20px; border-top: 1px solid #e2e8f0; flex-shrink: 0; }
-    .modal-buttons .btn { flex: 1; }
-    #templatePreviewMode, #templateEditMode {
-      display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden;
+
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+      padding: 16px 20px;
+      border-top: 1px solid #e2e8f0;
+      flex-shrink: 0;
     }
+
+    .modal-buttons .btn {
+      flex: 1;
+    }
+
+    #templatePreviewMode,
+    #templateEditMode {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
     .discord-channels-section {
-      padding: 12px 16px; background: #f0f9ff; border-top: 1px solid #e2e8f0; flex-shrink: 0;
+      padding: 12px 16px;
+      background: #f0f9ff;
+      border-top: 1px solid #e2e8f0;
+      flex-shrink: 0;
     }
+
     .discord-channels-header {
-      font-size: 13px; font-weight: 600; color: #1e40af; margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1e40af;
+      margin-bottom: 8px;
     }
+
     .discord-channels-list {
-      display: flex; flex-wrap: wrap; gap: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
     }
+
     .discord-channels-loading {
-      font-size: 13px; color: #64748b;
+      font-size: 13px;
+      color: #64748b;
     }
+
     .discord-channel-item {
-      display: flex; align-items: center; gap: 6px;
-      padding: 6px 12px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
-      font-size: 13px; color: #475569; cursor: pointer; transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.2s;
     }
+
     .discord-channel-item:hover {
-      border-color: #3b82f6; background: #eff6ff;
+      border-color: #3b82f6;
+      background: #eff6ff;
     }
+
     .discord-channel-item.checked {
-      border-color: #3b82f6; background: #dbeafe; color: #1e40af;
+      border-color: #3b82f6;
+      background: #dbeafe;
+      color: #1e40af;
     }
+
     .discord-channel-item input[type="checkbox"] {
       cursor: pointer;
     }
+
     .schedule-options {
-      display: flex; align-items: center; gap: 20px; padding: 12px 16px;
-      background: #f7fafc; border-top: 1px solid #e2e8f0; flex-shrink: 0;
-    }
-    .schedule-label {
-      display: flex; align-items: center; gap: 6px; font-size: 14px; color: #4a5568; cursor: pointer;
-    }
-    .schedule-label input[type="radio"] { cursor: pointer; }
-    .schedule-datetime {
-      display: flex; gap: 8px; margin-left: auto;
-    }
-    .schedule-input {
-      padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
-      font-size: 14px; background: #fff;
-    }
-    .sidebar-header {
-      display: flex; align-items: center; gap: 12px;
-      padding: 16px; margin-bottom: 16px;
-      background: #fff; border-radius: 16px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    }
-    .sidebar-ec-icon {
-      width: 44px; height: 44px; 
-      background: linear-gradient(135deg, #ff9900, #ffad33);
-      border-radius: 12px; 
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px; font-weight: 800; color: #232f3e;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 12px 16px;
+      background: #f7fafc;
+      border-top: 1px solid #e2e8f0;
       flex-shrink: 0;
     }
-    .sidebar-ec-info { flex: 1; min-width: 0; }
-    .sidebar-ec-name { 
-      color: #1e293b; font-size: 14px; font-weight: 700; 
+
+    .schedule-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: #4a5568;
+      cursor: pointer;
     }
+
+    .schedule-label input[type="radio"] {
+      cursor: pointer;
+    }
+
+    .schedule-datetime {
+      display: flex;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .schedule-input {
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .sidebar-ec-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #ff9900, #ffad33);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 800;
+      color: #232f3e;
+      flex-shrink: 0;
+    }
+
+    .sidebar-ec-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .sidebar-ec-name {
+      color: #1e293b;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
     .sidebar-product-name {
-      color: #64748b; font-size: 13px; margin-top: 2px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      color: #64748b;
+      font-size: 13px;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
+
     .btn-scheduled {
-      width: 100%; margin-top: 12px; padding: 12px 16px;
-      background: #fff; border: 1px solid #e2e8f0; border-radius: 12px;
-      color: #475569; font-size: 13px; font-weight: 600;
-      cursor: pointer; transition: all 0.2s;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%;
+      margin-top: 12px;
+      padding: 12px 16px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      color: #475569;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
-    .btn-scheduled:hover { border-color: #818cf8; background: #f5f3ff; color: #6366f1; }
+
+    .btn-scheduled:hover {
+      border-color: #818cf8;
+      background: #f5f3ff;
+      color: #6366f1;
+    }
+
     .scheduled-badge {
-      background: #6366f1; color: #fff; font-size: 11px; font-weight: 700;
-      padding: 2px 8px; border-radius: 10px; min-width: 20px; text-align: center;
+      background: #6366f1;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      min-width: 20px;
+      text-align: center;
     }
+
     .scheduled-modal-content {
-      background: #fff; border-radius: 16px; width: 90%; max-width: 500px;
-      max-height: 80vh; overflow: hidden; display: flex; flex-direction: column;
+      background: #fff;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
+
     .scheduled-modal-list {
-      flex: 1; overflow-y: auto; padding: 16px;
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
     }
+
     .scheduled-modal-item {
-      padding: 14px; margin-bottom: 10px; background: #f8fafc;
-      border: 1px solid #e2e8f0; border-radius: 12px;
-      cursor: pointer; transition: all 0.2s;
+      padding: 14px;
+      margin-bottom: 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
     }
-    .scheduled-modal-item:hover { border-color: #818cf8; background: #f5f3ff; }
+
+    .scheduled-modal-item:hover {
+      border-color: #818cf8;
+      background: #f5f3ff;
+    }
+
     .scheduled-modal-item-header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
     }
-    .scheduled-modal-item-datetime { font-size: 13px; color: #6366f1; font-weight: 600; }
-    .scheduled-modal-item-ec {
-      font-size: 11px; padding: 2px 8px; border-radius: 6px;
+
+    .scheduled-modal-item-datetime {
+      font-size: 13px;
+      color: #6366f1;
       font-weight: 600;
     }
-    .scheduled-modal-item-ec.amazon { background: #fffbeb; color: #d97706; }
-    .scheduled-modal-item-product { font-size: 14px; color: #1e293b; font-weight: 600; }
-    .scheduled-detail-info {
-      padding: 12px 16px; background: #f8fafc; border-bottom: 1px solid #e2e8f0;
-      font-size: 13px; color: #64748b;
+
+    .scheduled-modal-item-ec {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 600;
     }
-    .scheduled-detail-info strong { color: #1e293b; }
+
+    .scheduled-modal-item-ec.amazon {
+      background: #fffbeb;
+      color: #d97706;
+    }
+
+    .scheduled-modal-item-product {
+      font-size: 14px;
+      color: #1e293b;
+      font-weight: 600;
+    }
+
+    .scheduled-detail-info {
+      padding: 12px 16px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .scheduled-detail-info strong {
+      color: #1e293b;
+    }
+
     .btn-danger {
       background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: #fff; border: none;
+      color: #fff;
+      border: none;
     }
-    .btn-danger:hover { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+
+    .btn-danger:hover {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+    }
+
     .toast {
-      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
-      padding: 14px 24px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
-      color: #2d3748; font-size: 14px; opacity: 0; transition: all 0.3s ease; z-index: 1000;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      padding: 14px 24px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      color: #2d3748;
+      font-size: 14px;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
-    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-    .toast.success { border-color: #9ae6b4; background: #f0fff4; color: #276749; }
-    .toast.error { border-color: #feb2b2; background: #fff5f5; color: #c53030; }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success {
+      border-color: #9ae6b4;
+      background: #f0fff4;
+      color: #276749;
+    }
+
+    .toast.error {
+      border-color: #feb2b2;
+      background: #fff5f5;
+      color: #c53030;
+    }
   </style>
 </head>
+
 <body>
   <div class="page-wrapper">
     <div class="main-content">
@@ -340,7 +1024,7 @@
           <a href="#" onclick="event.preventDefault();navigateTo('poikatsu')">💰 ポイ活</a>
         </div>
       </div>
-      
+
       <div class="header">
         <button class="back-btn" onclick="goBack()">←</button>
         <div class="header-title">
@@ -348,131 +1032,152 @@
           <h1>Amazon配信</h1>
         </div>
       </div>
-    
-    <div class="section">
-      <div class="section-title">基本情報</div>
-      <div class="form-row-3">
-        <div class="form-group">
-          <label class="form-label">配信日</label>
-          <input type="date" class="form-input" id="deliveryDate">
+
+      <div class="section">
+        <div class="section-title">基本情報</div>
+        <div class="form-row-3">
+          <div class="form-group">
+            <label class="form-label">配信日</label>
+            <input type="date" class="form-input" id="deliveryDate">
+          </div>
+          <div class="form-group">
+            <label class="form-label">キャンペーン名</label>
+            <select class="form-select" id="campaignName">
+              <option value="">選択してください</option>
+              <option value="プライム会員">プライム会員</option>
+              <option value="Amazonカード">Amazonカード</option>
+              <option value="プライム会員+Amazonカード">プライム会員+Amazonカード</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">配信商品</label>
+            <select class="form-select" id="deliveryType">
+              <option value="">選択してください</option>
+              <option value="本配信">本配信</option>
+              <option value="本配信②">本配信②</option>
+              <option value="代替商品配信①">代替商品配信①</option>
+              <option value="代替商品配信②">代替商品配信②</option>
+            </select>
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">キャンペーン名</label>
-          <select class="form-select" id="campaignName">
-            <option value="">選択してください</option>
-            <option value="プライム会員">プライム会員</option>
-            <option value="Amazonカード">Amazonカード</option>
-            <option value="プライム会員+Amazonカード">プライム会員+Amazonカード</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">配信商品</label>
-          <select class="form-select" id="deliveryType">
-            <option value="">選択してください</option>
-            <option value="本配信">本配信</option>
-            <option value="本配信②">本配信②</option>
-            <option value="代替商品配信①">代替商品配信①</option>
-            <option value="代替商品配信②">代替商品配信②</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">商品名</label>
-          <input type="text" class="form-input" id="productName" placeholder="例: 商品名" oninput="updateSidebarProductName()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">購入リンク</label>
-          <input type="url" class="form-input" id="purchaseLink" placeholder="https://www.amazon.co.jp/...">
-        </div>
-      </div>
-    </div>
-    
-    <div class="section">
-      <div class="section-title">金額入力</div>
-      <div class="form-row-3">
-        <div class="form-group">
-          <label class="form-label">購入金額（税込）</label>
-          <input type="number" class="form-input" id="priceWithTax" placeholder="0">
-        </div>
-        <div class="form-group">
-          <label class="form-label">購入金額（税抜）</label>
-          <div class="calc-display" id="priceWithoutTaxDisplay">0</div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">見込委託販売額</label>
-          <input type="number" class="form-input" id="consignmentPrice" placeholder="0">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">備考</label>
-        <textarea class="form-textarea" id="remarks" placeholder="特殊な条件やテンプレに差し込む内容があれば記入..." style="min-height:50px;"></textarea>
-      </div>
-    </div>
-    
-    <div class="section">
-      <div class="section-title">固定ポイント（常に適用）</div>
-      <div class="fixed-grid">
-        <div class="fixed-item">
-          <span class="fixed-label">基本</span>
-          <span class="fixed-rate">税込1%</span>
-          <span class="fixed-points" id="points-base">-</span>
-        </div>
-        <div class="fixed-item">
-          <span class="fixed-label">Amazonカード</span>
-          <span class="fixed-rate">税込2%</span>
-          <span class="fixed-points" id="points-card">-</span>
-        </div>
-      </div>
-    </div>
-    
-    <div class="section">
-      <div class="section-title">キャンペーン選択</div>
-      <div class="campaign-grid">
-        <div class="campaign-item has-select" onclick="toggleCampaign(this)" data-campaign="prime">
-          <div class="campaign-checkbox"></div>
-          <div class="campaign-label">プライム会員<br><small style="color:#718096">税込</small></div>
-          <div class="campaign-points" id="points-prime"></div>
-          <select class="campaign-select" id="primePercent" onclick="event.stopPropagation()" onchange="calculatePreview()">
-            <option value="1">1%</option>
-            <option value="1.5">1.5%</option>
-            <option value="2">2%</option>
-          </select>
-        </div>
-        <div class="campaign-item has-select" onclick="toggleCampaign(this)" data-campaign="amazoncard">
-          <div class="campaign-checkbox"></div>
-          <div class="campaign-label">Amazonカード<br><small style="color:#718096">税込</small></div>
-          <div class="campaign-points" id="points-amazoncard"></div>
-          <select class="campaign-select" id="amazoncardPercent" onclick="event.stopPropagation()" onchange="calculatePreview()">
-            <option value="1">1%</option>
-            <option value="1.5">1.5%</option>
-            <option value="2">2%</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row" style="margin-top:16px;">
-        <div class="form-group">
-          <label class="form-label">代替商品配信予定</label>
-          <div class="toggle-group" id="altplanToggle">
-            <button type="button" class="toggle-btn" data-value="あり" onclick="setAltplan('あり')">あり</button>
-            <button type="button" class="toggle-btn active" data-value="なし" onclick="setAltplan('なし')">なし</button>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">商品名</label>
+            <input type="text" class="form-input" id="productName" placeholder="例: 商品名"
+              oninput="updateSidebarProductName()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">購入リンク</label>
+            <input type="url" class="form-input" id="purchaseLink" placeholder="https://www.amazon.co.jp/...">
           </div>
         </div>
       </div>
-    </div>
-    
-    <input type="hidden" id="editingRowNumber" value="">
-    
-    <!-- 配信履歴 -->
-    <div class="section">
-      <div class="section-title">📋 配信履歴（最新20件）</div>
-      <div class="history-list" id="historyList">
-        <div class="history-empty">読み込み中...</div>
+
+      <div class="section">
+        <div class="section-title">金額入力</div>
+        <div class="form-row-3">
+          <div class="form-group">
+            <label class="form-label">購入金額（税込）</label>
+            <input type="number" class="form-input" id="priceWithTax" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">購入金額（税抜）</label>
+            <div class="calc-display" id="priceWithoutTaxDisplay">0</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">見込委託販売額</label>
+            <input type="number" class="form-input" id="consignmentPrice" placeholder="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">備考</label>
+          <textarea class="form-textarea" id="remarks" placeholder="特殊な条件やテンプレに差し込む内容があれば記入..."
+            style="min-height:50px;"></textarea>
+        </div>
       </div>
-    </div>
-    
+
+      <div class="section">
+        <div class="section-title">固定ポイント（常に適用）</div>
+        <div class="fixed-grid">
+          <div class="fixed-item">
+            <span class="fixed-label">基本</span>
+            <span class="fixed-rate">税込1%</span>
+            <span class="fixed-points" id="points-base">-</span>
+          </div>
+          <div class="fixed-item">
+            <span class="fixed-label">Amazonカード</span>
+            <span class="fixed-rate">税込2%</span>
+            <span class="fixed-points" id="points-card">-</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">キャンペーン選択</div>
+        <div class="campaign-grid">
+          <div class="campaign-item has-select" onclick="toggleCampaign(this)" data-campaign="prime">
+            <div class="campaign-checkbox"></div>
+            <div class="campaign-label">プライム会員<br><small style="color:#718096">税込</small></div>
+            <div class="campaign-points" id="points-prime"></div>
+            <select class="campaign-select" id="primePercent" onclick="event.stopPropagation()"
+              onchange="calculatePreview()">
+              <option value="2.5">2.5%</option>
+              <option value="3">3%</option>
+            </select>
+          </div>
+          <div class="campaign-item has-select" onclick="toggleCampaign(this)" data-campaign="amazoncard">
+            <div class="campaign-checkbox"></div>
+            <div class="campaign-label">Amazonカード<br><small style="color:#718096">税込</small></div>
+            <div class="campaign-points" id="points-amazoncard"></div>
+            <select class="campaign-select" id="amazoncardPercent" onclick="event.stopPropagation()"
+              onchange="calculatePreview()">
+              <option value="2">2%</option>
+              <option value="3">3%</option>
+              <option value="4">4%</option>
+            </select>
+          </div>
+
+          <div class="campaign-item has-select" onclick="toggleCampaign(this)" data-campaign="free">
+            <div class="campaign-checkbox"></div>
+            <div class="campaign-label">その他<br><small style="color:#718096">税込</small></div>
+            <div class="campaign-points" id="points-free"></div>
+            <select class="campaign-select" id="freePercent" onclick="event.stopPropagation()"
+              onchange="calculatePreview()">
+              <option value="1">1%</option>
+              <option value="2">2%</option>
+              <option value="3">3%</option>
+              <option value="4">4%</option>
+              <option value="5">5%</option>
+              <option value="6">6%</option>
+              <option value="7">7%</option>
+              <option value="8">8%</option>
+              <option value="9">9%</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row" style="margin-top:16px;">
+          <div class="form-group">
+            <label class="form-label">代替商品配信予定</label>
+            <div class="toggle-group" id="altplanToggle">
+              <button type="button" class="toggle-btn" data-value="あり" onclick="setAltplan('あり')">あり</button>
+              <button type="button" class="toggle-btn active" data-value="なし" onclick="setAltplan('なし')">なし</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <input type="hidden" id="editingRowNumber" value="">
+
+      <!-- 配信履歴 -->
+      <div class="section">
+        <div class="section-title">📋 配信履歴（最新20件）</div>
+        <div class="history-list" id="historyList">
+          <div class="history-empty">読み込み中...</div>
+        </div>
+      </div>
+
     </div><!-- main-content -->
-    
+
     <div class="sidebar">
       <div class="sidebar-sticky">
         <div class="sidebar-header">
@@ -506,7 +1211,7 @@
             <button class="btn btn-discord" onclick="generateTemplate()">📋 投稿する</button>
           </div>
         </div>
-        
+
         <!-- 予約投稿確認ボタン -->
         <button class="btn btn-scheduled" id="scheduledBtn" onclick="openScheduledModal()">
           📅 予約中の投稿を確認 <span class="scheduled-badge" id="scheduledCount" style="display:none;">0</span>
@@ -514,7 +1219,7 @@
       </div>
     </div><!-- sidebar -->
   </div><!-- page-wrapper -->
-  
+
   <!-- テンプレートモーダル -->
   <div class="modal-overlay" id="templateModal" onclick="closeModal(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
@@ -563,7 +1268,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- 予約投稿一覧モーダル -->
   <div class="modal-overlay" id="scheduledModal" onclick="closeScheduledModal(event)">
     <div class="scheduled-modal-content" onclick="event.stopPropagation()">
@@ -576,7 +1281,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- 予約内容確認モーダル -->
   <div class="modal-overlay" id="scheduledDetailModal" onclick="closeScheduledDetailModal(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
@@ -592,44 +1297,44 @@
       </div>
     </div>
   </div>
-  
+
   <div class="toast" id="toast"></div>
-  
+
   <script>
     // GAS API URL
     const API_URL = 'https://script.google.com/macros/s/AKfycbyXdgehZGBhfWNCRA5uwC1Jr6Kp8lzNy-6mCieFu4HaZBiC2jfPB5BXa7TlhHt_FHHF/exec';
-    
+
     document.getElementById('deliveryDate').valueAsDate = new Date();
-    
+
     // サイドバーの商品名を更新
     function updateSidebarProductName() {
       var productName = document.getElementById('productName').value;
       document.getElementById('sidebarProductName').textContent = productName || '商品未入力';
     }
-    
-    document.addEventListener('DOMContentLoaded', function() {
+
+    document.addEventListener('DOMContentLoaded', function () {
       loadHistory();
       loadScheduledPosts();
       setupRealtimeCalc();
     });
-    
+
     function toggleCampaign(el) {
       el.classList.toggle('active');
       calculatePreview();
     }
-    
+
     function setupRealtimeCalc() {
       document.getElementById('priceWithTax').addEventListener('input', calculatePreview);
       document.getElementById('consignmentPrice').addEventListener('input', calculatePreview);
     }
-    
+
     function calculatePreview() {
       var priceWithTax = Number(document.getElementById('priceWithTax').value) || 0;
       var priceWithoutTax = Math.floor(priceWithTax / 1.1);
       var consignmentPrice = Number(document.getElementById('consignmentPrice').value) || 0;
-      
+
       document.getElementById('priceWithoutTaxDisplay').textContent = formatNumber(priceWithoutTax);
-      
+
       if (priceWithTax <= 0) {
         document.getElementById('totalPoints').innerHTML = '0<span class="preview-unit">pt</span>';
         document.getElementById('expectedProfit').innerHTML = '0<span class="preview-unit">円</span>';
@@ -638,43 +1343,47 @@
         clearCampaignPoints();
         return;
       }
-      
+
       var totalPoints = 0;
-      
+
       // 固定ポイント
       var basePoints = Math.floor(priceWithTax * 0.01);
       var cardPoints = Math.floor(priceWithTax * 0.02);
-      
+
       totalPoints += basePoints + cardPoints;
-      
+
       updateFixedPoints('base', basePoints);
       updateFixedPoints('card', cardPoints);
-      
+
       // キャンペーンポイント
       var campaigns = getActiveCampaigns();
-      
+
       // プライム会員: 税込 選択%
       var primePercent = Number(document.getElementById('primePercent').value) || 1;
       totalPoints += calcCampaignWithCap('prime', campaigns, priceWithTax, primePercent / 100, null);
-      
+
       // Amazonカード: 税込 選択%
       var amazoncardPercent = Number(document.getElementById('amazoncardPercent').value) || 1;
       totalPoints += calcCampaignWithCap('amazoncard', campaigns, priceWithTax, amazoncardPercent / 100, null);
-      
+
+      // その他: 税込 選択%
+      var freePercent = Number(document.getElementById('freePercent').value) || 1;
+      totalPoints += calcCampaignWithCap('free', campaigns, priceWithTax, freePercent / 100, null);
+
       // 見込利益
       var expectedProfit = consignmentPrice - priceWithTax + totalPoints;
-      
+
       document.getElementById('totalPoints').innerHTML = formatNumber(totalPoints) + '<span class="preview-unit">pt</span>';
       var profitEl = document.getElementById('expectedProfit');
       profitEl.innerHTML = formatNumber(expectedProfit) + '<span class="preview-unit">円</span>';
       profitEl.className = 'preview-value' + (expectedProfit < 0 ? ' negative' : '');
     }
-    
+
     function calcCampaignWithCap(campaign, activeCampaigns, price, rate, cap) {
       var rawPts = Math.floor(price * rate);
       var pts = (cap !== null && rawPts > cap) ? cap : rawPts;
       var isCapped = (cap !== null && rawPts > cap);
-      
+
       if (activeCampaigns.includes(campaign)) {
         updateCampaignPointsWithCap(campaign, pts, isCapped);
         return pts;
@@ -683,7 +1392,7 @@
         return 0;
       }
     }
-    
+
     function updateCampaignPointsWithCap(campaign, pts, isCapped) {
       var el = document.getElementById('points-' + campaign);
       if (el) {
@@ -694,36 +1403,36 @@
         }
       }
     }
-    
+
     function getActiveCampaigns() {
       var items = document.querySelectorAll('.campaign-item.active');
-      return Array.from(items).map(function(item) { return item.dataset.campaign; });
+      return Array.from(items).map(function (item) { return item.dataset.campaign; });
     }
-    
+
     function updateFixedPoints(id, pts) {
       var el = document.getElementById('points-' + id);
       if (el) el.textContent = pts > 0 ? '+' + formatNumber(pts) + 'pt' : '-';
     }
-    
+
     function clearCampaignPoints() {
-      var campaigns = ['prime', 'amazoncard'];
-      campaigns.forEach(function(c) {
+      var campaigns = ['prime', 'amazoncard', 'free'];
+      campaigns.forEach(function (c) {
         var el = document.getElementById('points-' + c);
         if (el) el.textContent = '';
       });
     }
-    
+
     function clearFixedPoints() {
       var fixed = ['base', 'card'];
-      fixed.forEach(function(c) {
+      fixed.forEach(function (c) {
         var el = document.getElementById('points-' + c);
         if (el) el.textContent = '-';
       });
     }
-    
+
     function setAltplan(value) {
       var btns = document.querySelectorAll('#altplanToggle .toggle-btn');
-      btns.forEach(function(btn) {
+      btns.forEach(function (btn) {
         if (btn.dataset.value === value) {
           btn.classList.add('active');
         } else {
@@ -731,12 +1440,12 @@
         }
       });
     }
-    
+
     function getAltplanValue() {
       var activeBtn = document.querySelector('#altplanToggle .toggle-btn.active');
       return activeBtn ? activeBtn.dataset.value : 'なし';
     }
-    
+
     function getFormData() {
       var priceWithTax = Number(document.getElementById('priceWithTax').value) || 0;
       return {
@@ -751,10 +1460,11 @@
         campaigns: getActiveCampaigns(),
         primePercent: document.getElementById('primePercent').value,
         amazoncardPercent: document.getElementById('amazoncardPercent').value,
+        freePercent: document.getElementById('freePercent').value,
         altplan: getAltplanValue()
       };
     }
-    
+
     function validateForm() {
       var data = getFormData();
       if (!data.date) { showToast('配信日を入力してください', 'error'); return false; }
@@ -763,25 +1473,25 @@
       if (!data.priceWithTax) { showToast('購入金額を入力してください', 'error'); return false; }
       return true;
     }
-    
+
     // 更新のみ（編集時）
     function updateOnly() {
       if (!validateForm()) return;
-      
+
       var btn = document.getElementById('updateBtn');
       btn.disabled = true;
       btn.innerHTML = '⏳ 更新中...';
-      
+
       var data = getFormData();
       var editingRow = document.getElementById('editingRowNumber').value;
-      
+
       if (!editingRow) {
         showToast('更新対象がありません', 'error');
         btn.disabled = false;
         btn.innerHTML = '📝 更新する';
         return;
       }
-      
+
       fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
@@ -791,54 +1501,54 @@
           data: data
         })
       })
-      .then(function(response) { return response.json(); })
-      .then(function(result) {
-        btn.disabled = false;
-        btn.innerHTML = '📝 更新する';
-        if (result.success) {
-          showToast('更新しました', 'success');
-          loadHistory();
-        } else {
-          showToast(result.message, 'error');
-        }
-      })
-      .catch(function(error) {
-        btn.disabled = false;
-        btn.innerHTML = '📝 更新する';
-        showToast('更新に失敗しました', 'error');
-      });
+        .then(function (response) { return response.json(); })
+        .then(function (result) {
+          btn.disabled = false;
+          btn.innerHTML = '📝 更新する';
+          if (result.success) {
+            showToast('更新しました', 'success');
+            loadHistory();
+          } else {
+            showToast(result.message, 'error');
+          }
+        })
+        .catch(function (error) {
+          btn.disabled = false;
+          btn.innerHTML = '📝 更新する';
+          showToast('更新に失敗しました', 'error');
+        });
     }
-    
+
     // 保存処理（投稿時に呼ばれる）
     function saveToSheetForPost(callback) {
       var data = getFormData();
       var editingRow = document.getElementById('editingRowNumber').value;
-      
-      var requestBody = editingRow 
+
+      var requestBody = editingRow
         ? { action: 'updateAmazonData', rowNumber: parseInt(editingRow), data: data }
         : { action: 'saveAmazonData', data: data };
-      
+
       fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(requestBody)
       })
-      .then(function(response) { return response.json(); })
-      .then(function(result) {
-        if (result.success) {
-          loadHistory();
-          if (callback) callback(true);
-        } else {
-          showToast(result.message, 'error');
+        .then(function (response) { return response.json(); })
+        .then(function (result) {
+          if (result.success) {
+            loadHistory();
+            if (callback) callback(true);
+          } else {
+            showToast(result.message, 'error');
+            if (callback) callback(false);
+          }
+        })
+        .catch(function (error) {
+          showToast('保存に失敗しました', 'error');
           if (callback) callback(false);
-        }
-      })
-      .catch(function(error) {
-        showToast('保存に失敗しました', 'error');
-        if (callback) callback(false);
-      });
+        });
     }
-    
+
     function clearForm() {
       document.getElementById('deliveryDate').valueAsDate = new Date();
       document.getElementById('campaignName').value = '';
@@ -852,36 +1562,36 @@
       document.getElementById('priceWithoutTaxDisplay').textContent = '0';
       document.getElementById('primePercent').value = '1';
       document.getElementById('amazoncardPercent').value = '1';
-      document.querySelectorAll('.campaign-item.active').forEach(function(item) { item.classList.remove('active'); });
-      document.querySelectorAll('.history-item.selected').forEach(function(item) { item.classList.remove('selected'); });
+      document.querySelectorAll('.campaign-item.active').forEach(function (item) { item.classList.remove('active'); });
+      document.querySelectorAll('.history-item.selected').forEach(function (item) { item.classList.remove('selected'); });
       setAltplan('なし');
       clearFixedPoints();
       clearCampaignPoints();
       document.getElementById('totalPoints').innerHTML = '0<span class="preview-unit">pt</span>';
       document.getElementById('expectedProfit').innerHTML = '0<span class="preview-unit">円</span>';
-      
+
       switchToNewMode();
       updateSidebarProductName();
     }
-    
+
     function loadHistory() {
       fetch(API_URL + '?action=getAmazonHistory')
-        .then(function(response) { return response.json(); })
-        .then(function(history) { renderHistory(history); })
-        .catch(function(error) {
+        .then(function (response) { return response.json(); })
+        .then(function (history) { renderHistory(history); })
+        .catch(function (error) {
           document.getElementById('historyList').innerHTML = '<div class="history-empty">読み込みに失敗しました</div>';
         });
     }
-    
+
     function renderHistory(history) {
       var container = document.getElementById('historyList');
       if (!history || history.length === 0) {
         container.innerHTML = '<div class="history-empty">配信履歴がありません</div>';
         return;
       }
-      
+
       var html = '';
-      history.forEach(function(item) {
+      history.forEach(function (item) {
         var profitClass = item.expectedProfit < 0 ? 'negative' : '';
         html += '<div class="history-item" onclick="loadHistoryItem(' + item.rowNumber + ')" data-row="' + item.rowNumber + '">' +
           '<div class="history-header">' +
@@ -896,26 +1606,26 @@
       });
       container.innerHTML = html;
     }
-    
+
     function loadHistoryItem(rowNumber) {
-      document.querySelectorAll('.history-item').forEach(function(item) { item.classList.remove('selected'); });
+      document.querySelectorAll('.history-item').forEach(function (item) { item.classList.remove('selected'); });
       var el = document.querySelector('.history-item[data-row="' + rowNumber + '"]');
       if (el) el.classList.add('selected');
-      
+
       fetch(API_URL + '?action=getAmazonDataByRow&rowNumber=' + rowNumber)
-        .then(function(response) { return response.json(); })
-        .then(function(data) {
+        .then(function (response) { return response.json(); })
+        .then(function (data) {
           if (data) {
             fillForm(data);
             showToast('履歴データを読み込みました', 'success');
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           showToast('データの読み込みに失敗しました', 'error');
         });
     }
-    
+
     function fillForm(data) {
       document.getElementById('deliveryDate').value = data.date;
       document.getElementById('campaignName').value = data.campaignName || '';
@@ -926,58 +1636,59 @@
       document.getElementById('consignmentPrice').value = data.consignmentPrice || '';
       document.getElementById('remarks').value = data.remarks || '';
       document.getElementById('editingRowNumber').value = data.rowNumber || '';
-      
+
       // キャンペーン%
       if (data.primePercent) document.getElementById('primePercent').value = data.primePercent;
       if (data.amazoncardPercent) document.getElementById('amazoncardPercent').value = data.amazoncardPercent;
-      
+      if (data.freePercent) document.getElementById('freePercent').value = data.freePercent;
+
       // キャンペーン
-      document.querySelectorAll('.campaign-item').forEach(function(item) { item.classList.remove('active'); });
+      document.querySelectorAll('.campaign-item').forEach(function (item) { item.classList.remove('active'); });
       if (data.campaigns) {
-        data.campaigns.forEach(function(campaign) {
+        data.campaigns.forEach(function (campaign) {
           var item = document.querySelector('.campaign-item[data-campaign="' + campaign + '"]');
           if (item) item.classList.add('active');
         });
       }
-      
+
       setAltplan(data.altplan || 'なし');
-      
+
       switchToEditMode();
       calculatePreview();
       updateSidebarProductName();
     }
-    
+
     function switchToEditMode() {
       document.getElementById('newEntryButtons').style.display = 'none';
       document.getElementById('editButtons').style.display = 'flex';
     }
-    
+
     function switchToNewMode() {
       document.getElementById('newEntryButtons').style.display = 'block';
       document.getElementById('editButtons').style.display = 'none';
     }
-    
+
     function generateTemplate() {
       if (!validateForm()) return;
-      
+
       var data = getFormData();
       var priceWithTax = data.priceWithTax;
       var priceWithoutTax = Math.floor(priceWithTax / 1.1);
       var consignmentPrice = data.consignmentPrice;
-      
+
       // ポイント計算
       var fixedPts = {
         base: Math.floor(priceWithTax * 0.01),
         card: Math.floor(priceWithTax * 0.02)
       };
-      
+
       var campaignPts = calculateCampaignPointsForTemplate(data, priceWithTax);
       var totalPoints = fixedPts.base + fixedPts.card + campaignPts.total;
       var expectedProfit = consignmentPrice - priceWithTax + totalPoints;
-      
+
       // 日付フォーマット
       var dateFormatted = data.date ? data.date.replace(/-/g, '/') : '';
-      
+
       // テンプレート生成
       var lines = [];
       lines.push('@everyone');
@@ -1004,16 +1715,16 @@
       lines.push('📌ポイント内訳：');
       lines.push('基本税込1% ' + fixedPts.base + 'pt');
       lines.push('Amazonカード税込2% ' + fixedPts.card + 'pt');
-      
+
       // 選択されたキャンペーンのポイント
-      campaignPts.lines.forEach(function(line) {
+      campaignPts.lines.forEach(function (line) {
         lines.push(line);
       });
-      
+
       lines.push('');
       if (data.remarks) lines.push('※備考：' + data.remarks);
       lines.push('※代替商品配信予定：' + data.altplan);
-      
+
       var template = lines.join('\n');
       document.getElementById('templateText').value = template;
       document.getElementById('templateEditText').value = template;
@@ -1024,12 +1735,12 @@
       // Discordチャンネルを読み込み
       loadDiscordChannels();
     }
-    
+
     function calculateCampaignPointsForTemplate(data, priceWithTax) {
       var campaigns = data.campaigns || [];
       var total = 0;
       var lines = [];
-      
+
       // プライム会員
       if (campaigns.includes('prime')) {
         var primePercent = Number(data.primePercent) || 1;
@@ -1037,7 +1748,7 @@
         total += primePts;
         lines.push('プライム会員税込' + primePercent + '% ' + primePts + 'pt');
       }
-      
+
       // Amazonカード（キャンペーン）
       if (campaigns.includes('amazoncard')) {
         var amazoncardPercent = Number(data.amazoncardPercent) || 1;
@@ -1045,22 +1756,30 @@
         total += amazoncardPts;
         lines.push('Amazonカード税込' + amazoncardPercent + '% ' + amazoncardPts + 'pt');
       }
-      
+
+      // その他
+      if (campaigns.includes('free')) {
+        var freePercent = Number(data.freePercent) || 1;
+        var freePts = Math.floor(priceWithTax * (freePercent / 100));
+        total += freePts;
+        lines.push('フリー項目税込' + freePercent + '% ' + freePts + 'pt');
+      }
+
       return { total: total, lines: lines };
     }
-    
+
     function closeTemplateModal() {
       document.getElementById('templateModal').classList.remove('show');
       document.getElementById('templatePreviewMode').style.display = 'flex';
       document.getElementById('templateEditMode').style.display = 'none';
     }
-    
+
     function closeModal(event) {
       if (event.target === document.getElementById('templateModal')) {
         closeTemplateModal();
       }
     }
-    
+
     function switchToPostMode() {
       var templateText = document.getElementById('templateText').value;
       document.getElementById('templateEditText').value = templateText;
@@ -1068,73 +1787,73 @@
       document.getElementById('templateEditMode').style.display = 'flex';
       loadDiscordChannels();
     }
-    
+
     function toggleSchedule() {
       var isSchedule = document.querySelector('input[name="postType"]:checked').value === 'schedule';
       document.getElementById('scheduleDatetime').style.display = isSchedule ? 'flex' : 'none';
       document.getElementById('postBtn').textContent = isSchedule ? '📅 予約する' : '🚀 投稿する';
-      
+
       if (isSchedule && !document.getElementById('scheduleDate').value) {
         var now = new Date();
         now.setHours(now.getHours() + 1);
         document.getElementById('scheduleDate').value = now.toISOString().split('T')[0];
-        document.getElementById('scheduleTime').value = now.toTimeString().slice(0,5);
+        document.getElementById('scheduleTime').value = now.toTimeString().slice(0, 5);
       }
     }
-    
+
     function postToDiscord() {
       var postType = document.querySelector('input[name="postType"]:checked').value;
       var message = document.getElementById('templateEditText').value;
-      
+
       if (!message.trim()) {
         showToast('投稿内容が空です', 'error');
         return;
       }
-      
+
       var selectedUrls = [];
-      document.querySelectorAll('.discord-channel-item input:checked').forEach(function(checkbox) {
+      document.querySelectorAll('.discord-channel-item input:checked').forEach(function (checkbox) {
         selectedUrls.push(checkbox.dataset.url);
       });
-      
+
       if (postType === 'now' && selectedUrls.length === 0) {
         showToast('投稿先を選択してください', 'error');
         return;
       }
-      
+
       var productName = document.getElementById('productName').value;
-      
+
       var btn = document.getElementById('postBtn');
       btn.disabled = true;
       btn.textContent = '⏳ 処理中...';
-      
-      saveToSheetForPost(function(saveSuccess) {
+
+      saveToSheetForPost(function (saveSuccess) {
         if (!saveSuccess) {
           btn.disabled = false;
           btn.textContent = '🚀 投稿する';
           return;
         }
-        
+
         if (postType === 'schedule') {
           var scheduleDate = document.getElementById('scheduleDate').value;
           var scheduleTime = document.getElementById('scheduleTime').value;
-          
+
           if (!scheduleDate || !scheduleTime) {
             showToast('予約日時を設定してください', 'error');
             btn.disabled = false;
             btn.textContent = '🚀 投稿する';
             return;
           }
-          
+
           var scheduledAt = scheduleDate + 'T' + scheduleTime + ':00';
           var scheduledDateTime = new Date(scheduledAt);
-          
+
           if (scheduledDateTime <= new Date()) {
             showToast('予約日時は現在より後に設定してください', 'error');
             btn.disabled = false;
             btn.textContent = '🚀 投稿する';
             return;
           }
-          
+
           fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain' },
@@ -1150,25 +1869,25 @@
               }
             })
           })
-          .then(function(response) { return response.json(); })
-          .then(function(result) {
-            btn.disabled = false;
-            btn.textContent = '🚀 投稿する';
-            if (result.success) {
-              showToast('記録＆予約しました: ' + scheduleDate + ' ' + scheduleTime, 'success');
-              closeTemplateModal();
-              clearForm();
-              loadScheduledPosts();
-            } else {
-              showToast(result.message || '予約に失敗しました', 'error');
-            }
-          })
-          .catch(function(error) {
-            btn.disabled = false;
-            btn.textContent = '🚀 投稿する';
-            showToast('予約に失敗しました', 'error');
-          });
-          
+            .then(function (response) { return response.json(); })
+            .then(function (result) {
+              btn.disabled = false;
+              btn.textContent = '🚀 投稿する';
+              if (result.success) {
+                showToast('記録＆予約しました: ' + scheduleDate + ' ' + scheduleTime, 'success');
+                closeTemplateModal();
+                clearForm();
+                loadScheduledPosts();
+              } else {
+                showToast(result.message || '予約に失敗しました', 'error');
+              }
+            })
+            .catch(function (error) {
+              btn.disabled = false;
+              btn.textContent = '🚀 投稿する';
+              showToast('予約に失敗しました', 'error');
+            });
+
         } else {
           fetch(API_URL, {
             method: 'POST',
@@ -1179,41 +1898,41 @@
               webhookUrls: selectedUrls
             })
           })
-          .then(function(response) { return response.json(); })
-          .then(function(result) {
-            btn.disabled = false;
-            btn.textContent = '🚀 投稿する';
-            if (result.success) {
-              showToast('記録＆投稿しました！' + result.message, 'success');
-              closeTemplateModal();
-              clearForm();
-            } else {
-              showToast(result.message || '投稿に失敗しました', 'error');
-            }
-          })
-          .catch(function(error) {
-            btn.disabled = false;
-            btn.textContent = '🚀 投稿する';
-            showToast('投稿に失敗しました', 'error');
-          });
+            .then(function (response) { return response.json(); })
+            .then(function (result) {
+              btn.disabled = false;
+              btn.textContent = '🚀 投稿する';
+              if (result.success) {
+                showToast('記録＆投稿しました！' + result.message, 'success');
+                closeTemplateModal();
+                clearForm();
+              } else {
+                showToast(result.message || '投稿に失敗しました', 'error');
+              }
+            })
+            .catch(function (error) {
+              btn.disabled = false;
+              btn.textContent = '🚀 投稿する';
+              showToast('投稿に失敗しました', 'error');
+            });
         }
       });
     }
-    
+
     function loadDiscordChannels() {
       var container = document.getElementById('discordChannelsList');
       container.innerHTML = '<div class="discord-channels-loading">読み込み中...</div>';
-      
+
       fetch(API_URL + '?action=getDiscordChannels&ecType=Amazon')
-        .then(function(response) { return response.json(); })
-        .then(function(channels) {
+        .then(function (response) { return response.json(); })
+        .then(function (channels) {
           if (!channels || channels.length === 0) {
             container.innerHTML = '<div class="discord-channels-loading">投稿先がありません（Discord設定シートを確認してください）</div>';
             return;
           }
-          
+
           var html = '';
-          channels.forEach(function(ch) {
+          channels.forEach(function (ch) {
             var checkedAttr = ch.enabled ? 'checked' : '';
             var checkedClass = ch.enabled ? 'checked' : '';
             html += '<label class="discord-channel-item ' + checkedClass + '">' +
@@ -1223,11 +1942,11 @@
           });
           container.innerHTML = html;
         })
-        .catch(function(error) {
+        .catch(function (error) {
           container.innerHTML = '<div class="discord-channels-loading">読み込みに失敗しました</div>';
         });
     }
-    
+
     function toggleChannelItem(checkbox) {
       var label = checkbox.parentElement;
       if (checkbox.checked) {
@@ -1236,78 +1955,78 @@
         label.classList.remove('checked');
       }
     }
-    
+
     function copyTemplate() {
       var textarea = document.getElementById('templateText');
       textarea.select();
       document.execCommand('copy');
       showToast('テンプレートをコピーしました', 'success');
     }
-    
+
     function copyEditTemplate() {
       var textarea = document.getElementById('templateEditText');
       textarea.select();
       document.execCommand('copy');
       showToast('テンプレートをコピーしました', 'success');
     }
-    
+
     function goBack() {
       window.location.href = 'index.html';
     }
-    
+
     function toggleMenu() {
       document.getElementById('menuDropdown').classList.toggle('show');
     }
-    
+
     function navigateTo(page) {
       window.location.href = page + '.html';
     }
-    
-    document.addEventListener('click', function(e) {
+
+    document.addEventListener('click', function (e) {
       if (!e.target.closest('.hamburger-menu')) {
         document.getElementById('menuDropdown').classList.remove('show');
       }
     });
-    
+
     function showToast(message, type) {
       var toast = document.getElementById('toast');
       toast.textContent = message;
       toast.className = 'toast ' + type + ' show';
-      setTimeout(function() { toast.classList.remove('show'); }, 3000);
+      setTimeout(function () { toast.classList.remove('show'); }, 3000);
     }
-    
+
     function formatDisplayDate(dateStr) {
       if (!dateStr) return '';
       var parts = dateStr.split('-');
       if (parts.length === 3) return parts[0] + '/' + parts[1] + '/' + parts[2];
       return dateStr;
     }
-    
+
     function formatNumber(num) {
       if (num === null || num === undefined || num === '') return '0';
       return Number(num).toLocaleString();
     }
-    
+
     // ========== 予約投稿関連 ==========
     var scheduledPosts = [];
     var currentScheduleRowNumber = null;
-    
+
     function loadScheduledPosts() {
       fetch(API_URL + '?action=getPendingSchedules')
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
           scheduledPosts = Array.isArray(data) ? data : [];
           renderScheduledSidebar();
         })
-        .catch(function(err) {
+        .catch(function (err) {
           console.error('予約投稿読み込みエラー:', err);
         });
     }
-    
+
     function renderScheduledSidebar() {
-      var pendingPosts = scheduledPosts.filter(function(p) { return p.status === '予約中'; });
+      var pendingPosts = scheduledPosts.filter(function (p) { return p.status === '予約中'; });
       var countEl = document.getElementById('scheduledCount');
-      
+
       if (pendingPosts.length > 0) {
         countEl.textContent = pendingPosts.length;
         countEl.style.display = 'inline-block';
@@ -1315,28 +2034,28 @@
         countEl.style.display = 'none';
       }
     }
-    
+
     function openScheduledModal() {
       document.getElementById('scheduledModal').classList.add('show');
       renderScheduledModal();
     }
-    
+
     function closeScheduledModal(event) {
       if (event && event.target !== event.currentTarget) return;
       document.getElementById('scheduledModal').classList.remove('show');
     }
-    
+
     function renderScheduledModal() {
-      var pendingPosts = scheduledPosts.filter(function(p) { return p.status === '予約中'; });
+      var pendingPosts = scheduledPosts.filter(function (p) { return p.status === '予約中'; });
       var listEl = document.getElementById('scheduledModalList');
-      
+
       if (pendingPosts.length === 0) {
         listEl.innerHTML = '<div class="scheduled-empty" style="padding:40px;">予約中の投稿はありません</div>';
         return;
       }
-      
+
       var html = '';
-      pendingPosts.forEach(function(post) {
+      pendingPosts.forEach(function (post) {
         var ecClass = 'amazon';
         html += '<div class="scheduled-modal-item" onclick="openScheduledDetail(' + post.rowNumber + ')">' +
           '<div class="scheduled-modal-item-header">' +
@@ -1348,7 +2067,7 @@
       });
       listEl.innerHTML = html;
     }
-    
+
     function formatScheduleDateTime(dateTimeStr) {
       if (!dateTimeStr) return '';
       var dt = new Date(dateTimeStr);
@@ -1358,35 +2077,35 @@
       var minutes = ('0' + dt.getMinutes()).slice(-2);
       return month + '/' + day + ' ' + hours + ':' + minutes;
     }
-    
+
     function openScheduledDetail(rowNumber) {
-      var post = scheduledPosts.find(function(p) { return p.rowNumber === rowNumber; });
+      var post = scheduledPosts.find(function (p) { return p.rowNumber === rowNumber; });
       if (!post) return;
-      
+
       currentScheduleRowNumber = rowNumber;
-      
+
       var infoHtml = '<strong>' + post.ecType + '</strong> / ' + (post.productName || '商品名なし') + '<br>' +
         '予約日時: ' + formatScheduleDateTime(post.scheduledAt);
       document.getElementById('scheduledDetailInfo').innerHTML = infoHtml;
       document.getElementById('scheduledDetailText').value = post.message || '';
-      
+
       document.getElementById('scheduledDetailModal').classList.add('show');
     }
-    
+
     function closeScheduledDetailModal(event) {
       if (event && event.target !== event.currentTarget) return;
       document.getElementById('scheduledDetailModal').classList.remove('show');
       currentScheduleRowNumber = null;
     }
-    
+
     function cancelSchedule() {
       if (!currentScheduleRowNumber) return;
       if (!confirm('この予約を取り消しますか？')) return;
-      
+
       var btn = document.getElementById('cancelScheduleBtn');
       btn.disabled = true;
       btn.textContent = '取り消し中...';
-      
+
       fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
@@ -1395,26 +2114,27 @@
           rowNumber: currentScheduleRowNumber
         })
       })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        btn.disabled = false;
-        btn.innerHTML = '🗑️ 予約を取り消す';
-        
-        if (data.success) {
-          showToast('予約を取り消しました', 'success');
-          closeScheduledDetailModal();
-          loadScheduledPosts();
-          renderScheduledModal();
-        } else {
-          showToast('取り消しに失敗しました', 'error');
-        }
-      })
-      .catch(function(err) {
-        btn.disabled = false;
-        btn.innerHTML = '🗑️ 予約を取り消す';
-        showToast('エラーが発生しました', 'error');
-      });
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          btn.disabled = false;
+          btn.innerHTML = '🗑️ 予約を取り消す';
+
+          if (data.success) {
+            showToast('予約を取り消しました', 'success');
+            closeScheduledDetailModal();
+            loadScheduledPosts();
+            renderScheduledModal();
+          } else {
+            showToast('取り消しに失敗しました', 'error');
+          }
+        })
+        .catch(function (err) {
+          btn.disabled = false;
+          btn.innerHTML = '🗑️ 予約を取り消す';
+          showToast('エラーが発生しました', 'error');
+        });
     }
   </script>
 </body>
+
 </html>
